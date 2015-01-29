@@ -123,8 +123,8 @@ module.exports = (grunt)->
       dev:
         options:
           transform: ["reactify"]
-          browserifyOptions:
-            debug:     true
+        browserifyOptions:
+          debug:     true
         files:
           "<%= app.tmp %>/scripts/build.js": ["<%= app.public %>/scripts/**/*.js", "<%= app.public %>/scripts/**/*.jsx"]
       build:
