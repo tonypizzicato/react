@@ -4,44 +4,28 @@ var React        = require('react'),
     Router       = require('react-router'),
     mui          = require('material-ui'),
 
-    RouteHandler = Router.RouteHandler,
-
     Canvas       = mui.AppCanvas,
     AppBar       = mui.AppBar,
-    LeftNav      = mui.LeftNav,
-    MenuItem     = mui.MenuItem,
-    Paper        = mui.Paper;
 
+    WithNav      = require('./with-nav.jsx');
 
 var menuItems = [
-    {route: 'get-started', text: 'Get Started'},
-    {route: 'css-framework', text: 'CSS Framework'},
-    {route: 'components', text: 'Components'},
-    {type: MenuItem.Types.SUBHEADER, text: 'Resources'},
-    {
-        type:    MenuItem.Types.LINK,
-        payload: 'https://github.com/callemall/material-ui',
-        text:    'GitHub'
-    }
+    {route: 'users', text: 'Users'},
+    {route: 'news', text: 'News'},
+    {route: 'media', text: 'Media'}
 ];
 
-
 var MainApp = React.createClass({
-    mixins: [Router.State],
 
+    mixins: [Router.State],
 
     render: function () {
         return (
             <div>
                 <Canvas>
-                    <AppBar title="Amateurs League Admin App" />
-                    <Paper>
-                        <LeftNav menuItems={menuItems} />
-                    </Paper>
+                    <AppBar className="mui-dark-theme" title="Amateur Admin App" zDepth={0} />
 
-                    <Paper className="content_main">
-                        <RouteHandler />
-                    </Paper>
+                    <WithNav menuItems={menuItems} />
                 </Canvas>
             </div>
         )

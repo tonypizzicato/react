@@ -8,7 +8,7 @@ var React        = require('react'),
 
     MainApp      = require('./components/pages/main.jsx'),
     UsersApp     = require('./components/pages/users.jsx'),
-    NewsApp      = require('./components/pages/news.jsx'),
+    NewsApp      = require('./components/pages/News.jsx'),
     MediaApp     = require('./components/pages/media.jsx');
 
 var Routes = (

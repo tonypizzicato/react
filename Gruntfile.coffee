@@ -50,32 +50,20 @@ module.exports = (grunt)->
           dest:   "<%= app.tmp %>/scripts"
         ]
 
-
-    # Compiles Sass to CSS and generates necessary files if requested
-    compass:
-      options:
-        sassDir:                 "<%= app.public %>/styles"
-        cssDir:                  "<%= app.tmp %>/styles"
-        generatedImagesDir:      "<%= app.tmp %>/images/generated"
-        imagesDir:               "<%= app.public %>/images"
-        javascriptsDir:          "<%= app.public %>/scripts"
-        fontsDir:                "<%= app.public %>/styles/fonts"
-        importPath:              "<%= app.public %>/vendor"
-        httpImagesPath:          "/images"
-        httpGeneratedImagesPath: "/images/generated"
-        httpFontsPath:           "/styles/fonts"
-        relativeAssets:          false
-        assetCacheBuster:        false
+    less:
+      dev:
+        options:
+          paths: ["<%= app.public %>/styles"]
+        files:
+          "<%= app.tmp %>/styles/main.css": "<%= app.public %>/styles/main.less"
 
       dist:
         options:
-          generatedImagesDir: "<%= app.dist %>/images/generated"
+          paths: ["<%= app.public %>/styles"]
 
-      server:
-        options:
-          debugInfo: false
+        files:
+          "<%= app.dist %>/styles/main.css": "<%= app.public %>/styles/main.less"
 
-    # Copies remaining files to places other tasks can use
     copy:
       dist:
         files: [# client app files
@@ -119,21 +107,34 @@ module.exports = (grunt)->
         dest:   "<%= app.tmp %>/styles/"
         src:    "{,*/}*.css"
 
+      fonts:
+        files: [
+          {
+            expand: true
+            dot:    true
+            dest:   "<%= app.public %>/styles/fonts"
+            cwd: 'node_modules/material-design-fonticons/fonts/'
+            src:    [
+              "**"
+            ]
+          }
+        ]
+
     browserify:
       dev:
         options:
           transform: ["reactify"]
-        browserifyOptions:
-          debug:     true
+          browserifyOptions:
+            debug:     true
         files:
-          "<%= app.tmp %>/scripts/build.js": ["<%= app.public %>/scripts/**/*.js", "<%= app.public %>/scripts/**/*.jsx"]
+          "<%= app.tmp %>/scripts/build.js": ["<%= app.public %>/scripts/app.{js,jsx}"]
       build:
         options:
           transform: ["reactify"]
           browserifyOptions:
             debug:     false
         files:
-          "<%= app.dist %>/scripts/build.js": ["<%= app.tmp %>/scripts/**/*.js", "<%= app.tmp %>/scripts/**/*.jsx"]
+          "<%= app.dist %>/scripts/build.js": ["<%= app.public %>/scripts/app.{js,jsx}"]
 
     watch:
       options:
@@ -144,9 +145,9 @@ module.exports = (grunt)->
         tasks: ["coffee:dist"]
       gruntfile:
         files: ["Gruntfile.coffee"]
-      compass:
-        files: ["<%= app.public %>/styles/**/*.{scss,sass}"]
-        tasks: ["compass:server"]
+      less:
+        files: ["<%= app.public %>/styles/*.less"]
+        tasks: ["less:dev"]
       styles:
         files: ["<%= app.public %>/styles/**/*.css"]
         tasks: ["newer:copy:styles"]
@@ -158,9 +159,10 @@ module.exports = (grunt)->
     # Run some tasks in parallel to speed up build process
     concurrent:
       server: [
-        "compass:server"
+        "less:dev"
         "coffee:dist"
         "copy:styles"
+        "copy:fonts"
       ]
       test: [
         "coffee"
@@ -168,7 +170,7 @@ module.exports = (grunt)->
       ]
       dist: [
         "coffee"
-        "compass"
+        "less"
         "copy:styles"
         "imagemin"
         "svgmin"
