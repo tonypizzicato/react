@@ -10,21 +10,23 @@ var NewsActions = {
         });
     },
 
-    save: function (title, body) {
+    save: function (data) {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_SAVE,
             data: {
-                title: title,
-                body:  body
+                title: data.title,
+                body:  data.body,
+                show:  data.show,
+                stick: data.stick
             }
         })
     },
 
-    sort: function(id, dir) {
+    sort: function (id, dir) {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_SORT,
             data: {
-                id: id,
+                id:  id,
                 dir: dir
             }
         })
