@@ -1,16 +1,19 @@
 "use strict";
 
-var React        = require('react'),
-    mui          = require('material-ui'),
+var React                = require('react'),
+    mui                  = require('material-ui'),
 
-    Paper        = mui.Paper,
-    TextField    = mui.TextField,
-    Toggle       = mui.Toggle,
-    DropDownMenu = mui.DropDownMenu,
-    Button       = mui.RaisedButton,
+    Paper                = mui.Paper,
+    TextField            = mui.TextField,
+    Toggle               = mui.Toggle,
+    DropDownMenu         = mui.DropDownMenu,
+    Button               = mui.RaisedButton,
+    FloatingActionButton = mui.FloatingActionButton,
 
-    NewsActions  = require('../actions/NewsActions'),
-    NewsStore    = require('../stores/NewsStore');
+    NewsActions          = require('../actions/NewsActions'),
+    NewsStore            = require('../stores/NewsStore'),
+
+    TagsField            = require('./TagsField.jsx');
 
 var leaguesItems = [
     {payload: '0', text: 'All'},
@@ -70,6 +73,10 @@ var NewsNew = React.createClass({
         this.setState({validation: validation});
     },
 
+    _saveTags: function () {
+        console.log('saved tags: ' + this.refs.tags.getTags().join(', '));
+    },
+
     render: function () {
         return (
             <Paper>
@@ -85,7 +92,8 @@ var NewsNew = React.createClass({
                         className="s_display_block"
                         defaultValue={this.state.article.body}
                         hintText="Введите тело новости"
-                        ref="body" floatingLabelText="Новость"
+                        ref="body"
+                        floatingLabelText="Новость"
                         multiLine={true}
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null} />
 
@@ -108,7 +116,12 @@ var NewsNew = React.createClass({
                         <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
                     </div>
 
-                    <div className="s_position_relative s_overflow_hidden">
+
+                    <div className="s_position_relative s_overflow_hidden s_mt_24">
+                        <div className="s_float_l">
+                            <TagsField floatingLabelText="Tags" tags={['tag1', 'tag2']}/>
+                        </div>
+
                         <Button className="s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
                     </div>
                 </div>
