@@ -32,7 +32,8 @@ var NewsNew = React.createClass({
                 title: '',
                 body:  '',
                 show:  true,
-                stick: false
+                stick: false,
+                tags:  []
             },
             validation: {}
         }
@@ -43,8 +44,10 @@ var NewsNew = React.createClass({
             title: this.refs.title.getValue(),
             body:  this.refs.body.getValue(),
             show:  this.refs.show.isToggled(),
-            stick: this.refs.stick.isToggled()
+            stick: this.refs.stick.isToggled(),
+            tags:  this.refs.tags.getTags()
         };
+
         this.setState({article: article, validation: {}});
         NewsActions.save(article);
     },
@@ -56,6 +59,7 @@ var NewsNew = React.createClass({
         this.refs.body.setValue(this.state.article.body);
         this.refs.show.setToggled(this.state.article.show);
         this.refs.stick.setToggled(this.state.article.stick);
+        this.refs.tags.setTags(this.state.article.tags);
     },
 
     componentDidMount: function () {
@@ -73,14 +77,10 @@ var NewsNew = React.createClass({
         this.setState({validation: validation});
     },
 
-    _saveTags: function () {
-        console.log('saved tags: ' + this.refs.tags.getTags().join(', '));
-    },
-
     render: function () {
         return (
             <Paper>
-                <div className="panel">
+                <div className="panel panel_type_news-create">
                     <TextField
                         className="s_display_block"
                         defaultValue={this.state.article.title}
@@ -112,17 +112,20 @@ var NewsNew = React.createClass({
                             ref="stick"
                             defaultToggled={this.state.article.stick}
                             label="Stick" />
-
-                        <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
                     </div>
 
-
-                    <div className="s_position_relative s_overflow_hidden s_mt_24">
-                        <div className="s_float_l">
-                            <TagsField floatingLabelText="Tags" tags={['tag1', 'tag2']}/>
+                    <div className="s_width_half">
+                        <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
+                    </div>
+                    <div className="">
+                        <div className="s_position_relative s_overflow_hidden s_mt_24">
+                            <div className="s_float_l s_width_half">
+                                <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.tags} />
+                            </div>
+                            <div className="s_float_r s_width_half">
+                                <Button className="button_type_save s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
+                            </div>
                         </div>
-
-                        <Button className="s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
                     </div>
                 </div>
             </Paper>

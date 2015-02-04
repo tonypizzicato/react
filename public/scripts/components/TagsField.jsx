@@ -19,12 +19,10 @@ var TagsField = React.createClass({
             tags:              [],
             floatingLabelText: 'Tags',
             hintText:          'Input your tags here',
-            availableTags:     []
+            availableTags:     [],
+            splitSpaces:       true,
+            splitSeparator:    ' '
         };
-    },
-
-    _onChange: function () {
-        console.log("tags input value: " + this.refs.input.getValue());
     },
 
     _onDelete: function (index) {
@@ -34,38 +32,61 @@ var TagsField = React.createClass({
     },
 
     _onSave: function () {
+        this._save();
+    },
+
+    _onEnter: function (event) {
+        if (event.keyCode == 13) {
+            return this._save();
+        }
+    },
+
+    _save: function () {
         var newTag = this.refs.input.getValue();
-        console.log(newTag);
-        this.state.tags.push(newTag);
-        this.setState({tags: this.state.tags});
-        this.refs.input.setValue('');
+        if (newTag.length) {
+            var tags = [];
+            if (this.props.splitSpaces) {
+                tags = newTag.split(this.props.splitSeparator).filter(function (item) {
+                    return item.length && item != this.props.splitSeparator;
+                }.bind(this));
+            } else {
+                tags.push(newTag);
+            }
+            this.setState({tags: this.state.tags.concat(tags)});
+            this.refs.input.setValue('');
+        }
     },
 
     getTags: function () {
         return this.state.tags;
     },
 
+    setTags: function (tags) {
+        this.state.tags = tags;
+    },
+
     render: function () {
         var tags = this.state.tags.map(function (tag, index) {
             return (
-                <Tag onDelete={this._onDelete.bind(this, index)} value={tag} />
+                <Tag onDelete={this._onDelete.bind(this, index)} value={tag} key={index} />
             );
         }.bind(this));
 
         return (
             <div className="tags-field">
-                <div className="tags-filed-items">
-                    {tags}
-                </div>
 
                 <TextField
                     floatingLabelText={this.props.floatingLabelText}
                     hintText={this.props.hintText}
                     onChange={this._onChange}
+                    onKeyDown={this._onEnter}
                     ref="input"
                 />
-                <IconButton className="tags-filed-item-delete" icon="action-done" onClick={this._onSave} />
+                <IconButton className="tags-filed-item-add" icon="action-done" onClick={this._onSave} />
 
+                <div className="tags-filed-items">
+                    {tags}
+                </div>
             </div>
         );
     }
