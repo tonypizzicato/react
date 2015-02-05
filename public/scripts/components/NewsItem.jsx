@@ -18,6 +18,14 @@ var NewsItem = React.createClass({
         }
     },
 
+
+    propTypes: function () {
+        return {
+            article:  React.PropTypes.object.isRequired,
+            onDelete: React.PropTypes.func.isRequired
+        }
+    },
+
     _changeActiveState: function () {
         this.setState({active: !this.state.active});
     },
@@ -44,15 +52,19 @@ var NewsItem = React.createClass({
                         </div>
 
                         <div className="news-item__icon s_display_inline-block s_valign_m">
-                            <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.article.id} data-sort="-1" />
+                            <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.article._id} data-sort="-1" />
                         </div>
                         <div className="news-item__icon s_display_inline-block s_valign_m">
-                            <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.article.id} data-sort="1" />
+                            <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.article._id} data-sort="1" />
                         </div>
 
                         <div className="news-item__switcher s_display_inline-block s_valign_m">
                             <Toggle name="show" value="show" defaultToggled={this.props.article.show} label="Show" />
                         </div>
+                        <div className="news-item__icon s_display_inline-block s_valign_m">
+                            <IconButton icon="action-highlight-remove" onClick={this.props.onDelete} data-id={this.props.article._id} data-sort="-1" />
+                        </div>
+
                     </div>
                     <div className={activeClassInfo}>
                         <span className="mui-font-style-caption s_mr_12">{this.props.article.dc}</span>

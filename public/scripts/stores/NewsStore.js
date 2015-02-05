@@ -6,7 +6,9 @@ var _             = require('underscore'),
 
     AppDispatcher = require('../dispatcher/app-dispatcher'),
 
-    NewsConstants = require('../constants/NewsConstants');
+    NewsConstants = require('../constants/NewsConstants'),
+
+    api           = require('../utils/api');
 
 
 var _news            = [],
@@ -94,55 +96,51 @@ AppDispatcher.register(function (action) {
     switch (action.type) {
         case NewsConstants.NEWS_LOAD:
             console.log('"' + action.type + '" handled');
-            _news.push({
-                    id:     1,
-                    title:  "News 1",
-                    body:   "News 1 Body",
-                    show:   true,
-                    sort:   3,
-                    dc:     moment().subtract(17, 'days').format('DD-MM-YYYY'),
-                    author: "tony.pizzicato"
-                }, {
-                    id:     2,
-                    title:  "News 2",
-                    body:   "News 2 Body",
-                    show:   false,
-                    sort:   2,
-                    dc:     moment().subtract(7, 'days').format('DD-MM-YYYY'),
-                    author: "tony.pizzicato"
-                }
-            );
+            api.call('news:list').done(function (result) {
+                _news = result;
+                NewsStore.emitChange();
+            });
+            break;
+
+        case NewsConstants.NEWS_SAVE:
+            console.log('"' + action.type + '" handled');
             NewsStore.emitChange();
             break;
 
         case NewsConstants.NEWS_ADD:
             console.log('"' + action.type + '" handled');
-            NewsStore.emitChange();
-            break;
+            var news = _news.slice(0);
 
-        case NewsConstants.NEWS_SAVE:
-            console.log('"' + action.type + '" handled');
             var article = {
-                id:    _news.slice(0).sort(function (a, b) {
-                    return a.id > b.id ? 1 : -1;
-                }).pop().id + 1,
                 title: action.data.title,
                 body:  action.data.body,
                 show:  action.data.show,
                 stick: action.data.stick,
                 dc:    moment().format('DD-MM-YYYY'),
-                sort:  _news.slice(0).sort(function (a, b) {
+                sort:  news.length ? news.sort(function (a, b) {
                     return a.sort > b.sort ? 1 : -1;
-                }).pop().sort + 1
+                }).pop().sort + 1 : 1
             };
 
             if (NewsStore._validate(article)) {
-                _news.push(article);
-
-                NewsStore.emitChange();
+                api.call('news:create', article).then(function (res) {
+                    _news.push(res);
+                    NewsStore.emitChange();
+                });
             } else {
                 NewsStore.emitValidation(NewsStore._getValidationError());
             }
+
+            break;
+
+        case NewsConstants.NEWS_DELETE:
+            api.call('news:delete', {id: action.data.id}).then(function () {
+                _news = _.filter(_news, function (item) {
+                    return item._id != action.data.id
+                });
+
+                NewsStore.emitChange();
+            });
 
             break;
 

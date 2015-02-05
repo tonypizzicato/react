@@ -10,9 +10,9 @@ var NewsActions = {
         });
     },
 
-    save: function (data) {
+    add: function (data) {
         AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_SAVE,
+            type: NewsConstants.NEWS_ADD,
             data: {
                 title: data.title,
                 body:  data.body,
@@ -30,6 +30,15 @@ var NewsActions = {
                 dir: dir
             }
         })
+    },
+
+    delete: function(id) {
+        AppDispatcher.dispatch({
+           type: NewsConstants.NEWS_DELETE,
+            data: {
+                id: id
+            }
+        });
     }
 };
 

@@ -1,14 +1,15 @@
 "use strict";
 
-var React       = require('react'),
-    Router      = require('react-router'),
-    mui         = require('material-ui'),
+var React                = require('react'),
+    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+    Router               = require('react-router'),
+    mui                  = require('material-ui'),
 
-    NewsStore   = require('../../stores/NewsStore'),
-    NewsActions = require('../../actions/NewsActions'),
+    NewsStore            = require('../../stores/NewsStore'),
+    NewsActions          = require('../../actions/NewsActions'),
 
-    NewsNew     = require('../NewsNew.jsx'),
-    NewsItem    = require('../NewsItem.jsx');
+    NewsNew              = require('../NewsNew.jsx'),
+    NewsItem             = require('../NewsItem.jsx');
 
 
 var NewsApp = React.createClass({
@@ -34,14 +35,20 @@ var NewsApp = React.createClass({
         this.setState({news: NewsStore.getAll()});
     },
 
+    _onDelete: function(e) {
+        NewsActions.delete(e.currentTarget.dataset.id);
+    },
+
     render: function () {
         var news = this.state.news
             .sort(function (a, b) {
                 return a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : 0;
             })
             .map(function (item) {
-                return <NewsItem article={item} key={item.id} />
-            });
+                return (
+                    <NewsItem article={item} key={item._id} onDelete={this._onDelete} />
+                );
+            }.bind(this));
         return (
             <div>
                 <h3>Hello form News App!</h3>
@@ -49,9 +56,9 @@ var NewsApp = React.createClass({
                 <div className="s_mb_24">
                     <NewsNew />
                 </div>
-                <div>
+                <ReactTransitionGroup transitionName="fadeIn">
                     {news}
-                </div>
+                </ReactTransitionGroup>
             </div>
         )
     }

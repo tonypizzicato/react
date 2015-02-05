@@ -11,6 +11,7 @@
     "express-session": "^1.10.1",
     "flux": "^2.0.1",
     "fs": "0.0.2",
+    "jquery": "^2.1.3",
     "keymirror": "^0.1.1",
     "material-design-fonticons": "^1.0.0",
     "material-ui": "^0.6.1",
@@ -22,7 +23,8 @@
     "react-tagsinput": "^0.2.6",
     "react-tap-event-plugin": "^0.1.3",
     "serve-favicon": "^2.2.0",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "underscore.string": "^3.0.2"
   },
   "devDependencies": {
     "browserify": "^8.1.1",

@@ -49,7 +49,7 @@ var NewsNew = React.createClass({
         };
 
         this.setState({article: article, validation: {}});
-        NewsActions.save(article);
+        NewsActions.add(article);
     },
 
     _onChange: function () {
