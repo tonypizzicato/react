@@ -1,6 +1,63 @@
 @import "../../node_modules/material-ui/src/less/scaffolding";
 @import "../../node_modules/material-ui/src/less/components";
 
+*:focus {
+  outline: none;
+}
+
+.mui-edit-field {
+  position: relative;
+}
+
+.mui-edit-field.mui-is-focused .mui-edit-field-focus-underline {
+  transform: scaleX(1);
+}
+
+.mui-edit-field .mui-edit-field-underline, .mui-edit-field .mui-edit-field-focus-underline {
+  position: absolute;
+  width:    100%;
+  bottom:   8px;
+  margin:   0;
+}
+
+.mui-edit-field .mui-edit-field-focus-underline {
+  border-color:        #00bcd4;
+  border-bottom-width: 2px;
+  transform:           scaleX(0);
+  transition:          all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}
+
+.mui-edit-field .editable {
+  position:         relative;
+  width:            100%;
+  height:           100%;
+  border:           none;
+  outline:          none;
+  background-color: rgba(0, 0, 0, 0);
+  color:            rgba(0, 0, 0, 0.87);
+  overflow:         hidden;
+  font-size:        16px;
+  line-height:      24px;
+  padding-bottom:   14px;
+}
+
+.editable p {
+  font: inherit;
+
+  &:first-child {
+    padding-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.editable.medium-editor-placeholder:after {
+  color:      rgba(0, 0, 0, 0.3);
+  font-style: normal;
+  transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}
+
 .page-with-nav {
   @grey-300: #e0e0e0;
   @desktop-keyline-increment: 64px;

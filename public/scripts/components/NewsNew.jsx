@@ -13,6 +13,7 @@ var React                = require('react'),
     NewsActions          = require('../actions/NewsActions'),
     NewsStore            = require('../stores/NewsStore'),
 
+    MediumEditor         = require('./MediumEditor.jsx'),
     TagsField            = require('./TagsField.jsx');
 
 var leaguesItems = [
@@ -96,6 +97,10 @@ var NewsNew = React.createClass({
                         floatingLabelText="Новость"
                         multiLine={true}
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null} />
+
+                    <MediumEditor
+                        className="s_mt_24 s_mb_12"
+                        placehoder="Новость" />
 
                     <div className="s_width_quarter s_mt_12">
                         <Toggle
