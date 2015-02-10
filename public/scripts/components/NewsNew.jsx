@@ -14,7 +14,8 @@ var React                = require('react'),
     NewsStore            = require('../stores/NewsStore'),
 
     MediumEditor         = require('./MediumEditor.jsx'),
-    TagsField            = require('./TagsField.jsx');
+    TagsField            = require('./TagsField.jsx'),
+    FileUploadFiled      = require('./FileUpload.jsx');
 
 var leaguesItems = [
     {payload: '0', text: 'All'},
@@ -131,6 +132,10 @@ var NewsNew = React.createClass({
                                 <Button className="button_type_save s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <FileUploadFiled />
                     </div>
                 </div>
             </Paper>

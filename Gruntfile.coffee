@@ -123,14 +123,14 @@ module.exports = (grunt)->
     browserify:
       dev:
         options:
-          transform: ["reactify"]
+          transform: ["es6ify", "reactify"]
           browserifyOptions:
             debug:     true
         files:
           "<%= app.tmp %>/scripts/build.js": ["<%= app.public %>/scripts/app.{js,jsx}"]
       build:
         options:
-          transform: ["reactify"]
+          transform: ["es6ify", "reactify"]
           browserifyOptions:
             debug:     false
         files:
