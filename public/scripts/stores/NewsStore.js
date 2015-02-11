@@ -69,9 +69,18 @@ var NewsStore = _.extend(EventEmitter.prototype, {
             return value.length > 0;
         };
 
+        var notEmptyObject = function (obj) {
+            for (var prop in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         var rules = {
             title: notEmpty,
-            body:  notEmpty
+            body:  notEmptyObject
         };
 
         var result = true,
@@ -116,7 +125,7 @@ AppDispatcher.register(function (action) {
                 body:  action.data.body,
                 show:  action.data.show,
                 stick: action.data.stick,
-                dc:    moment().format('DD-MM-YYYY'),
+                dc:    moment().format('DD-MM-YYYY '),
                 sort:  news.length ? news.sort(function (a, b) {
                     return a.sort > b.sort ? 1 : -1;
                 }).pop().sort + 1 : 1

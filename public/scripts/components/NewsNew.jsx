@@ -93,14 +93,14 @@ var NewsNew = React.createClass({
                         className="s_display_block"
                         defaultValue={this.state.article.body}
                         hintText="Введите тело новости"
-                        ref="body"
                         floatingLabelText="Новость"
-                        multiLine={true}
-                        errorText={this.state.validation.body ? 'Поле не может быть пустым' : null} />
+                        multiLine={true} />
 
                     <MediumEditor
-                        className="s_mt_24 s_mb_12"
-                        placehoder="Новость" />
+                        hintText="Введите тело новости"
+                        placehoder="Новость"
+                        errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
+                        ref="body" />
 
                     <div className="s_width_quarter s_mt_12">
                         <Toggle
