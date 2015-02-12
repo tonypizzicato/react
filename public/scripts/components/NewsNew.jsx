@@ -63,6 +63,11 @@ var NewsNew = React.createClass({
         this.refs.tags.setTags(this.state.article.tags);
     },
 
+    _onValidationError: function (validation) {
+        console.dir(validation);
+        this.setState({validation: validation});
+    },
+
     componentDidMount: function () {
         NewsStore.addChangeListener(this._onChange);
         NewsStore.addValidationListener(this._onValidationError);
@@ -73,11 +78,6 @@ var NewsNew = React.createClass({
         NewsStore.removeValidationListener(this._onValidationError);
     },
 
-    _onValidationError: function (validation) {
-        console.dir(validation);
-        this.setState({validation: validation});
-    },
-
     render: function () {
         return (
             <Paper>
@@ -86,15 +86,9 @@ var NewsNew = React.createClass({
                         className="s_display_block"
                         defaultValue={this.state.article.title}
                         hintText="Введите название новсти"
-                        ref="title"
                         floatingLabelText="Название"
-                        errorText={this.state.validation.title ? 'Поле не может быть пустым' : null} />
-                    <TextField
-                        className="s_display_block"
-                        defaultValue={this.state.article.body}
-                        hintText="Введите тело новости"
-                        floatingLabelText="Новость"
-                        multiLine={true} />
+                        errorText={this.state.validation.title ? 'Поле не может быть пустым' : null}
+                        ref="title" />
 
                     <MediumEditor
                         hintText="Введите тело новости"

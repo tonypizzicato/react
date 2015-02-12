@@ -70,9 +70,7 @@ var NewsItem = React.createClass({
                         <span className="mui-font-style-caption s_mr_12">{this.props.article.dc}</span>
                         <span className="mui-font-style-caption">{this.props.article.author}</span>
                     </div>
-                    <div className={activeClassBody}>
-                        {this.props.article.body}
-                    </div>
+                    <div className={activeClassBody} dangerouslySetInnerHTML={{__html: this.props.article.body}} />
                 </div>
             </Paper>
         )

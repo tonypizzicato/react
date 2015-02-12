@@ -69,18 +69,9 @@ var NewsStore = _.extend(EventEmitter.prototype, {
             return value.length > 0;
         };
 
-        var notEmptyObject = function (obj) {
-            for (var prop in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         var rules = {
             title: notEmpty,
-            body:  notEmptyObject
+            body:  notEmpty
         };
 
         var result = true,
