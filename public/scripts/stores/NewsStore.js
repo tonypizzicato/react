@@ -1,6 +1,7 @@
 "use strict";
 
 var _             = require('underscore'),
+    assign        = require('object-assign'),
     moment        = require('moment'),
     EventEmitter  = require('events').EventEmitter,
 
@@ -17,7 +18,7 @@ var _news            = [],
     EVENT_VALIDATION = 'validation';
 
 
-var NewsStore = _.extend(EventEmitter.prototype, {
+var NewsStore = assign({}, EventEmitter.prototype, {
     emitChange: function () {
         this.emit(EVENT_CHANGE);
     },
@@ -116,7 +117,7 @@ AppDispatcher.register(function (action) {
                 body:  action.data.body,
                 show:  action.data.show,
                 stick: action.data.stick,
-                dc:    moment().format('DD-MM-YYYY '),
+                dc:    moment().format('YYYY-MM-DD HH:mm:ss'),
                 sort:  news.length ? news.sort(function (a, b) {
                     return a.sort > b.sort ? 1 : -1;
                 }).pop().sort + 1 : 1

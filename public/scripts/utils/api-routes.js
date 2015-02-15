@@ -26,6 +26,28 @@ var routes = {
             path:   '/news/%(id)s',
             method: 'DELETE'
         }
+    },
+
+    'leagues': {
+        'list': {
+            path:   '/leagues',
+            method: 'GET'
+        },
+        'item': {
+            path:   '/leagues/%(id)s',
+            method: 'GET'
+        }
+    },
+
+    'tournaments': {
+        'list': {
+            path:   '/tournaments',
+            method: 'GET'
+        },
+        'item': {
+            path:   '/tournaments/%(id)s',
+            method: 'GET'
+        }
     }
 };
 

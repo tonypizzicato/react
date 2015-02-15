@@ -5,8 +5,7 @@ var $            = require('jquery'),
     mui          = require('material-ui'),
     MediumEditor = require('medium-editor'),
 
-    Classable    = mui.Mixins.Classable,
-    Dom          = mui.Utils.Dom;
+    Classable    = mui.Mixins.Classable;
 
 
 var Editor = React.createClass({
@@ -41,16 +40,9 @@ var Editor = React.createClass({
         var value = '';
 
         if (this.isMounted()) {
-            var el = $(this._editor.serialize()['element-0'].value);
-            var div = $('<div/>');
-            div.append(el);
-            // hack to remove br and then empty p and one more just for fun
-            div.find('br:first-child').remove();
-            div.find(':empty:not(br)').remove();
-            div.find(':empty:not(br)').remove();
-            div.find(':empty:not(br)').remove();
-
-            value = div.html() ? div.html() : '';
+            var reg = /<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>(?:\s*|<\w+\s*\/?>)<\/\1>/gi;
+            value = this._editor.serialize()['element-0'].value;
+            value = value.replace(reg, '');
         }
 
         this.setValue(value);

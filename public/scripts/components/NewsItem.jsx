@@ -2,6 +2,8 @@
 
 var React       = require('react'),
     mui         = require('material-ui'),
+    moment      = require('moment'),
+    date        = require('../utils/date'),
 
     Paper       = mui.Paper,
     IconButton  = mui.IconButton,
@@ -67,7 +69,7 @@ var NewsItem = React.createClass({
 
                     </div>
                     <div className={activeClassInfo}>
-                        <span className="mui-font-style-caption s_mr_12">{this.props.article.dc}</span>
+                        <span className="mui-font-style-caption s_mr_12">{date.format(this.props.article.dc)}</span>
                         <span className="mui-font-style-caption">{this.props.article.author}</span>
                     </div>
                     <div className={activeClassBody} dangerouslySetInnerHTML={{__html: this.props.article.body}} />

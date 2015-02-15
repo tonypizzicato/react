@@ -1,16 +1,17 @@
 "use strict";
 
-var React        = require('react'),
-    Router       = require('react-router'),
-    mui          = require('material-ui'),
+var React   = require('react'),
+    Router  = require('react-router'),
+    mui     = require('material-ui'),
 
-    Canvas       = mui.AppCanvas,
-    AppBar       = mui.AppBar,
+    Canvas  = mui.AppCanvas,
+    AppBar  = mui.AppBar,
 
-    WithNav      = require('./with-nav.jsx');
+    WithNav = require('./with-nav.jsx');
 
 var menuItems = [
     {route: 'users', text: 'Users'},
+    {route: 'tournaments', text: 'Tournaments'},
     {route: 'news', text: 'News'},
     {route: 'media', text: 'Media'}
 ];
