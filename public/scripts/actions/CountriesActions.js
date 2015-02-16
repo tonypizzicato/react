@@ -13,11 +13,7 @@ var CountriesActions = {
     add: function (data) {
         AppDispatcher.dispatch({
             type: CountriesConstants.COUNTRIES_ADD,
-            data: {
-                name:  data.name,
-                slug:  data.slug,
-                state: data.state
-            }
+            data: data
         })
     },
 

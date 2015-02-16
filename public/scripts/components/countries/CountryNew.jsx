@@ -19,11 +19,12 @@ var CountryNew = React.createClass({
 
     getDefaultProps: function () {
         return {
-            country: {
+            country:  {
                 name:  '',
                 slug:  '',
                 state: 'CREATED'
-            }
+            },
+            leagueId: null
         }
     },
 
@@ -54,9 +55,10 @@ var CountryNew = React.createClass({
 
     _onSave: function () {
         var country = {
-            name:  this.refs.name.getValue(),
-            slug:  this.refs.slug.getValue(),
-            state: this.refs.state.getSelectedValue()
+            name:     this.refs.name.getValue(),
+            slug:     this.refs.slug.getValue(),
+            state:    this.refs.state.getSelectedValue(),
+            leagueId: this.props.leagueId
         };
 
         this.setState({country: country, validation: {}});
@@ -70,7 +72,7 @@ var CountryNew = React.createClass({
 
     render: function () {
         return (
-            <div className="panel panel_type_country-create s_pt_0" key={this.props.country._id}>
+            <div className="panel panel_type_country-create s_pt_0">
                 <TextField
                     defaultValue={this.props.country.name}
                     hintText="Введите название страны"
@@ -90,7 +92,7 @@ var CountryNew = React.createClass({
                     <div className="s_float_l s_width_quarter">
                         <RadioButtonGroup
                             name="state"
-                            defaultSelected={this.props.country.state}
+                            defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
                             ref="state" >
                             <RadioButton
                                 value="CREATED"

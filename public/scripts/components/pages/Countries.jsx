@@ -89,17 +89,20 @@ var CountriesApp = React.createClass({
     },
 
     render: function () {
-        var countriesItems = this.state.countries.map(function (country) {
-            return (
-                <div key={country._id}>
-                    <CountriesItem country={country} onDelete={this._onDelete} onEdit={this._onEdit} />
-                </div>
-            );
-        }.bind(this));
         var tabItems = this.state.leagues.map(function (league) {
+            var countriesItems = this.state.countries.filter(function (country) {
+                return country.leagueId == league._id
+            }).map(function (country) {
+                return (
+                    <CountriesItem country={country} onDelete={this._onDelete} onEdit={this._onEdit} key={country._id} />
+                );
+            }.bind(this));
+
+            var key = league._id + '_' + (this.state.selectedCountry._id ? this.state.selectedCountry._id : Math.random()).toString();
+
             return (
-                <Tab label={league.name} key={league.name} >
-                    <CountryNew country={this.state.selectedCountry} />
+                <Tab label={league.name} key={league._id} >
+                    <CountryNew country={this.state.selectedCountry} leagueId={league._id} key={key} />
                     {countriesItems}
                 </Tab>
             );

@@ -65,12 +65,13 @@ var Store = assign({}, EventEmitter.prototype, {
      */
     _validate: function (country) {
         var notEmpty = function (value) {
-            return value.length > 0;
+            return value.toString().length > 0;
         };
 
         var rules = {
-            name: notEmpty,
-            slug: notEmpty
+            name:     notEmpty,
+            slug:     notEmpty,
+            leagueId: notEmpty
         };
 
         return this._isValid(country, rules);
@@ -112,10 +113,11 @@ AppDispatcher.register(function (action) {
             var countries = _countries.slice(0);
 
             var country = {
-                name:  action.data.name,
-                slug:  action.data.slug,
-                state: action.data.state,
-                sort:  countries.length ? countries.sort(function (a, b) {
+                name:     action.data.name,
+                slug:     action.data.slug,
+                state:    action.data.state,
+                leagueId: action.data.leagueId,
+                sort:     countries.length ? countries.sort(function (a, b) {
                     return a.sort > b.sort ? 1 : -1;
                 }).pop().sort + 1 : 1
             };
@@ -135,10 +137,10 @@ AppDispatcher.register(function (action) {
 
             if (Store._validate(country)) {
                 api.call('countries:save', country).then(function () {
-                    var changed = _countries.filter(function(item) {
+                    var changed = _countries.filter(function (item) {
                         return item._id == country.id;
                     }).pop();
-                    
+
                     changed = assign(changed, country);
                     Store.emitChange();
                 });
