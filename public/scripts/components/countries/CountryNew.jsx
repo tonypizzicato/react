@@ -1,0 +1,115 @@
+"use strict";
+
+var React            = require('react'),
+    mui              = require('material-ui'),
+
+    Paper            = mui.Paper,
+    TextField        = mui.TextField,
+    Toggle           = mui.Toggle,
+    RadioButtonGroup = mui.RadioButtonGroup,
+    RadioButton      = mui.RadioButton,
+    Button           = mui.RaisedButton,
+
+    EventsConstants  = require('../../constants/EventsConstants'),
+
+    CountriesActions = require('../../actions/CountriesActions'),
+    CountriesStore   = require('../../stores/CountriesStore');
+
+var CountryNew = React.createClass({
+
+    getDefaultProps: function () {
+        return {
+            country: {
+                name:  '',
+                slug:  '',
+                state: 'CREATED'
+            }
+        }
+    },
+
+    getInitialState: function () {
+        return {
+            country:    this.props.country,
+            validation: {}
+        }
+    },
+
+    componentDidMount: function () {
+        CountriesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+    },
+
+    componentWillUnmount: function () {
+        CountriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.hasOwnProperty('country')) {
+            this.setState({country: nextProps.country});
+        }
+    },
+
+    _onValidationError: function (validation) {
+        this.setState({validation: validation});
+    },
+
+    _onSave: function () {
+        var country = {
+            name:  this.refs.name.getValue(),
+            slug:  this.refs.slug.getValue(),
+            state: this.refs.state.getSelectedValue()
+        };
+
+        this.setState({country: country, validation: {}});
+        if (this.props.country._id) {
+            country.id = this.props.country._id;
+            CountriesActions.save(country);
+        } else {
+            CountriesActions.add(country);
+        }
+    },
+
+    render: function () {
+        return (
+            <div className="panel panel_type_country-create s_pt_0" key={this.props.country._id}>
+                <TextField
+                    defaultValue={this.props.country.name}
+                    hintText="Введите название страны"
+                    floatingLabelText="Название"
+                    errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
+                    ref="name" />
+
+                <TextField
+                    defaultValue={this.props.country.slug}
+                    hintText="Введите url страны (пример: en)"
+                    placehoder="URL"
+                    floatingLabelText="URL"
+                    errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
+                    ref="slug" />
+
+                <div className="s_position_relative s_overflow_hidden s_mt_24">
+                    <div className="s_float_l s_width_quarter">
+                        <RadioButtonGroup
+                            name="state"
+                            defaultSelected={this.props.country.state}
+                            ref="state" >
+                            <RadioButton
+                                value="CREATED"
+                                label="CREATED" />
+                            <RadioButton
+                                value="ACTIVE"
+                                label="ACTIVE" />
+                            <RadioButton
+                                value="ARCHIVE"
+                                label="ARCHIVE" />
+                        </RadioButtonGroup>
+                    </div>
+                    <div className="s_float_r s_width_half">
+                        <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+module.exports = CountryNew;

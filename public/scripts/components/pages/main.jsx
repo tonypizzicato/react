@@ -11,6 +11,7 @@ var React   = require('react'),
 
 var menuItems = [
     {route: 'users', text: 'Users'},
+    {route: 'countries', text: 'Countries'},
     {route: 'tournaments', text: 'Tournaments'},
     {route: 'news', text: 'News'},
     {route: 'media', text: 'Media'}

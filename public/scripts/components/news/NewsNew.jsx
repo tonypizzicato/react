@@ -10,11 +10,11 @@ var React                = require('react'),
     Button               = mui.RaisedButton,
     FloatingActionButton = mui.FloatingActionButton,
 
-    NewsActions          = require('../actions/NewsActions'),
-    NewsStore            = require('../stores/NewsStore'),
+    NewsActions          = require('../../actions/NewsActions'),
+    NewsStore            = require('../../stores/NewsStore'),
 
-    MediumEditor         = require('./MediumEditor.jsx'),
-    TagsField            = require('./TagsField.jsx');
+    MediumEditor         = require('./../MediumEditor.jsx'),
+    TagsField            = require('./../TagsField.jsx');
 
 var leaguesItems = [
     {payload: '0', text: 'All'},
@@ -81,7 +81,7 @@ var NewsNew = React.createClass({
     render: function () {
         return (
             <Paper>
-                <div className="panel panel_type_news-create">
+                <div className="panel panel_type_news-create s_pt_0">
                     <TextField
                         className="s_display_block"
                         defaultValue={this.state.article.title}

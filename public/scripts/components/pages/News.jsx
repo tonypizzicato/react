@@ -8,8 +8,8 @@ var React                = require('react'),
     NewsStore            = require('../../stores/NewsStore'),
     NewsActions          = require('../../actions/NewsActions'),
 
-    NewsNew              = require('../NewsNew.jsx'),
-    NewsItem             = require('../NewsItem.jsx');
+    NewsNew              = require('../news/NewsNew.jsx'),
+    NewsItem             = require('../news/NewsItem.jsx');
 
 
 var NewsApp = React.createClass({

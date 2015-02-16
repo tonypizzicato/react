@@ -48,6 +48,29 @@ var routes = {
             path:   '/tournaments/%(id)s',
             method: 'GET'
         }
+    },
+
+    'countries': {
+        'list':   {
+            path:   '/countries',
+            method: 'GET'
+        },
+        'item':   {
+            path:   '/countries/%(id)s',
+            method: 'GET'
+        },
+        'create': {
+            path:   '/countries',
+            method: 'POST'
+        },
+        'delete': {
+            path:   '/countries/%(id)s',
+            method: 'DELETE'
+        },
+        'save': {
+            path:   '/countries/%(id)s',
+            method: 'PUT'
+        }
     }
 };
 

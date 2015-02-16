@@ -10,13 +10,14 @@ var TournamentsActions = {
         });
     },
 
-    add: function (data) {
+    save: function (data) {
         AppDispatcher.dispatch({
-            type: TournamentsConstants.TOURNAMENTS_ADD,
+            type: TournamentsConstants.TOURNAMENTS_SAVE,
             data: {
-                name:   data.name,
-                slug:   data.slug,
-                league: data.show
+                name:     data.name,
+                slug:     data.slug,
+                leagueId: data.league,
+                state:    data.state
             }
         })
     },

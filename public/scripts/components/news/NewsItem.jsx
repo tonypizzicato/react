@@ -3,13 +3,13 @@
 var React       = require('react'),
     mui         = require('material-ui'),
     moment      = require('moment'),
-    date        = require('../utils/date'),
+    date        = require('../../utils/date'),
 
     Paper       = mui.Paper,
     IconButton  = mui.IconButton,
     Toggle      = mui.Toggle,
 
-    NewsActions = require('../actions/NewsActions');
+    NewsActions = require('../../actions/NewsActions');
 
 
 var NewsItem = React.createClass({
@@ -37,33 +37,33 @@ var NewsItem = React.createClass({
     },
 
     render: function () {
-        var activeClassBody = 'news-item__body' + (this.state.active ? ' s_display_block' : '');
-        var activeClassInfo = 'news-item__info' + (this.state.active ? ' s_display_block' : '');
+        var activeClassBody = 'list-item__body' + (this.state.active ? ' s_display_block' : '');
+        var activeClassInfo = 'list-item__info' + (this.state.active ? ' s_display_block' : '');
         return (
-            <Paper className="news-item">
+            <Paper className="list-item">
                 <div className="panel">
-                    <div className="news-item__header">
-                        <div className="news-item__icon s_display_inline-block s_valign_m">
+                    <div className="list-item__header">
+                        <div className="list-item__icon s_display_inline-block s_valign_m">
                             <IconButton icon="action-subject" onClick={this._changeActiveState} />
                         </div>
 
                         <span className="mui-toolbar-separator">&nbsp;</span>
 
-                        <div className="news-item__title s_display_inline-block s_valign_m">
+                        <div className="list-item__title s_display_inline-block s_valign_m">
                             <h5>{this.props.article.title}</h5>
                         </div>
 
-                        <div className="news-item__icon s_display_inline-block s_valign_m">
+                        <div className="list-item__icon s_display_inline-block s_valign_m">
                             <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.article._id} data-sort="-1" />
                         </div>
-                        <div className="news-item__icon s_display_inline-block s_valign_m">
+                        <div className="list-item__icon s_display_inline-block s_valign_m">
                             <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.article._id} data-sort="1" />
                         </div>
 
-                        <div className="news-item__switcher s_display_inline-block s_valign_m">
+                        <div className="list-item__switcher s_display_inline-block s_valign_m">
                             <Toggle name="show" value="show" defaultToggled={this.props.article.show} label="Show" />
                         </div>
-                        <div className="news-item__icon s_display_inline-block s_valign_m">
+                        <div className="list-item__icon s_display_inline-block s_valign_m">
                             <IconButton icon="action-highlight-remove" onClick={this.props.onDelete} data-id={this.props.article._id} data-sort="-1" />
                         </div>
 
