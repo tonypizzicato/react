@@ -1,22 +1,23 @@
 "use strict";
 
-var $                = require('jquery'),
-    React            = require('react'),
-    Router           = require('react-router'),
-    mui              = require('material-ui'),
+var $                    = require('jquery'),
+    React                = require('react'),
+    Router               = require('react-router'),
+    mui                  = require('material-ui'),
+    ReactTransitionGroup = React.addons.CSSTransitionGroup,
 
-    Tabs             = mui.Tabs,
-    Tab              = mui.Tab,
-    DropDownMenu     = mui.DropDownMenu,
+    Tabs                 = mui.Tabs,
+    Tab                  = mui.Tab,
+    DropDownMenu         = mui.DropDownMenu,
 
-    EventsConstants  = require('../../constants/EventsConstants'),
-    LeaguesActions   = require('../../actions/LeaguesActions'),
-    LeaguesStore     = require('../../stores/LeaguesStore'),
-    CountriesActions = require('../../actions/CountriesActions'),
-    CountriesStore   = require('../../stores/CountriesStore'),
+    EventsConstants      = require('../../constants/EventsConstants'),
+    LeaguesActions       = require('../../actions/LeaguesActions'),
+    LeaguesStore         = require('../../stores/LeaguesStore'),
+    CountriesActions     = require('../../actions/CountriesActions'),
+    CountriesStore       = require('../../stores/CountriesStore'),
 
-    CountryNew       = require('../countries/CountryNew.jsx'),
-    CountriesItem    = require('../countries/CountriesItem.jsx');
+    CountryNew           = require('../countries/CountryNew.jsx'),
+    CountriesItem        = require('../countries/CountriesItem.jsx');
 
 var _calls = [],
     _deferred;
@@ -103,7 +104,10 @@ var CountriesApp = React.createClass({
             return (
                 <Tab label={league.name} key={league._id} >
                     <CountryNew country={this.state.selectedCountry} leagueId={league._id} key={key} />
-                    {countriesItems}
+
+                    <ReactTransitionGroup transitionName="fadeIn">
+                        {countriesItems}
+                    </ReactTransitionGroup>
                 </Tab>
             );
         }.bind(this));

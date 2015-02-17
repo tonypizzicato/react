@@ -63,7 +63,7 @@ var NewsItem = React.createClass({
                         <div className="list-item__switcher s_display_inline-block s_valign_m">
                             <Toggle name="show" value="show" defaultToggled={this.props.article.show} label="Show" />
                         </div>
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
+                        <div className="list-item__icon s_display_inline-block s_valign_m s_float_r">
                             <IconButton icon="action-highlight-remove" onClick={this.props.onDelete} data-id={this.props.article._id} data-sort="-1" />
                         </div>
 

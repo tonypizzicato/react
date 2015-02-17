@@ -49,7 +49,7 @@ var CountriesItem = React.createClass({
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="editor-mode-edit" onClick={this.props.onEdit} data-id={this.props.country._id} data-sort="-1" />
                             </div>
-                            <div className="list-item__icon s_display_inline-block s_valign_m">
+                            <div className="list-item__icon s_display_inline-block s_valign_m s_float_r">
                                 <IconButton icon="action-highlight-remove" onClick={this.props.onDelete} data-id={this.props.country._id} data-sort="-1" />
                             </div>
                         </div>

@@ -1,18 +1,30 @@
 "use strict";
 
-var React        = require('react'),
+var $            = require('jquery'),
+    _            = require('underscore'),
+    React        = require('react'),
     Router       = require('react-router'),
     mui          = require('material-ui'),
 
+    RouteHandler = Router.RouteHandler,
     Menu         = mui.Menu,
-    RouteHandler = Router.RouteHandler;
+    Snackbar     = mui.Snackbar;
 
 var WithNav = React.createClass({
 
     mixins: [Router.Navigation, Router.State],
 
+    getInitialState: function () {
+        return {
+            loading: true
+        }
+    },
+
     _onMenuItemClick: function (e, index, item) {
         this.transitionTo(item.route);
+        if (!this.isActive(item.route)) {
+            this._showLoader();
+        }
     },
 
     _getSelectedIndex: function () {
@@ -27,7 +39,37 @@ var WithNav = React.createClass({
         }
     },
 
+    componentDidMount: function () {
+        this._showLoader();
+
+        $(document).ajaxError(this._handleAjaxError);
+        $(document).ajaxComplete(this._handleAjaxComplete);
+
+    },
+
+    _showLoader: function () {
+        this.setState({loading: true});
+
+        _.delay(this.setState.bind(this, {loading: false}), 1000);
+    },
+
+    _hideLoader: function () {
+        _.delay(this.setState.bind(this, {loading: false}), 400);
+    },
+
+    _handleAjaxError: function () {
+        this._hideLoader();
+        this.refs.snack.show();
+        _.delay(this.refs.snack.dismiss, 2000);
+    },
+
+    _handleAjaxComplete: function () {
+        this._hideLoader();
+    },
+
     render: function () {
+        var loaderClass = 'page-loader' + (this.state.loading ? ' page-loader_active' : '');
+
         return (
             <div className="mui-app-content-canvas page-with-nav">
                 <div className="page-with-nav-content">
@@ -41,6 +83,11 @@ var WithNav = React.createClass({
                         selectedIndex={this._getSelectedIndex()}
                         onItemClick={this._onMenuItemClick} />
                 </div>
+                <div className={loaderClass} ref="loader" />
+                <Snackbar
+                    message="Error loading data. Try to repeat your request."
+                    ref="snack" />
+
             </div>
         );
     }
