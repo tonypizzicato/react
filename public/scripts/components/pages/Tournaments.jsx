@@ -1,23 +1,25 @@
 "use strict";
 
-var $                  = require('jquery'),
-    React              = require('react'),
-    Router             = require('react-router'),
-    mui                = require('material-ui'),
+var $                    = require('jquery'),
+    React                = require('react'),
+    Router               = require('react-router'),
+    mui                  = require('material-ui'),
+    ReactTransitionGroup = React.addons.CSSTransitionGroup,
 
-    Tabs               = mui.Tabs,
-    Tab                = mui.Tab,
-    DropDownMenu       = mui.DropDownMenu,
+    Tabs                 = mui.Tabs,
+    Tab                  = mui.Tab,
+    DropDownMenu         = mui.DropDownMenu,
 
-    EventsConstants    = require('../../constants/EventsConstants'),
-    LeaguesActions     = require('../../actions/LeaguesActions'),
-    LeaguesStore       = require('../../stores/LeaguesStore'),
-    CountriesActions   = require('../../actions/CountriesActions'),
-    CountriesStore     = require('../../stores/CountriesStore'),
-    TournamentsActions = require('../../actions/TournamentsActions'),
-    TournamentStore    = require('../../stores/TournamentsStore'),
+    EventsConstants      = require('../../constants/EventsConstants'),
+    LeaguesActions       = require('../../actions/LeaguesActions'),
+    LeaguesStore         = require('../../stores/LeaguesStore'),
+    CountriesActions     = require('../../actions/CountriesActions'),
+    CountriesStore       = require('../../stores/CountriesStore'),
+    TournamentsActions   = require('../../actions/TournamentsActions'),
+    TournamentStore      = require('../../stores/TournamentsStore'),
 
-    TournamentNew      = require('../tournaments/TournamentNew.jsx');
+    TournamentNew        = require('../tournaments/TournamentNew.jsx'),
+    TournamentItem       = require('../tournaments/TournamentItem.jsx');
 
 var _calls = [],
     _deferred;
@@ -83,13 +85,40 @@ var TournamentApp = React.createClass({
         }.bind(this));
     },
 
+    _onEdit: function(e) {
+        this.setState({
+            selectedTournament: this.state.tournaments.filter(function (tournament) {
+                return tournament._id == e.currentTarget.dataset.id;
+            }).pop()
+        });
+    },
+
     render: function () {
         var tabItems = this.state.leagues.map(function (league) {
-            var key = league._id + '_' + (this.state.selectedTournament._id ? this.state.selectedTournament._id : Math.random()).toString();
+
+            var tournamentsItems = this.state.tournaments.filter(function (tournament) {
+                return tournament.leagueId == league._id;
+            }).map(function (tournament) {
+                return (
+                    <TournamentItem tournament={tournament} onEdit={this._onEdit} key={tournament._id} />
+                );
+            }.bind(this));
+
+            var countries = this.state.countries.filter(function(country) {
+                return country.leagueId == league._id;
+            });
 
             return (
                 <Tab label={league.name} key={league._id}>
-                    <TournamentNew tournament={this.state.selectedTournament} leagueId={league._id} key={key} />
+                    <TournamentNew
+                        tournament={this.state.selectedTournament}
+                        countries={countries}
+                        leagueId={league._id}
+                        key={this.state.selectedTournament._id} />
+
+                    <ReactTransitionGroup transitionName="fadeIn">
+                        {tournamentsItems}
+                    </ReactTransitionGroup>
                 </Tab>
             );
         }.bind(this));

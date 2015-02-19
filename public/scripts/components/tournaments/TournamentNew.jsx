@@ -9,6 +9,7 @@ var React              = require('react'),
     RadioButtonGroup   = mui.RadioButtonGroup,
     RadioButton        = mui.RadioButton,
     Button             = mui.RaisedButton,
+    DropDownMenu       = mui.DropDownMenu,
 
     EventsConstants    = require('../../constants/EventsConstants'),
 
@@ -23,9 +24,10 @@ var TournamentNew = React.createClass({
                 name:     '',
                 slug:     '',
                 state:    'CREATED',
-                leagueId: null
+                leagueId: null,
+                country:  null
             },
-            countryId:  null
+            countries:  []
         }
     },
 
@@ -72,12 +74,16 @@ var TournamentNew = React.createClass({
     },
 
     render: function () {
+        var countryItems = this.props.countries.map(function (country) {
+            return {text: country.name, countryId: country._id};
+        });
         return (
             <div className="panel panel_type_tournament-create s_pt_0">
                 <TextField
                     defaultValue={this.props.tournament.name}
                     hintText="Введите название турнира"
                     floatingLabelText="Название"
+                    disabled={!this.props.tournament._id}
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
                     ref="name" />
 
@@ -86,9 +92,13 @@ var TournamentNew = React.createClass({
                     hintText="Введите url турнира (пример: bpl)"
                     placehoder="URL"
                     floatingLabelText="URL"
+                    disabled={!this.props.tournament._id}
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
+                <DropDownMenu
+                    menuItems={countryItems}
+                    disabled={!this.props.tournament._id} />
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
                     <div className="s_float_l s_width_quarter">
