@@ -78,14 +78,15 @@ var TournamentApp = React.createClass({
     _onChange: function () {
         _deferred.then(function () {
             this.setState({
-                leagues:     LeaguesStore.getAll(),
-                countries:   CountriesStore.getAll(),
-                tournaments: TournamentStore.getAll()
+                leagues:            LeaguesStore.getAll(),
+                countries:          CountriesStore.getAll(),
+                tournaments:        TournamentStore.getAll(),
+                selectedTournament: this.getInitialState().selectedTournament
             });
         }.bind(this));
     },
 
-    _onEdit: function(e) {
+    _onEdit: function (e) {
         this.setState({
             selectedTournament: this.state.tournaments.filter(function (tournament) {
                 return tournament._id == e.currentTarget.dataset.id;
@@ -104,7 +105,7 @@ var TournamentApp = React.createClass({
                 );
             }.bind(this));
 
-            var countries = this.state.countries.filter(function(country) {
+            var countries = this.state.countries.filter(function (country) {
                 return country.leagueId == league._id;
             });
 

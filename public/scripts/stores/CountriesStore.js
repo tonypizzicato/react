@@ -141,7 +141,7 @@ AppDispatcher.register(function (action) {
                         return item._id == country.id;
                     }).pop();
 
-                    changed = assign(changed, country);
+                    assign(changed, country);
                     Store.emitChange();
                 });
             } else {

@@ -1,6 +1,7 @@
 "use strict";
 
-var React              = require('react'),
+var assign             = require('object-assign'),
+    React              = require('react'),
     mui                = require('material-ui'),
 
     Paper              = mui.Paper,
@@ -33,7 +34,7 @@ var TournamentNew = React.createClass({
 
     getInitialState: function () {
         return {
-            tournament: this.props.tournament,
+            country:    this.props.tournament.country ? this.props.tournament.country : null,
             validation: {}
         }
     },
@@ -46,14 +47,12 @@ var TournamentNew = React.createClass({
         TournamentsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     },
 
-    componentWillReceiveProps: function (nextProps) {
-        if (nextProps.hasOwnProperty('tournament')) {
-            this.setState({tournament: nextProps.tournament});
-        }
-    },
-
     _onValidationError: function (validation) {
         this.setState({validation: validation});
+    },
+
+    _onCountryChange: function (e, index, item) {
+        this.setState({country: item});
     },
 
     _onSave: function () {
@@ -61,10 +60,11 @@ var TournamentNew = React.createClass({
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             state:    this.refs.state.getSelectedValue(),
+            country:  this.state.country,
             leagueId: this.props.leagueId
         };
 
-        this.setState({tournament: tournament, validation: {}});
+        this.setState({validation: {}});
         if (this.props.tournament._id) {
             tournament.id = this.props.tournament._id;
             TournamentsActions.save(tournament);
@@ -74,16 +74,26 @@ var TournamentNew = React.createClass({
     },
 
     render: function () {
-        var countryItems = this.props.countries.map(function (country) {
-            return {text: country.name, countryId: country._id};
-        });
+        var selectedCountryIndex = 0;
+        var countryItems = this.props.countries.map(function (country, index) {
+            if (this.state.country) {
+                if (this.state.country._id == country._id) {
+                    selectedCountryIndex = index;
+                }
+            } else if (this.props.tournament.country && country._id == this.props.tournament.country._id) {
+                selectedCountryIndex = index;
+            }
+            return {text: country.name, _id: country._id, name: country.name};
+        }.bind(this));
+
+        var disabled = !this.props.tournament._id;
         return (
             <div className="panel panel_type_tournament-create s_pt_0">
                 <TextField
                     defaultValue={this.props.tournament.name}
                     hintText="Введите название турнира"
                     floatingLabelText="Название"
-                    disabled={!this.props.tournament._id}
+                    disabled={true}
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
                     ref="name" />
 
@@ -92,29 +102,36 @@ var TournamentNew = React.createClass({
                     hintText="Введите url турнира (пример: bpl)"
                     placehoder="URL"
                     floatingLabelText="URL"
-                    disabled={!this.props.tournament._id}
+                    disabled={disabled}
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
                 <DropDownMenu
+                    className="s_width_half"
                     menuItems={countryItems}
-                    disabled={!this.props.tournament._id} />
+                    selectedIndex={selectedCountryIndex}
+                    autoWidth={false}
+                    onChange={this._onCountryChange}
+                    ref="country" />
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
-                    <div className="s_float_l s_width_quarter">
+                    <div className="s_float_l s_width_half">
                         <RadioButtonGroup
                             name="state"
                             defaultSelected={this.props.tournament.state ? this.props.tournament.state : 'CREATED'}
                             ref="state" >
                             <RadioButton
                                 value="CREATED"
-                                label="CREATED" />
+                                label="CREATED"
+                                disabled={true} />
                             <RadioButton
-                                value="ACTIVE"
-                                label="ACTIVE" />
+                                value="IN PROGRESS"
+                                label="IN PROGRESS"
+                                disabled={true} />
                             <RadioButton
                                 value="ARCHIVE"
-                                label="ARCHIVE" />
+                                label="ARCHIVE"
+                                disabled={true} />
                         </RadioButtonGroup>
                     </div>
                     <div className="s_float_r s_width_half">

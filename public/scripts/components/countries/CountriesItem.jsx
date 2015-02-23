@@ -36,15 +36,16 @@ var CountriesItem = React.createClass({
                         </div>
 
                         <div className="s_float_r">
+
+                            <div className="list-item__switcher s_display_inline-block s_valign_m text_align_r">
+                            {this.props.country.state}
+                            </div>
+
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.country._id} data-sort="-1" />
                             </div>
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.country._id} data-sort="1" />
-                            </div>
-
-                            <div className="list-item__switcher s_display_inline-block s_valign_m">
-                            {this.props.country.state}
                             </div>
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="editor-mode-edit" onClick={this.props.onEdit} data-id={this.props.country._id} data-sort="-1" />

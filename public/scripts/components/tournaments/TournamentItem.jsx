@@ -46,19 +46,17 @@ var TournamentItem = React.createClass({
                         </div>
 
                         <div className="s_float_r">
+                            <div className="list-item__switcher s_display_inline-block s_valign_m text_align_r">
+                                {this.props.tournament.country ? this.props.tournament.country.name : ''}
+                            </div>
+                            <div className="list-item__switcher s_display_inline-block s_valign_m text_align_r">
+                                {this.props.tournament.state}
+                            </div>
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.tournament._id} data-sort="-1" />
                             </div>
                             <div className="list-item__icon s_display_inline-block s_valign_m">
                                 <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.tournament._id} data-sort="1" />
-                            </div>
-
-                            <div className="list-item__switcher s_display_inline-block s_valign_m">
-                                {this.props.tournament.state}
-                            </div>
-
-                            <div className="list-item__switcher s_display_inline-block s_valign_m">
-                                {this.props.tournament.country ? this.props.tournament.country.name : ''}
                             </div>
                             <div className="list-item__icon s_display_inline-block s_valign_m s_float_r">
                                 <IconButton icon="editor-mode-edit" onClick={this.props.onEdit} data-id={this.props.tournament._id} data-sort="-1" />
