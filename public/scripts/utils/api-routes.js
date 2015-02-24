@@ -11,7 +11,7 @@ var routes = {
             method: 'GET'
         },
         'item':   {
-            path:   '/news/%(id)s',
+            path:   '/news/%(_id)s',
             method: 'GET'
         },
         'create': {
@@ -23,7 +23,7 @@ var routes = {
             method: 'PUT'
         },
         'delete': {
-            path:   '/news/%(id)s',
+            path:   '/news/%(_id)s',
             method: 'DELETE'
         }
     },
@@ -34,7 +34,7 @@ var routes = {
             method: 'GET'
         },
         'item': {
-            path:   '/leagues/%(id)s',
+            path:   '/leagues/%(_id)s',
             method: 'GET'
         }
     },
@@ -45,7 +45,7 @@ var routes = {
             method: 'GET'
         },
         'item':   {
-            path:   '/tournaments/%(id)s',
+            path:   '/tournaments/%(_id)s',
             method: 'GET'
         },
         'create': {
@@ -53,7 +53,7 @@ var routes = {
             method: 'POST'
         },
         'save':   {
-            path:   '/tournaments/%(id)s',
+            path:   '/tournaments/%(_id)s',
             method: 'PUT'
         }
     },
@@ -64,7 +64,7 @@ var routes = {
             method: 'GET'
         },
         'item':   {
-            path:   '/countries/%(id)s',
+            path:   '/countries/%(_id)s',
             method: 'GET'
         },
         'create': {
@@ -72,11 +72,11 @@ var routes = {
             method: 'POST'
         },
         'delete': {
-            path:   '/countries/%(id)s',
+            path:   '/countries/%(_id)s',
             method: 'DELETE'
         },
         'save':   {
-            path:   '/countries/%(id)s',
+            path:   '/countries/%(_id)s',
             method: 'PUT'
         }
     }

@@ -28,7 +28,7 @@ var CountriesActions = {
         AppDispatcher.dispatch({
             type: CountriesConstants.COUNTRIES_SORT,
             data: {
-                id:  id,
+                _id:  id,
                 dir: dir
             }
         })
@@ -38,7 +38,7 @@ var CountriesActions = {
         AppDispatcher.dispatch({
             type: CountriesConstants.COUNTRIES_DELETE,
             data: {
-                id: id
+                _id: id
             }
         });
     }

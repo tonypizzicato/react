@@ -26,7 +26,7 @@ var NewsActions = {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_SORT,
             data: {
-                id:  id,
+                _id:  id,
                 dir: dir
             }
         })
@@ -36,7 +36,7 @@ var NewsActions = {
         AppDispatcher.dispatch({
            type: NewsConstants.NEWS_DELETE,
             data: {
-                id: id
+                _id: id
             }
         });
     }

@@ -68,6 +68,13 @@ var NewsNew = React.createClass({
         this.setState({validation: validation});
     },
 
+    _handleFile: function (e) {
+        console.log('file handled');
+        var file = e.target.files[0];
+        var formData = new FormData();
+        formData.append('file', file, file.name);
+    },
+
     componentDidMount: function () {
         NewsStore.addChangeListener(this._onChange);
         NewsStore.addValidationListener(this._onValidationError);
@@ -96,25 +103,30 @@ var NewsNew = React.createClass({
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                         ref="body" />
 
-                    <div className="s_width_quarter s_mt_12">
-                        <Toggle
-                            className="s_mb_12"
-                            name="show"
-                            value="show"
-                            ref="show"
-                            defaultToggled={this.state.article.show}
-                            label="Show" />
-                        <Toggle
-                            className="s_mb_12"
-                            name="stick"
-                            value="stick"
-                            ref="stick"
-                            defaultToggled={this.state.article.stick}
-                            label="Stick" />
-                    </div>
-
                     <div className="s_width_half">
-                        <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
+                        <div className="s_width_quarter s_mt_12">
+                            <Toggle
+                                className="s_mb_12"
+                                name="show"
+                                value="show"
+                                ref="show"
+                                defaultToggled={this.state.article.show}
+                                label="Show" />
+                            <Toggle
+                                className="s_mb_12"
+                                name="stick"
+                                value="stick"
+                                ref="stick"
+                                defaultToggled={this.state.article.stick}
+                                label="Stick" />
+                        </div>
+
+                        <div className="s_width_half">
+                            <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
+                        </div>
+                    </div>
+                    <div className="s_width_half">
+                        <input className="btn btn-default btn-file" type="file" onChange={this._handleFile} accept="image/*;capture=camera"/>
                     </div>
                     <div className="">
                         <div className="s_position_relative s_overflow_hidden s_mt_24">

@@ -135,9 +135,9 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_DELETE:
-            api.call('news:delete', {id: action.data.id}).then(function () {
+            api.call('news:delete', {_id: action.data._id}).then(function () {
                 _news = _.filter(_news, function (item) {
-                    return item._id != action.data.id
+                    return item._id != action.data._id
                 });
 
                 NewsStore.emitChange();
@@ -148,10 +148,10 @@ AppDispatcher.register(function (action) {
         case NewsConstants.NEWS_SORT:
             console.log('"' + action.type + '" handled');
             var current = _news.filter(function (item) {
-                return item.id == action.data.id;
+                return item._id == action.data._id;
             }).pop();
             var old = _news.filter(function (item) {
-                return item.id != action.data.id && item.sort == current.sort - action.data.dir;
+                return item._id != action.data._id && item.sort == current.sort - action.data.dir;
             }).pop();
 
             if (old) {

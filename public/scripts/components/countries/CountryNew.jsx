@@ -63,7 +63,7 @@ var CountryNew = React.createClass({
 
         this.setState({country: country, validation: {}});
         if (this.props.country._id) {
-            country.id = this.props.country._id;
+            country._id = this.props.country._id;
             CountriesActions.save(country);
         } else {
             CountriesActions.add(country);

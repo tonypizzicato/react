@@ -136,12 +136,16 @@ AppDispatcher.register(function (action) {
 
         case TournamentsConstants.TOURNAMENTS_SAVE:
             var tournament = assign({}, action.data);
-            action.data.country = action.data.country._id;
+            if (action.data.country) {
+                action.data.country = action.data.country._id;
+            } else {
+                delete action.data.country;
+            }
 
             if (Store._validate(action.data)) {
                 api.call('tournaments:save', action.data).then(function () {
                     var changed = _tournaments.filter(function (item) {
-                        return item._id == tournament.id;
+                        return item._id == tournament._id;
                     }).pop();
 
                     assign(changed, tournament);

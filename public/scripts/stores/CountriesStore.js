@@ -138,7 +138,7 @@ AppDispatcher.register(function (action) {
             if (Store._validate(country)) {
                 api.call('countries:save', country).then(function () {
                     var changed = _countries.filter(function (item) {
-                        return item._id == country.id;
+                        return item._id == country._id;
                     }).pop();
 
                     assign(changed, country);
@@ -150,9 +150,9 @@ AppDispatcher.register(function (action) {
             break;
 
         case CountriesConstants.COUNTRIES_DELETE:
-            api.call('countries:delete', {id: action.data.id}).then(function () {
+            api.call('countries:delete', {_id: action.data._id}).then(function () {
                 _countries = _.filter(_countries, function (item) {
-                    return item._id != action.data.id
+                    return item._id != action.data._id
                 });
 
                 Store.emitChange();

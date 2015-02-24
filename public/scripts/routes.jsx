@@ -11,7 +11,8 @@ var React          = require('react'),
     TournamentsApp = require('./components/pages/Tournaments.jsx'),
     UsersApp       = require('./components/pages/users.jsx'),
     NewsApp        = require('./components/pages/News.jsx'),
-    MediaApp       = require('./components/pages/media.jsx');
+    MediaApp       = require('./components/pages/media.jsx'),
+    GamesApp       = require('./components/pages/Games.jsx');
 
 var Routes = (
     <Route name="root" path="/" handler={MainApp}>
@@ -20,6 +21,7 @@ var Routes = (
         <Route name="tournaments" handler={TournamentsApp} />
         <Route name="news" handler={NewsApp} />
         <Route name="media" handler={MediaApp} />
+        <Route name="games" handler={GamesApp} />
 
         <DefaultRoute handler={UsersApp}/>
     </Route>

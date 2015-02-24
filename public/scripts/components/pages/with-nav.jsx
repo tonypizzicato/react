@@ -14,6 +14,12 @@ var WithNav = React.createClass({
 
     mixins: [Router.Navigation, Router.State],
 
+    propTypes: function () {
+        return {
+            leagues: React.PropTypes.array
+        }
+    },
+
     getInitialState: function () {
         return {
             loading: true
@@ -73,7 +79,7 @@ var WithNav = React.createClass({
         return (
             <div className="mui-app-content-canvas page-with-nav">
                 <div className="page-with-nav-content">
-                    <RouteHandler />
+                    <RouteHandler leagues={this.props.leagues} />
                 </div>
                 <div className="page-with-nav-secondary-nav">
                     <Menu

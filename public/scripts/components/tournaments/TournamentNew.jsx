@@ -66,7 +66,7 @@ var TournamentNew = React.createClass({
 
         this.setState({validation: {}});
         if (this.props.tournament._id) {
-            tournament.id = this.props.tournament._id;
+            tournament._id = this.props.tournament._id;
             TournamentsActions.save(tournament);
         } else {
             TournamentsActions.add(tournament);
@@ -85,6 +85,11 @@ var TournamentNew = React.createClass({
             }
             return {text: country.name, _id: country._id, name: country.name};
         }.bind(this));
+
+        if (countryItems.length) {
+            selectedCountryIndex += 1;
+        }
+        countryItems.unshift({text: '----', _id: null, name: ''});
 
         var disabled = !this.props.tournament._id;
         return (
@@ -135,7 +140,12 @@ var TournamentNew = React.createClass({
                         </RadioButtonGroup>
                     </div>
                     <div className="s_float_r s_width_half">
-                        <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
+                        <Button
+                            className="button_type_save s_float_r s_mt_36"
+                            label="Save"
+                            primary={true}
+                            disabled={!this.props.tournament.name}
+                            onClick={this._onSave} />
                     </div>
                 </div>
             </div>

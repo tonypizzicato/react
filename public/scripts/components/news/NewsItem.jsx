@@ -33,7 +33,7 @@ var NewsItem = React.createClass({
     },
 
     _changeSort: function (e) {
-        NewsActions.sort(parseInt(e.currentTarget.dataset.id), parseInt(e.currentTarget.dataset.sort));
+        NewsActions.sort(e.currentTarget.dataset.id, parseInt(e.currentTarget.dataset.sort));
     },
 
     render: function () {

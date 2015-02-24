@@ -28,7 +28,7 @@ var TournamentsActions = {
         AppDispatcher.dispatch({
             type: TournamentsConstants.TOURNAMENTS_SORT,
             data: {
-                id:  id,
+                _id:  id,
                 dir: dir
             }
         })
@@ -38,7 +38,7 @@ var TournamentsActions = {
         AppDispatcher.dispatch({
             type: TournamentsConstants.TOURNAMENTS_DELETE,
             data: {
-                id: id
+                _id: id
             }
         });
     }
