@@ -110,13 +110,18 @@ module.exports = (grunt)->
       fonts:
         files: [
           {
-            expand: true
-            dot:    true
-            dest:   "<%= app.public %>/styles/fonts"
-            cwd: 'node_modules/material-design-fonticons/fonts/'
-            src:    [
-              "**"
-            ]
+            expand:  true
+            dot:     true
+            dest:    "<%= app.public %>/styles"
+            cwd:     'node_modules/material-design-fonticons/styles'
+            src:     ["mdfi.css", "mdfi_navigation.css"]
+          },
+          {
+            expand:  true
+            dot:     true
+            dest:    "<%= app.public %>/fonts"
+            cwd:     'node_modules/material-design-fonticons/fonts/mdfonticon'
+            src:     ["**"]
           }
         ]
 

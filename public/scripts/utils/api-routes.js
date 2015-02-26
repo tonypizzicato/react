@@ -79,6 +79,17 @@ var routes = {
             path:   '/countries/%(_id)s',
             method: 'PUT'
         }
+    },
+
+    'games': {
+        'list': {
+            path:   '/games',
+            method: 'GET'
+        },
+        'item': {
+            path:   '/games/%(_id)s',
+            method: 'GET'
+        }
     }
 };
 

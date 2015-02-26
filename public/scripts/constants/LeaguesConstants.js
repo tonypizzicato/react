@@ -2,7 +2,7 @@
 
 var keymirror = require('keymirror');
 
-var LeageusConstants = keymirror({
+var LeaguesConstants = keymirror({
     LEAGUES_ADD:    null,
     LEAGUES_LOAD:   null,
     LEAGUES_SAVE:   null,
@@ -11,4 +11,4 @@ var LeageusConstants = keymirror({
     LEAGUES_DELETE: null
 });
 
-module.exports = LeageusConstants;
+module.exports = LeaguesConstants;
