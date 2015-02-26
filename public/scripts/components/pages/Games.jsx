@@ -10,6 +10,7 @@ var React            = require('react'),
     Toolbar          = mui.Toolbar,
     ToolbarGroup     = mui.ToolbarGroup,
     DropDownMenu     = mui.DropDownMenu,
+    Button           = mui.RaisedButton,
 
     CountriesStore   = require('../../stores/CountriesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
@@ -21,21 +22,21 @@ Editor.addBlockType({
     id:        'medium',
     icon:      'images/icons/text.svg',
     label:     'Create a new text block',
-    component: require('colonel-kurtz/build/addons/medium')
+    component: Editor.addons.Medium
 });
 
 Editor.addBlockType({
     id:        'image',
     icon:      'images/icons/image.svg',
     label:     'Create a new image block',
-    component: require('colonel-kurtz/build/addons/image')
+    component: Editor.addons.Image
 });
 
 Editor.addBlockType({
     id:        'youtube',
     icon:      'images/icons/youtube.svg',
     label:     'Create a new YouTube block',
-    component: require('colonel-kurtz/build/addons/youtube')
+    component: Editor.addons.YouTube
 });
 
 var GamesApp = React.createClass({
@@ -84,6 +85,10 @@ var GamesApp = React.createClass({
         this.setState({selectedTournament: index});
     },
 
+    _onPreviewSave: function () {
+        console.log(this._editorPreview.toJSON());
+    },
+
     componentWillUpdate: function () {
         if (this.refs.hasOwnProperty('editor-preview')) {
             this._editorPreview = new Editor({
@@ -126,11 +131,19 @@ var GamesApp = React.createClass({
                         <Tabs className="s_mt_12">
                             <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
                                 <div ref="editor-preview" />
+
+                                <div className="s_float_r s_width_half">
+                                    <Button
+                                        className="button_type_save s_float_r s_mt_36"
+                                        label="Save"
+                                        primary={true}
+                                        onClick={this._onPreviewSave} />
+                                </div>
                             </Tab>
-                            <Tab label="Preview" key={this.state.selectedTournament + '-review'}>
+                            <Tab label="Review" key={this.state.selectedTournament + '-review'}>
                                 <div ref="editor-review" />
                             </Tab>
-                            <Tab label="Preview" key={this.state.selectedTournament + '-photo'}>
+                            <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
                                 photo uploader
                             </Tab>
                         </Tabs>
@@ -158,7 +171,7 @@ var GamesApp = React.createClass({
         }.bind(this));
 
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs className="s_mb_24">{tabItems}</Tabs>
         );
     }
 });
