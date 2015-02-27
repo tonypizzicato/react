@@ -86,11 +86,6 @@ var TournamentNew = React.createClass({
             return {text: country.name, _id: country._id, name: country.name};
         }.bind(this));
 
-        if (countryItems.length) {
-            selectedCountryIndex += 1;
-        }
-        countryItems.unshift({text: '----', _id: null, name: ''});
-
         var disabled = !this.props.tournament._id;
         return (
             <div className="panel panel_type_tournament-create s_pt_0">

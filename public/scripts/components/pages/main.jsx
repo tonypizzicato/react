@@ -45,6 +45,7 @@ var MainApp = React.createClass({
     },
 
     render: function () {
+        console.log('MAIN RENDERING');
         return (
             <div>
                 <Canvas>

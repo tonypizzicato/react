@@ -90,6 +90,29 @@ var routes = {
             path:   '/games/%(_id)s',
             method: 'GET'
         }
+    },
+
+    'previews': {
+        'list': {
+            path:   '/previews',
+            method: 'GET'
+        },
+        'item': {
+            path:   '/previews/%(_id)s',
+            method: 'GET'
+        },
+        'create': {
+            path:   '/previews',
+            method: 'POST'
+        },
+        'save':   {
+            path:   '/previews/%(_id)s',
+            method: 'PUT'
+        },
+        'delete': {
+            path:   '/previews/%(_id)s',
+            method: 'DELETE'
+        }
     }
 };
 

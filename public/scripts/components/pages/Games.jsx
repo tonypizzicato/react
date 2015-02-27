@@ -2,7 +2,6 @@
 
 var React            = require('react'),
     mui              = require('material-ui'),
-    Editor           = require('colonel-kurtz'),
 
     Paper            = mui.Paper,
     Tabs             = mui.Tabs,
@@ -12,47 +11,42 @@ var React            = require('react'),
     DropDownMenu     = mui.DropDownMenu,
     Button           = mui.RaisedButton,
 
+    Editor           = require('../MediumEditor.jsx'),
+    PreviewNew       = require('../previews/PreviewNew.jsx'),
+
     CountriesStore   = require('../../stores/CountriesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
 
     GamesStore       = require('../../stores/GamesStore'),
-    GamesActions     = require('../../actions/GamesActions');
+    GamesActions     = require('../../actions/GamesActions'),
 
-Editor.addBlockType({
-    id:        'medium',
-    icon:      'images/icons/text.svg',
-    label:     'Create a new text block',
-    component: Editor.addons.Medium
-});
+    PreviewsStore    = require('../../stores/PreviewsStore'),
+    PreviewsActions  = require('../../actions/PreviewsActions');
 
-Editor.addBlockType({
-    id:        'image',
-    icon:      'images/icons/image.svg',
-    label:     'Create a new image block',
-    component: Editor.addons.Image
-});
-
-Editor.addBlockType({
-    id:        'youtube',
-    icon:      'images/icons/youtube.svg',
-    label:     'Create a new YouTube block',
-    component: Editor.addons.YouTube
-});
 
 var GamesApp = React.createClass({
+
+    propTypes: function () {
+        return {
+            leagues: React.PropTypes.array.required
+        }
+    },
 
     getInitialState: function () {
         return {
             countries:          [],
             games:              [],
+            preview:            {},
             selectedCountry:    0,
             selectedTournament: 0,
-            selectedGame:       null
+            selectedGame:       null,
+            validation:         {}
         }
     },
 
     componentDidMount: function () {
         CountriesStore.addChangeListener(this._countriesChange);
+        PreviewsStore.addChangeListener(this._previewChange);
         GamesStore.addChangeListener(this._gamesChange);
 
         CountriesActions.load();
@@ -66,6 +60,7 @@ var GamesApp = React.createClass({
 
     componentWillUnmount: function () {
         CountriesStore.removeChangeListener(this._countriesChange);
+        PreviewsStore.removeChangeListener(this._previewChange);
         GamesStore.removeChangeListener(this._gamesChange);
     },
 
@@ -77,6 +72,10 @@ var GamesApp = React.createClass({
         this.setState({games: GamesStore.getAll()});
     },
 
+    _previewChange: function () {
+        this.setState({});
+    },
+
     _onCountrySelect: function (e, index) {
         this.setState({selectedCountry: index});
     },
@@ -85,17 +84,12 @@ var GamesApp = React.createClass({
         this.setState({selectedTournament: index});
     },
 
-    _onPreviewSave: function () {
-        console.log(this._editorPreview.toJSON());
+    _onValidationError: function (validation) {
+        console.dir(validation);
+        this.setState({validation: validation});
     },
 
     componentWillUpdate: function () {
-        if (this.refs.hasOwnProperty('editor-preview')) {
-            this._editorPreview = new Editor({
-                el:    this.refs['editor-preview'].getDOMNode(),
-                types: ['medium', 'image', 'youtube']
-            }).render();
-        }
     },
 
     render: function () {
@@ -130,15 +124,7 @@ var GamesApp = React.createClass({
                     innerTabs = (
                         <Tabs className="s_mt_12">
                             <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
-                                <div ref="editor-preview" />
-
-                                <div className="s_float_r s_width_half">
-                                    <Button
-                                        className="button_type_save s_float_r s_mt_36"
-                                        label="Save"
-                                        primary={true}
-                                        onClick={this._onPreviewSave} />
-                                </div>
+                                <PreviewNew preview={this.state.preview} />
                             </Tab>
                             <Tab label="Review" key={this.state.selectedTournament + '-review'}>
                                 <div ref="editor-review" />

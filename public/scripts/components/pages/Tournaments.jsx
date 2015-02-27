@@ -11,8 +11,8 @@ var $                    = require('jquery'),
     DropDownMenu         = mui.DropDownMenu,
 
     EventsConstants      = require('../../constants/EventsConstants'),
-    LeaguesActions       = require('../../actions/LeaguesActions'),
-    LeaguesStore         = require('../../stores/LeaguesStore'),
+    //LeaguesActions       = require('../../actions/LeaguesActions'),
+    //LeaguesStore         = require('../../stores/LeaguesStore'),
     CountriesActions     = require('../../actions/CountriesActions'),
     CountriesStore       = require('../../stores/CountriesStore'),
     TournamentsActions   = require('../../actions/TournamentsActions'),
@@ -28,9 +28,15 @@ var TournamentApp = React.createClass({
 
     mixins: [Router.State],
 
+    propTypes: function () {
+        return {
+            leagues: React.PropTypes.array.required
+        }
+    },
+
     getInitialState: function () {
         return {
-            leagues:            [],
+            //leagues:            [],
             countries:          [],
             tournaments:        [],
             selectedTournament: {}
@@ -41,49 +47,60 @@ var TournamentApp = React.createClass({
         _calls = [];
         _deferred = new $.Deferred();
 
-        LeaguesStore.addChangeListener(this._onChange);
+        _deferred.then(function () {
+            this.setState({
+                //leagues:            LeaguesStore.getAll(),
+                countries:          CountriesStore.getAll(),
+                tournaments:        TournamentStore.getAll(),
+                selectedTournament: this.getInitialState().selectedTournament
+            });
+        }.bind(this));
+
+        //LeaguesStore.addChangeListener(this._onChange);
         CountriesStore.addChangeListener(this._onChange);
         TournamentStore.addChangeListener(this._onChange);
 
-        LeaguesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
+        //LeaguesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
         CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
 
-        // Load entities
-        LeaguesActions.load();
-        CountriesActions.load();
-        TournamentsActions.load();
+        if (this.props.leagues.length) {
+            CountriesActions.load();
+            TournamentsActions.load();
+        }
     },
 
     componentWillUnmount: function () {
-        LeaguesStore.removeChangeListener(this._onChange);
+        //LeaguesStore.removeChangeListener(this._onChange);
         CountriesStore.removeChangeListener(this._onChange);
         TournamentStore.removeChangeListener(this._onChange);
 
-        LeaguesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
+        //LeaguesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        console.log('RECEIVED NEW PROPS');
+        if (nextProps.leagues.length !== this.props.leagues.length) {
+            // Load entities
+            //LeaguesActions.load();
+            CountriesActions.load();
+            TournamentsActions.load();
+        }
     },
 
     _onCall: function (call) {
         _calls.push(call);
 
-        if (_calls.length == 3) {
-            $.when(_calls[0], _calls[1], _calls[2]).done(function () {
+        if (_calls.length == 2) {
+            $.when(_calls[0], _calls[1]/*, _calls[2]*/).done(function () {
                 _deferred.resolve();
             }.bind(this));
         }
     },
 
     _onChange: function () {
-        _deferred.then(function () {
-            this.setState({
-                leagues:            LeaguesStore.getAll(),
-                countries:          CountriesStore.getAll(),
-                tournaments:        TournamentStore.getAll(),
-                selectedTournament: this.getInitialState().selectedTournament
-            });
-        }.bind(this));
     },
 
     _onEdit: function (e) {
@@ -95,7 +112,8 @@ var TournamentApp = React.createClass({
     },
 
     render: function () {
-        var tabItems = this.state.leagues.map(function (league) {
+        console.log("TOURNAMENTS RENDERING");
+        var tabItems = this.props.leagues.map(function (league) {
 
             var tournamentsItems = this.state.tournaments.filter(function (tournament) {
                 return tournament.leagueId == league._id;
@@ -115,7 +133,7 @@ var TournamentApp = React.createClass({
                         tournament={this.state.selectedTournament}
                         countries={countries}
                         leagueId={league._id}
-                        key={this.state.selectedTournament._id} />
+                        key={this.state.selectedTournament._id + '-edit'} />
 
                     <ReactTransitionGroup transitionName="fadeIn">
                         {tournamentsItems}
