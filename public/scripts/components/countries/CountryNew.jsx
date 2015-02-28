@@ -9,6 +9,7 @@ var React            = require('react'),
     RadioButtonGroup = mui.RadioButtonGroup,
     RadioButton      = mui.RadioButton,
     Button           = mui.RaisedButton,
+    Toggle           = mui.Toggle,
 
     EventsConstants  = require('../../constants/EventsConstants'),
 
@@ -58,7 +59,8 @@ var CountryNew = React.createClass({
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             state:    this.refs.state.getSelectedValue(),
-            leagueId: this.props.leagueId
+            leagueId: this.props.leagueId,
+            show:     this.refs.show.isToggled()
         };
 
         this.setState({country: country, validation: {}});
@@ -70,7 +72,16 @@ var CountryNew = React.createClass({
         }
     },
 
+    _onCancel: function () {
+        this.setState({validation: this.getInitialState().validation});
+
+        if (this.props.onCancel) {
+            this.props.onCancel();
+        }
+    },
+
     render: function () {
+        var disabled = !this.props.country._id;
         return (
             <div className="panel panel_type_country-create s_pt_0">
                 <TextField
@@ -89,23 +100,40 @@ var CountryNew = React.createClass({
                     ref="slug" />
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24" key="country-state-radio">
-                    <div className="s_float_l s_width_quarter">
-                        <RadioButtonGroup
-                            name="state"
-                            defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
-                            ref="state" >
-                            <RadioButton
-                                value="CREATED"
-                                label="CREATED" />
-                            <RadioButton
-                                value="ACTIVE"
-                                label="ACTIVE" />
-                            <RadioButton
-                                value="ARCHIVE"
-                                label="ARCHIVE" />
-                        </RadioButtonGroup>
+                    <div className="s_float_l s_width_half">
+                        <div className="s_float_l s_width_half">
+                            <RadioButtonGroup
+                                name="state"
+                                defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
+                                ref="state" >
+                                <RadioButton
+                                    value="CREATED"
+                                    label="CREATED"
+                                    disabled={disabled} />
+                                <RadioButton
+                                    value="ACTIVE"
+                                    label="ACTIVE"
+                                    disabled={disabled} />
+                                <RadioButton
+                                    value="ARCHIVE"
+                                    label="ARCHIVE"
+                                    disabled={disabled} />
+                            </RadioButtonGroup>
+                        </div>
+
+                        <div className="s_width_quarter s_display_inline-block s_mt_24">
+                            <Toggle
+                                name="show"
+                                value="show"
+                                ref="show"
+                                disabled={disabled}
+                                defaultToggled={this.props.country.show}
+                                label="Show" />
+                        </div>
                     </div>
-                    <div className="s_float_r s_width_half">
+
+                    <div className="buttons s_float_r s_width_quarter">
+                        <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
                         <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
                     </div>
                 </div>

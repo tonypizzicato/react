@@ -3,48 +3,48 @@
 var React                = require('react'),
     ReactTransitionGroup = React.addons.CSSTransitionGroup,
 
-    TournamentItem       = require('../tournaments/TournamentItem.jsx'),
+    CountryItem          = require('../countries/CountryItem.jsx'),
 
-    TournamentsActions   = require('../../actions/TournamentsActions');
+    CountriesActions     = require('../../actions/CountriesActions');
 
-var TournamentsList = React.createClass({
+var CountriesList = React.createClass({
 
     propTypes: function () {
         return {
-            tournaments: React.PropTypes.array
+            countries: React.PropTypes.array
         }
     },
 
     getDefaultProps: function () {
         return {
-            tournaments: []
+            countries: []
         }
     },
 
     getInitialState: function () {
         return {
-            tournaments: this.props.tournaments
+            countries: this.props.countries
         }
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.state.tournaments.length != nextProps.tournaments.length) {
-            this.setState({tournaments: nextProps.tournaments});
+        if (this.state.countries.length != nextProps.countries.length) {
+            this.setState({countries: nextProps.countries});
         }
     },
 
     _onDrop: function (from, to) {
-        var items = this.state.tournaments.slice();
+        var items = this.state.countries.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
-        this.setState({tournaments: items});
+        this.setState({countries: items});
 
         if (this.props.onDrop) {
             this.props.onDrop(items);
         }
 
         items.forEach(function (item, index) {
-            TournamentsActions.save({
+            CountriesActions.save({
                 _id:  item._id,
                 sort: index
             }, {silent: true})
@@ -52,13 +52,13 @@ var TournamentsList = React.createClass({
     },
 
     render: function () {
-        if (!this.state.tournaments.length) {
+        if (!this.state.countries.length) {
             return false;
         }
 
-        var items = this.state.tournaments.map(function (item, i) {
+        var items = this.state.countries.map(function (item, i) {
             return (
-                <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id} />
+                <CountryItem country={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id} />
             );
         }.bind(this));
 
@@ -66,9 +66,8 @@ var TournamentsList = React.createClass({
             <ReactTransitionGroup transitionName="fadeIn">
                 {items}
             </ReactTransitionGroup>
-
         );
     }
 });
 
-module.exports = TournamentsList;
+module.exports = CountriesList;

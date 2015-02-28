@@ -74,6 +74,14 @@ var TournamentNew = React.createClass({
         }
     },
 
+    _onCancel: function () {
+        this.setState({validation: this.getInitialState().validation});
+
+        if (this.props.onCancel) {
+            this.props.onCancel();
+        }
+    },
+
     render: function () {
         var selectedCountryIndex = 0;
         var countryItems = this.props.countries.map(function (country, index) {
@@ -155,13 +163,10 @@ var TournamentNew = React.createClass({
                         </div>
                     </div>
 
-                    <div className="s_float_r s_width_half">
-                        <Button
-                            className="button_type_save s_float_r s_mt_36"
-                            label="Save"
-                            primary={true}
-                            disabled={!this.props.tournament.name}
-                            onClick={this._onSave} />
+
+                    <div className="buttons s_float_r s_width_quarter">
+                        <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} disabled={!this.props.tournament.name} onClick={this._onCancel} />
+                        <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} disabled={!this.props.tournament.name} onClick={this._onSave} />
                     </div>
                 </div>
             </div>

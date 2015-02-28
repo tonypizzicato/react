@@ -1,23 +1,22 @@
 "use strict";
 
-var $                    = require('jquery'),
-    React                = require('react'),
-    Router               = require('react-router'),
-    mui                  = require('material-ui'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+var $                = require('jquery'),
+    React            = require('react'),
+    Router           = require('react-router'),
+    mui              = require('material-ui'),
 
-    Tabs                 = mui.Tabs,
-    Tab                  = mui.Tab,
-    DropDownMenu         = mui.DropDownMenu,
+    Tabs             = mui.Tabs,
+    Tab              = mui.Tab,
+    DropDownMenu     = mui.DropDownMenu,
 
-    EventsConstants      = require('../../constants/EventsConstants'),
-    LeaguesActions       = require('../../actions/LeaguesActions'),
-    LeaguesStore         = require('../../stores/LeaguesStore'),
-    CountriesActions     = require('../../actions/CountriesActions'),
-    CountriesStore       = require('../../stores/CountriesStore'),
+    EventsConstants  = require('../../constants/EventsConstants'),
+    LeaguesActions   = require('../../actions/LeaguesActions'),
+    LeaguesStore     = require('../../stores/LeaguesStore'),
+    CountriesActions = require('../../actions/CountriesActions'),
+    CountriesStore   = require('../../stores/CountriesStore'),
 
-    CountryNew           = require('../countries/CountryNew.jsx'),
-    CountriesItem        = require('../countries/CountriesItem.jsx');
+    CountryNew       = require('../countries/CountryNew.jsx'),
+    CountriesList    = require('../countries/CountriesList.jsx');
 
 var _calls = [],
     _deferred;
@@ -89,25 +88,24 @@ var CountriesApp = React.createClass({
         });
     },
 
+    _onCancel: function () {
+        this.setState({
+            selectedCountry: this.getInitialState().selectedCountry
+        });
+    },
+
     render: function () {
         var tabItems = this.state.leagues.map(function (league) {
             var countriesItems = this.state.countries.filter(function (country) {
                 return country.leagueId == league._id
-            }).map(function (country) {
-                return (
-                    <CountriesItem country={country} onDelete={this._onDelete} onEdit={this._onEdit} key={country._id} />
-                );
             }.bind(this));
 
             var key = league._id + '_' + (this.state.selectedCountry._id ? this.state.selectedCountry._id : 'country-new').toString();
 
             return (
                 <Tab label={league.name} key={league._id} >
-                    <CountryNew country={this.state.selectedCountry} leagueId={league._id} key={key} />
-
-                    <ReactTransitionGroup transitionName="fadeIn">
-                        {countriesItems}
-                    </ReactTransitionGroup>
+                    <CountryNew country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel} key={key} />
+                    <CountriesList countries={countriesItems} onDelete={this._onDelete} onEdit={this._onEdit} />
                 </Tab>
             );
         }.bind(this));
