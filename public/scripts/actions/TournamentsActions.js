@@ -17,10 +17,11 @@ var TournamentsActions = {
         })
     },
 
-    save: function (data) {
+    save: function (data, options) {
         AppDispatcher.dispatch({
-            type: TournamentsConstants.TOURNAMENTS_SAVE,
-            data: data
+            type:    TournamentsConstants.TOURNAMENTS_SAVE,
+            data:    data,
+            options: options
         })
     },
 
@@ -28,7 +29,7 @@ var TournamentsActions = {
         AppDispatcher.dispatch({
             type: TournamentsConstants.TOURNAMENTS_SORT,
             data: {
-                _id:  id,
+                _id: id,
                 dir: dir
             }
         })

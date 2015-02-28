@@ -135,21 +135,25 @@ AppDispatcher.register(function (action) {
             break;
 
         case TournamentsConstants.TOURNAMENTS_SAVE:
-            var tournament = assign({}, action.data);
+            var tournament = assign({}, action.data),
+                options = assign({}, {validate: true, silent: false}, action.options);
+
             if (action.data.country) {
                 action.data.country = action.data.country._id;
             } else {
                 delete action.data.country;
             }
 
-            if (Store._validate(action.data)) {
+            if (!options.validate || Store._validate(action.data)) {
                 api.call('tournaments:save', action.data).then(function () {
                     var changed = _tournaments.filter(function (item) {
                         return item._id == tournament._id;
                     }).pop();
 
                     assign(changed, tournament);
-                    Store.emitChange();
+                    if (!options.silent) {
+                        Store.emitChange();
+                    }
                 });
             } else {
                 Store.emitEvent(EventsConstants.EVENT_VALIDATION, Store._getValidationError());

@@ -6,6 +6,8 @@ var $                    = require('jquery'),
     mui                  = require('material-ui'),
     ReactTransitionGroup = React.addons.CSSTransitionGroup,
 
+    Dragon               = require('react-dragon'),
+
     Tabs                 = mui.Tabs,
     Tab                  = mui.Tab,
     DropDownMenu         = mui.DropDownMenu,
@@ -19,7 +21,7 @@ var $                    = require('jquery'),
     TournamentStore      = require('../../stores/TournamentsStore'),
 
     TournamentNew        = require('../tournaments/TournamentNew.jsx'),
-    TournamentItem       = require('../tournaments/TournamentItem.jsx');
+    TournamentsList      = require('../tournaments/TournamentsList.jsx');
 
 var _calls = [],
     _deferred;
@@ -56,8 +58,6 @@ var TournamentApp = React.createClass({
             });
         }.bind(this));
 
-        //LeaguesStore.addChangeListener(this._onChange);
-        CountriesStore.addChangeListener(this._onChange);
         TournamentStore.addChangeListener(this._onChange);
 
         //LeaguesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
@@ -71,8 +71,6 @@ var TournamentApp = React.createClass({
     },
 
     componentWillUnmount: function () {
-        //LeaguesStore.removeChangeListener(this._onChange);
-        CountriesStore.removeChangeListener(this._onChange);
         TournamentStore.removeChangeListener(this._onChange);
 
         //LeaguesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
@@ -101,6 +99,9 @@ var TournamentApp = React.createClass({
     },
 
     _onChange: function () {
+        this.setState({
+            selectedTournament: this.getInitialState().selectedTournament
+        });
     },
 
     _onEdit: function (e) {
@@ -117,10 +118,6 @@ var TournamentApp = React.createClass({
 
             var tournamentsItems = this.state.tournaments.filter(function (tournament) {
                 return tournament.leagueId == league._id;
-            }).map(function (tournament) {
-                return (
-                    <TournamentItem tournament={tournament} onEdit={this._onEdit} key={tournament._id} />
-                );
             }.bind(this));
 
             var countries = this.state.countries.filter(function (country) {
@@ -136,7 +133,7 @@ var TournamentApp = React.createClass({
                         key={this.state.selectedTournament._id + '-edit'} />
 
                     <ReactTransitionGroup transitionName="fadeIn">
-                        {tournamentsItems}
+                        <TournamentsList tournaments={tournamentsItems} onEdit={this._onEdit} />
                     </ReactTransitionGroup>
                 </Tab>
             );

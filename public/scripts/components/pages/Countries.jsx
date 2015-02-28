@@ -99,7 +99,7 @@ var CountriesApp = React.createClass({
                 );
             }.bind(this));
 
-            var key = league._id + '_' + (this.state.selectedCountry._id ? this.state.selectedCountry._id : Math.random()).toString();
+            var key = league._id + '_' + (this.state.selectedCountry._id ? this.state.selectedCountry._id : 'country-new').toString();
 
             return (
                 <Tab label={league.name} key={league._id} >

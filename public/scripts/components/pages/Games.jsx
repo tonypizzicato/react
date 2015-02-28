@@ -94,31 +94,31 @@ var GamesApp = React.createClass({
 
     render: function () {
         var tabItems = this.props.leagues.map(function (league) {
-            var countryItems = this.state.countries.map(function (item) {
+            var countries = this.state.countries.filter(function (item) {
+                return item.leagueId == league._id;
+            });
+            var countryItems = countries.map(function (item) {
                 return {text: item.name, id: item._id};
             }.bind(this));
 
             var tab;
-            if (countryItems.length) {
-                var tournaments = this.state.countries[this.state.selectedCountry].tournaments;
+            if (countries.length) {
+                var tournaments = countries[this.state.selectedCountry] ? countries[this.state.selectedCountry].tournaments : [];
 
                 var tournamentsItems = tournaments.map(function (item) {
                     return {text: item.name, id: item._id};
                 });
 
-                var countriesMenu = '';
-                if (countryItems.length) {
-                    countriesMenu = countryItems.length > 1 ? (
-                        <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect} selectedIndex={this.state.selectedCountry} />
-                    ) : (<span>{this.state.countries[0].name}</span>);
-                }
+                countriesMenu = countryItems.length > 1 ? (
+                    <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect} selectedIndex={this.state.selectedCountry} />
+                ) : (<span className="mui-label s_ml_24">{this.state.countries[0].name}</span>);
 
                 var tournamentsMenu = '';
                 var innerTabs = '';
                 if (tournamentsItems.length) {
                     tournamentsMenu = tournamentsItems.length > 1 ? (
                         <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
-                    ) : (<span className="mui-label">{tournaments[0].name}</span>)
+                    ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>)
 
 
                     innerTabs = (

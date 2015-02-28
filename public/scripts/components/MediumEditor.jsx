@@ -77,8 +77,9 @@ var Editor = React.createClass({
     _initEditor: function () {
         this._editor = new MediumEditor('.editable', {
             disablePlaceholders: true,
-            buttons:             ['bold', 'italic', 'quote', 'link'],
+            buttons:             ['header1', 'header2', 'bold', 'italic', 'anchor', 'quote', 'unorderedlist', 'orderedlist', 'justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'image'],
             buttonLabels:        'fontawesome',
+            disableDoubleReturn: true,
             firstHeader:         'h1',
             secondHeader:        'h2',
             delay:               1000,

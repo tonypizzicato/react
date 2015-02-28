@@ -61,7 +61,8 @@ var TournamentNew = React.createClass({
             slug:     this.refs.slug.getValue(),
             state:    this.refs.state.getSelectedValue(),
             country:  this.state.country,
-            leagueId: this.props.leagueId
+            leagueId: this.props.leagueId,
+            show:     this.refs.show.isToggled()
         };
 
         this.setState({validation: {}});
@@ -86,6 +87,19 @@ var TournamentNew = React.createClass({
             return {text: country.name, _id: country._id, name: country.name};
         }.bind(this));
 
+        var countriesDropDown = '';
+        if (countryItems.length) {
+            countriesDropDown = (
+                <DropDownMenu
+                    className="s_width_half"
+                    menuItems={countryItems}
+                    selectedIndex={selectedCountryIndex}
+                    autoWidth={false}
+                    onChange={this._onCountryChange}
+                    ref="country" />
+            )
+        }
+
         var disabled = !this.props.tournament._id;
         return (
             <div className="panel panel_type_tournament-create s_pt_0">
@@ -106,34 +120,41 @@ var TournamentNew = React.createClass({
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
-                <DropDownMenu
-                    className="s_width_half"
-                    menuItems={countryItems}
-                    selectedIndex={selectedCountryIndex}
-                    autoWidth={false}
-                    onChange={this._onCountryChange}
-                    ref="country" />
+                {countriesDropDown}
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
                     <div className="s_float_l s_width_half">
-                        <RadioButtonGroup
-                            name="state"
-                            defaultSelected={this.props.tournament.state ? this.props.tournament.state : 'CREATED'}
-                            ref="state" >
-                            <RadioButton
-                                value="CREATED"
-                                label="CREATED"
-                                disabled={true} />
-                            <RadioButton
-                                value="IN PROGRESS"
-                                label="IN PROGRESS"
-                                disabled={true} />
-                            <RadioButton
-                                value="ARCHIVE"
-                                label="ARCHIVE"
-                                disabled={true} />
-                        </RadioButtonGroup>
+                        <div className="s_float_l s_width_half">
+                            <RadioButtonGroup
+                                name="state"
+                                defaultSelected={this.props.tournament.state ? this.props.tournament.state : 'CREATED'}
+                                ref="state" >
+                                <RadioButton
+                                    value="CREATED"
+                                    label="CREATED"
+                                    disabled={true} />
+                                <RadioButton
+                                    value="IN PROGRESS"
+                                    label="IN PROGRESS"
+                                    disabled={true} />
+                                <RadioButton
+                                    value="ARCHIVE"
+                                    label="ARCHIVE"
+                                    disabled={true} />
+                            </RadioButtonGroup>
+                        </div>
+
+                        <div className="s_width_quarter s_display_inline-block s_mt_24">
+                            <Toggle
+                                name="show"
+                                value="show"
+                                ref="show"
+                                disabled={disabled}
+                                defaultToggled={this.props.tournament.show}
+                                label="Show" />
+                        </div>
                     </div>
+
                     <div className="s_float_r s_width_half">
                         <Button
                             className="button_type_save s_float_r s_mt_36"

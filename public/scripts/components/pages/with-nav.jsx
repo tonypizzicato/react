@@ -46,11 +46,8 @@ var WithNav = React.createClass({
     },
 
     componentDidMount: function () {
-        //this._showLoader();
-        //
-        //$(document).ajaxError(this._handleAjaxError);
-        //$(document).ajaxComplete(this._handleAjaxComplete);
-
+        $(document).ajaxError(this._handleAjaxError);
+        $(document).ajaxComplete(this._handleAjaxComplete);
     },
 
     _showLoader: function () {
@@ -70,7 +67,9 @@ var WithNav = React.createClass({
     },
 
     _handleAjaxComplete: function () {
-        this._hideLoader();
+        if (this.state.loading) {
+            this._hideLoader();
+        }
     },
 
     render: function () {

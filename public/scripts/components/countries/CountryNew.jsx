@@ -88,7 +88,7 @@ var CountryNew = React.createClass({
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
-                <div className="s_position_relative s_overflow_hidden s_mt_24">
+                <div className="s_position_relative s_overflow_hidden s_mt_24" key="country-state-radio">
                     <div className="s_float_l s_width_quarter">
                         <RadioButtonGroup
                             name="state"
