@@ -3,6 +3,8 @@
 var React               = require('react'),
     mui                 = require('material-ui'),
 
+    Typeahead           = require('react-typeahead').Typeahead,
+
     Paper               = mui.Paper,
     Tabs                = mui.Tabs,
     Tab                 = mui.Tab,
@@ -123,17 +125,26 @@ var GamesApp = React.createClass({
                     return {text: item.name, id: item._id};
                 });
 
+                var gamesItems = tournaments.length ? this.state.games.filter(function (item) {
+                    return item.tournamentId == tournaments[this.state.selectedTournament]._id;
+                }.bind(this))
+                    .map(function (item) {
+                        return item.teams[0].name + ' - ' + item.teams[1].name + ' (' + item.tourNumber + ')';
+                    }) : [];
+
                 var countriesMenu = countryItems.length > 1 ? (
                     <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect} selectedIndex={this.state.selectedCountry} />
                 ) : (<span className="mui-label s_ml_24">{this.state.countries[0].name}</span>);
 
                 var tournamentsMenu = '';
+                var gamesInput = '';
                 var innerTabs = '';
                 if (tournamentsItems.length) {
                     tournamentsMenu = tournamentsItems.length > 1 ? (
                         <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
                     ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>)
 
+                    gamesInput = (<Typeahead className="s_float_r" options={gamesItems} placeholder="Input teams names" />);
 
                     innerTabs = (
                         <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
@@ -156,6 +167,7 @@ var GamesApp = React.createClass({
                             <ToolbarGroup key={0} float="left">
                             {countriesMenu}
                             {tournamentsMenu}
+                            {gamesInput}
                             </ToolbarGroup>
                         </Toolbar>
                         {innerTabs}
