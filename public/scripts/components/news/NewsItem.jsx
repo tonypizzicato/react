@@ -1,15 +1,15 @@
 "use strict";
 
-var React       = require('react'),
-    mui         = require('material-ui'),
-    moment      = require('moment'),
-    date        = require('../../utils/date'),
+var React      = require('react'),
+    cx         = React.addons.classSet,
+    mui        = require('material-ui'),
+    moment     = require('moment'),
+    date       = require('../../utils/date'),
 
-    Paper       = mui.Paper,
-    IconButton  = mui.IconButton,
-    Toggle      = mui.Toggle,
-
-    NewsActions = require('../../actions/NewsActions');
+    Paper      = mui.Paper,
+    Icon       = mui.FontIcon,
+    IconButton = mui.IconButton,
+    Toggle     = mui.Toggle;
 
 
 var NewsItem = React.createClass({
@@ -20,11 +20,17 @@ var NewsItem = React.createClass({
         }
     },
 
+    getDefaultProps: function () {
+        return {
+            article: {}
+        }
+    },
 
     propTypes: function () {
         return {
             article:  React.PropTypes.object.isRequired,
-            onDelete: React.PropTypes.func.isRequired
+            onDelete: React.PropTypes.func.isRequired,
+            onEdit:   React.PropTypes.func.isRequired
         }
     },
 
@@ -32,39 +38,45 @@ var NewsItem = React.createClass({
         this.setState({active: !this.state.active});
     },
 
-    _changeSort: function (e) {
-        NewsActions.sort(e.currentTarget.dataset.id, parseInt(e.currentTarget.dataset.sort));
-    },
-
     render: function () {
-        var activeClassBody = 'list-item__body' + (this.state.active ? ' s_display_block' : '');
-        var activeClassInfo = 'list-item__info' + (this.state.active ? ' s_display_block' : '');
+        var activeClassBody = cx({
+            'list-item__body': true,
+            's_display_block': this.state.active
+        });
+        var activeClassInfo = cx({
+            'list-item__info': true,
+            's_display_block': this.state.active
+        });
+        var visibilityClass = cx({
+            'list-item__visibility':      true,
+            'mdfi_action_visibility':     true,
+            'mdfi_action_visibility_off': !this.props.article.show
+        });
+
         return (
             <Paper className="list-item">
-                <div className="panel">
+                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
                     <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <IconButton icon="action-subject" onClick={this._changeActiveState} />
+                        <div className="s_display_inline-block s_valign_m">
+                            <IconButton iconClassName="mdfi_action_subject" onClick={this._changeActiveState} />
+                            <Icon className={visibilityClass} />
                         </div>
-
-                        <span className="mui-toolbar-separator">&nbsp;</span>
 
                         <div className="list-item__title s_display_inline-block s_valign_m">
                             <h5>{this.props.article.title}</h5>
                         </div>
 
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <IconButton icon="hardware-keyboard-arrow-down" onClick={this._changeSort} data-id={this.props.article._id} data-sort="-1" />
-                        </div>
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <IconButton icon="hardware-keyboard-arrow-up" onClick={this._changeSort} data-id={this.props.article._id} data-sort="1" />
-                        </div>
+                        <div className="s_float_r">
+                            <div className="s_display_inline-block s_valign_m text_align_r">
+                            {this.props.article.state}
+                            </div>
 
-                        <div className="list-item__switcher s_display_inline-block s_valign_m">
-                            <Toggle name="show" value="show" defaultToggled={this.props.article.show} label="Show" />
-                        </div>
-                        <div className="list-item__icon s_display_inline-block s_valign_m s_float_r">
-                            <IconButton icon="action-highlight-remove" onClick={this.props.onDelete} data-id={this.props.article._id} data-sort="-1" />
+                            <div className="s_display_inline-block s_valign_m">
+                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.article._id} data-sort="-1" />
+                            </div>
+                            <div className="s_display_inline-block s_valign_m s_float_r">
+                                <IconButton iconClassName="mdfi_action_highlight_remove" onClick={this.props.onDelete} data-id={this.props.article._id} data-sort="-1" />
+                            </div>
                         </div>
 
                     </div>
@@ -75,7 +87,7 @@ var NewsItem = React.createClass({
                     <div className={activeClassBody} dangerouslySetInnerHTML={{__html: this.props.article.body}} />
                 </div>
             </Paper>
-        )
+        );
     }
 });
 

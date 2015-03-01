@@ -49,6 +49,10 @@ var TournamentApp = React.createClass({
         _deferred = new $.Deferred();
 
         _deferred.then(function () {
+            if (!this.isMounted()) {
+                return;
+            }
+
             this.setState({
                 //leagues:            LeaguesStore.getAll(),
                 countries:          CountriesStore.getAll(),
@@ -97,6 +101,12 @@ var TournamentApp = React.createClass({
         }
     },
 
+    _onTabChange: function () {
+        this.setState({
+            selectedTournament: this.getInitialState().selectedTournament
+        });
+    },
+
     _onChange: function () {
         this.setState({
             selectedTournament: this.getInitialState().selectedTournament
@@ -140,7 +150,7 @@ var TournamentApp = React.createClass({
         }.bind(this));
 
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
         );
     }
 });

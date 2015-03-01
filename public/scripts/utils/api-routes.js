@@ -18,6 +18,10 @@ var routes = {
             path:   '/news',
             method: 'POST'
         },
+        'save':   {
+            path:   '/news/%(_id)s',
+            method: 'PUT'
+        },
         'edit':   {
             path:   '/news',
             method: 'PUT'
@@ -93,11 +97,11 @@ var routes = {
     },
 
     'previews': {
-        'list': {
+        'list':   {
             path:   '/previews',
             method: 'GET'
         },
-        'item': {
+        'item':   {
             path:   '/previews/%(_id)s',
             method: 'GET'
         },

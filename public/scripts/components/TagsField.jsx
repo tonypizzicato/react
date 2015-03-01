@@ -82,7 +82,7 @@ var TagsField = React.createClass({
                     onKeyDown={this._onEnter}
                     ref="input"
                 />
-                <IconButton className="tags-filed-item-add" icon="action-done" onClick={this._onSave} />
+                <IconButton className="tags-filed-item-add" iconClassName="mdfi_action_done" onClick={this._onSave} />
 
                 <div className="tags-filed-items">
                     {tags}
@@ -116,10 +116,10 @@ var Tag = React.createClass({
         return (
             <span className="tags-filed-item">
                 <span className="tags-filed-item-text">{this.props.value}</span>
-                <IconButton className="tags-filed-item-delete" icon="action-highlight-remove" onClick={this.props.onDelete} />
+                <IconButton className="tags-filed-item-delete" iconClassName="mdfi_action_highlight_remove" onClick={this.props.onDelete} />
             </span>
         );
     }
-})
+});
 
 module.exports = TagsField;

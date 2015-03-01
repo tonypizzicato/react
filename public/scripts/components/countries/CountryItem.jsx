@@ -46,7 +46,7 @@ var CountryItem = React.createClass({
                         </div>
 
                         <div className="s_float_r">
-                            <div className="mui-lable s_display_inline-block s_valign_m text_align_r">
+                            <div className="s_display_inline-block s_valign_m text_align_r">
                             {this.props.country.state}
                             </div>
 

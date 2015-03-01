@@ -21,9 +21,10 @@ var CountryNew = React.createClass({
     getDefaultProps: function () {
         return {
             country:  {
-                name:  '',
-                slug:  '',
-                state: 'CREATED'
+                name:   '',
+                slug:   '',
+                state:  'CREATED',
+                show:   false
             },
             leagueId: null
         }
@@ -31,7 +32,6 @@ var CountryNew = React.createClass({
 
     getInitialState: function () {
         return {
-            country:    this.props.country,
             validation: {}
         }
     },
@@ -42,12 +42,6 @@ var CountryNew = React.createClass({
 
     componentWillUnmount: function () {
         CountriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
-
-    componentWillReceiveProps: function (nextProps) {
-        if (nextProps.hasOwnProperty('country')) {
-            this.setState({country: nextProps.country});
-        }
     },
 
     _onValidationError: function (validation) {
@@ -63,7 +57,7 @@ var CountryNew = React.createClass({
             show:     this.refs.show.isToggled()
         };
 
-        this.setState({country: country, validation: {}});
+        this.setState({validation: {}});
         if (this.props.country._id) {
             country._id = this.props.country._id;
             CountriesActions.save(country);
@@ -75,13 +69,17 @@ var CountryNew = React.createClass({
     _onCancel: function () {
         this.setState({validation: this.getInitialState().validation});
 
+        this.refs.name.setValue('');
+        this.refs.slug.setValue('');
+        this.refs.state.setSelectedValue('CREATED');
+        this.refs.show.setToggled(false);
+
         if (this.props.onCancel) {
             this.props.onCancel();
         }
     },
 
     render: function () {
-        var disabled = !this.props.country._id;
         return (
             <div className="panel panel_type_country-create s_pt_0">
                 <TextField
@@ -108,16 +106,13 @@ var CountryNew = React.createClass({
                                 ref="state" >
                                 <RadioButton
                                     value="CREATED"
-                                    label="CREATED"
-                                    disabled={disabled} />
+                                    label="CREATED" />
                                 <RadioButton
                                     value="ACTIVE"
-                                    label="ACTIVE"
-                                    disabled={disabled} />
+                                    label="ACTIVE" />
                                 <RadioButton
                                     value="ARCHIVE"
-                                    label="ARCHIVE"
-                                    disabled={disabled} />
+                                    label="ARCHIVE" />
                             </RadioButtonGroup>
                         </div>
 
@@ -126,7 +121,6 @@ var CountryNew = React.createClass({
                                 name="show"
                                 value="show"
                                 ref="show"
-                                disabled={disabled}
                                 defaultToggled={this.props.country.show}
                                 label="Show" />
                         </div>

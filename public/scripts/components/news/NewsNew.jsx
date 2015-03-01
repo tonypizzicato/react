@@ -10,6 +10,8 @@ var React                = require('react'),
     Button               = mui.RaisedButton,
     FloatingActionButton = mui.FloatingActionButton,
 
+    EventsConstants      = require('../../constants/EventsConstants'),
+
     NewsActions          = require('../../actions/NewsActions'),
     NewsStore            = require('../../stores/NewsStore'),
 
@@ -27,44 +29,28 @@ var leaguesItems = [
 
 var NewsNew = React.createClass({
 
+    getDefaultProps: function () {
+        return {
+            article:  {
+                title:  '',
+                body:   '',
+                teaser: '',
+                show:   false,
+                stick:  false,
+                tags:   []
+            },
+            leagueId: null
+        }
+    },
+
     getInitialState: function () {
         return {
-            article:    {
-                title: '',
-                body:  '',
-                show:  true,
-                stick: false,
-                tags:  []
-            },
+            article:    this.props.article,
             validation: {}
         }
     },
 
-    _onSave: function () {
-        var article = {
-            title: this.refs.title.getValue(),
-            body:  this.refs.body.getValue(),
-            show:  this.refs.show.isToggled(),
-            stick: this.refs.stick.isToggled(),
-            tags:  this.refs.tags.getTags()
-        };
-
-        this.setState({article: article, validation: {}});
-        NewsActions.add(article);
-    },
-
-    _onChange: function () {
-        this.setState(this.getInitialState());
-
-        this.refs.title.setValue(this.state.article.title);
-        this.refs.body.setValue(this.state.article.body);
-        this.refs.show.setToggled(this.state.article.show);
-        this.refs.stick.setToggled(this.state.article.stick);
-        this.refs.tags.setTags(this.state.article.tags);
-    },
-
     _onValidationError: function (validation) {
-        console.dir(validation);
         this.setState({validation: validation});
     },
 
@@ -76,13 +62,55 @@ var NewsNew = React.createClass({
     },
 
     componentDidMount: function () {
-        NewsStore.addChangeListener(this._onChange);
-        NewsStore.addValidationListener(this._onValidationError);
+        NewsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     },
 
     componentWillUnmount: function () {
-        NewsStore.removeChangeListener(this._onChange);
-        NewsStore.removeValidationListener(this._onValidationError);
+        NewsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        if (!nextProps.article.hasOwnProperty('_id')) {
+            this._clearForm();
+        }
+    },
+
+    _onSave: function () {
+        var article = {
+            title:    this.refs.title.getValue(),
+            body:     this.refs.body.getValue(),
+            teaser:   this.refs.teaser.getValue(),
+            show:     this.refs.show.isToggled(),
+            stick:    this.refs.stick.isToggled(),
+            tags:     this.refs.tags.getTags(),
+            leagueId: this.props.leagueId
+        };
+
+        this.setState({article: article, validation: {}});
+        if (this.props.article._id) {
+            article._id = this.props.article._id;
+            NewsActions.save(article);
+        } else {
+            NewsActions.add(article);
+        }
+    },
+
+    _clearForm: function () {
+        this.refs.title.setValue('');
+        this.refs.teaser.setValue('');
+        this.refs.body.setValue('');
+        this.refs.show.setToggled(false);
+        this.refs.stick.setToggled(false);
+        this.refs.tags.setTags([]);
+    },
+
+    _onCancel: function () {
+        this.setState({article: this.getInitialState().article});
+        this._clearForm();
+        if (this.props.onCancel) {
+            this.props.onCancel();
+        }
     },
 
     render: function () {
@@ -91,50 +119,61 @@ var NewsNew = React.createClass({
                 <div className="panel panel_type_news-create s_pt_0">
                     <TextField
                         className="s_display_block"
-                        defaultValue={this.state.article.title}
+                        defaultValue={this.props.article.title}
                         hintText="Введите название новсти"
                         floatingLabelText="Название"
                         errorText={this.state.validation.title ? 'Поле не может быть пустым' : null}
                         ref="title" />
 
+                    <TextField
+                        className="s_display_block"
+                        defaultValue={this.props.article.teaser}
+                        hintText="Введите короткое описание новости"
+                        floatingLabelText="Описание"
+                        //errorText={this.state.validation.teaser ? 'Поле не может быть пустым' : null}
+                        ref="teaser" />
+
                     <MediumEditor
+                        className="s_mb_24"
                         hintText="Введите тело новости"
                         placehoder="Новость"
+                        defaultValue={this.props.article.body}
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                         ref="body" />
 
                     <div className="s_width_half">
-                        <div className="s_width_quarter s_mt_12">
+                        <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
+
+                        <div className="s_width_quarter s_mt_12 s_mb_12">
                             <Toggle
                                 className="s_mb_12"
                                 name="show"
                                 value="show"
                                 ref="show"
-                                defaultToggled={this.state.article.show}
+                                defaultToggled={this.props.article.show}
                                 label="Show" />
                             <Toggle
                                 className="s_mb_12"
                                 name="stick"
                                 value="stick"
                                 ref="stick"
-                                defaultToggled={this.state.article.stick}
+                                defaultToggled={this.props.article.stick}
                                 label="Stick" />
                         </div>
-
-                        <div className="s_width_half">
-                            <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
-                        </div>
                     </div>
+
                     <div className="s_width_half">
                         <input className="btn btn-default btn-file" type="file" onChange={this._handleFile} accept="image/*;capture=camera"/>
                     </div>
                     <div className="">
                         <div className="s_position_relative s_overflow_hidden s_mt_24">
                             <div className="s_float_l s_width_half">
-                                <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.tags} />
+                                <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.article.tags} />
                             </div>
-                            <div className="s_float_r s_width_half">
-                                <Button className="button_type_save s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
+
+                            <div className="buttons s_float_r s_width_quarter">
+                                <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
+                                <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
                             </div>
                         </div>
                     </div>

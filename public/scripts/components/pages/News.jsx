@@ -5,20 +5,30 @@ var React                = require('react'),
     Router               = require('react-router'),
     mui                  = require('material-ui'),
 
+    Tabs                 = mui.Tabs,
+    Tab                  = mui.Tab,
+
     NewsStore            = require('../../stores/NewsStore'),
     NewsActions          = require('../../actions/NewsActions'),
 
     NewsNew              = require('../news/NewsNew.jsx'),
-    NewsItem             = require('../news/NewsItem.jsx');
+    NewsList             = require('../news/NewsList.jsx');
 
 
 var NewsApp = React.createClass({
 
     mixins: [Router.State],
 
+    propTypes: function () {
+        return {
+            leagues: React.PropTypes.array.required
+        }
+    },
+
     getInitialState: function () {
         return {
-            news: []
+            news:            [],
+            selectedArticle: {}
         };
     },
 
@@ -31,36 +41,55 @@ var NewsApp = React.createClass({
         NewsStore.removeChangeListener(this._onChange);
     },
 
-    _onChange: function () {
-        this.setState({news: NewsStore.getAll()});
+    _onTabChange: function () {
+        this.setState({
+            selectedArticle: this.getInitialState().selectedArticle
+        });
     },
 
-    _onDelete: function(e) {
+    _onChange: function () {
+        this.setState({
+            news:            NewsStore.getAll(),
+            selectedArticle: this.getInitialState().selectedArticle
+        });
+    },
+
+    _onDelete: function (e) {
         NewsActions.delete(e.currentTarget.dataset.id);
     },
 
+    _onEdit: function (e) {
+        this.setState({
+            selectedArticle: this.state.news.filter(function (article) {
+                return article._id == e.currentTarget.dataset.id;
+            }).pop()
+        });
+    },
+
+    _onCancel: function () {
+        this.setState({
+            selectedArticle: this.getInitialState().selectedArticle
+        });
+    },
+
     render: function () {
-        var news = this.state.news
-            .sort(function (a, b) {
-                return a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : 0;
-            })
-            .map(function (item) {
-                return (
-                    <NewsItem article={item} key={item._id} onDelete={this._onDelete} />
-                );
+        var tabItems = this.props.leagues.map(function (league) {
+            var newsItems = this.state.news.filter(function (article) {
+                return article.leagueId == league._id
             }.bind(this));
+
+            var key = league._id + '_' + (this.state.selectedArticle._id ? this.state.selectedArticle._id : 'article-new').toString();
+
+            return (
+                <Tab label={league.name} key={league._id} >
+                    <NewsNew className="s_mb_24" article={this.state.selectedArticle} leagueId={league._id} onCancel={this._onCancel} key={key} />
+                    <NewsList news={newsItems} onDelete={this._onDelete} onEdit={this._onEdit} />
+                </Tab>
+            );
+        }.bind(this));
         return (
-            <div>
-                <h3>Hello form News App!</h3>
-                <h3>Last News</h3>
-                <div className="s_mb_24">
-                    <NewsNew />
-                </div>
-                <ReactTransitionGroup transitionName="fadeIn">
-                    {news}
-                </ReactTransitionGroup>
-            </div>
-        )
+            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+        );
     }
 });
 

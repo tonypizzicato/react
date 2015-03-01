@@ -58,7 +58,7 @@ var CountriesList = React.createClass({
 
         var items = this.state.countries.map(function (item, i) {
             return (
-                <CountryItem country={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id} />
+                <CountryItem country={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id} />
             );
         }.bind(this));
 

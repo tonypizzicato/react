@@ -13,12 +13,14 @@ var NewsActions = {
     add: function (data) {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_ADD,
-            data: {
-                title: data.title,
-                body:  data.body,
-                show:  data.show,
-                stick: data.stick
-            }
+            data: data
+        })
+    },
+
+    save: function (data) {
+        AppDispatcher.dispatch({
+            type: NewsConstants.NEWS_SAVE,
+            data: data
         })
     },
 
@@ -26,15 +28,15 @@ var NewsActions = {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_SORT,
             data: {
-                _id:  id,
+                _id: id,
                 dir: dir
             }
         })
     },
 
-    delete: function(id) {
+    delete: function (id) {
         AppDispatcher.dispatch({
-           type: NewsConstants.NEWS_DELETE,
+            type: NewsConstants.NEWS_DELETE,
             data: {
                 _id: id
             }

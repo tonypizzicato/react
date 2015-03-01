@@ -14,6 +14,7 @@ var Editor = React.createClass({
 
     propTypes: {
         id:                React.PropTypes.string,
+        defaultValue:      React.PropTypes.string,
         hintText:          React.PropTypes.string,
         errorText:         React.PropTypes.string,
         floatingLabelText: React.PropTypes.string
@@ -22,7 +23,7 @@ var Editor = React.createClass({
     getInitialState: function () {
         return {
             activated: false,
-            value:     this.props.value,
+            hasValue:  this.props.defaultValue.length > 0,
             errorText: this.props.errorText
         };
     },
@@ -30,7 +31,7 @@ var Editor = React.createClass({
     getDefaultProps: function () {
         return {
             id:                undefined,
-            value:             '',
+            defaultValue:      '',
             floatingLabelText: 'Text to edit',
             hintText:          'Enter text to edit'
         };
@@ -56,22 +57,25 @@ var Editor = React.createClass({
     },
 
     _handleBlur: function (e) {
-        var activated = e.type == 'focus';
+        var focus = e.type == 'focus';
 
-        if (!activated) {
-            var value = this.getValue();
-
-            if (!value.length) {
-                this.setValue(value);
-            }
+        if (!focus) {
+            console.log('blur');
         }
+        if (!focus && (!e.relatedTarget || e.relatedTarget.className.indexOf('medium-editor-action') === -1)) {
+            //var value = this.getValue();
 
-        this.setState({activated: activated});
+            //if (!value.length) {
+            //this.setValue(value);
+            //}
+            this.setState({activated: false});
+        } else {
+            this.setState({activated: true});
+        }
     },
 
     _handleChange: function () {
-        console.log('change');
-        this.setState({value: this._editor.serialize()});
+        this.setState({hasValue: this._editor.serialize()});
     },
 
     _initEditor: function () {
@@ -86,7 +90,7 @@ var Editor = React.createClass({
             targetBlank:         true
         });
 
-        this.refs.editor.getDOMNode().innerHTML = this.state.value;
+        this.refs.editor.getDOMNode().innerHTML = this.props.defaultValue;
         this._editor.on(this.refs.editor.getDOMNode(), 'input', this._handleChange);
         this._editor.on(this.refs.editor.getDOMNode(), 'focus', this._handleBlur);
         this._editor.on(this.refs.editor.getDOMNode(), 'blur', this._handleBlur);
@@ -107,15 +111,15 @@ var Editor = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.hasOwnProperty('errorText')) {
-            this.setState({errorText: nextProps.errorText});
-        }
+        //if (nextProps.hasOwnProperty('errorText')) {
+        //    this.setState({errorText: nextProps.errorText});
+        //}
     },
 
     render: function () {
         var className = this.getClasses('mui-edit-field', {
             'mui-is-focused':          this.state.activated,
-            'mui-has-value':           this.state.value,
+            'mui-has-value':           this.state.hasValue,
             'mui-has-error':           this.props.errorText,
             'mui-has-floating-labels': this.props.floatingLabelText
         });
@@ -130,8 +134,8 @@ var Editor = React.createClass({
             <div className="mui-edit-field-hint">{this.props.hintText}</div>
         ) : null;
 
-        var errorTextElement = this.state.errorText ? (
-            <div className="mui-edit-field-error">{this.state.errorText}</div>
+        var errorTextElement = this.props.errorText ? (
+            <div className="mui-edit-field-error">{this.props.errorText}</div>
         ) : null;
 
         return (

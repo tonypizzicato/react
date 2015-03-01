@@ -1,46 +1,45 @@
 "use strict";
 
-var _             = require('underscore'),
-    assign        = require('object-assign'),
-    moment        = require('moment'),
-    EventEmitter  = require('events').EventEmitter,
+var _               = require('underscore'),
+    assign          = require('object-assign'),
+    moment          = require('moment'),
+    EventEmitter    = require('events').EventEmitter,
 
-    AppDispatcher = require('../dispatcher/app-dispatcher'),
+    AppDispatcher   = require('../dispatcher/app-dispatcher'),
 
-    NewsConstants = require('../constants/NewsConstants'),
+    EventsConstants = require('../constants/EventsConstants'),
+    NewsConstants   = require('../constants/NewsConstants'),
 
-    api           = require('../utils/api');
+    api             = require('../utils/api');
 
 
 var _news            = [],
-    _validationError = null,
-    EVENT_CHANGE     = 'change',
-    EVENT_VALIDATION = 'validation';
+    _validationError = null;
 
 
 var NewsStore = assign({}, EventEmitter.prototype, {
     emitChange: function () {
-        this.emit(EVENT_CHANGE);
+        this.emit(EventsConstants.EVENT_CHANGE);
     },
 
-    emitValidation: function (error) {
-        this.emit(EVENT_VALIDATION, error);
+    emitEvent: function (type, data) {
+        this.emit(type, data);
     },
 
     addChangeListener: function (cb) {
-        this.on(EVENT_CHANGE, cb);
+        this.on(EventsConstants.EVENT_CHANGE, cb);
     },
 
     removeChangeListener: function (cb) {
-        this.removeListener(EVENT_CHANGE, cb);
+        this.removeListener(EventsConstants.EVENT_CHANGE, cb);
     },
 
-    addValidationListener: function (cb) {
-        this.on(EVENT_VALIDATION, cb);
+    addEventListener: function (type, cb) {
+        this.addListener(type, cb);
     },
 
-    removeValidationListener: function (cb) {
-        this.removeListener(EVENT_VALIDATION, cb);
+    removeEventListener: function (type, cb) {
+        this.removeListener(type, cb);
     },
 
     getAll: function () {
@@ -105,23 +104,27 @@ AppDispatcher.register(function (action) {
 
         case NewsConstants.NEWS_SAVE:
             console.log('"' + action.type + '" handled');
-            NewsStore.emitChange();
+            var article = action.data;
+
+            if (NewsStore._validate(article)) {
+                api.call('news:save', article).then(function () {
+                    var changed = _news.filter(function (item) {
+                        return item._id == article._id;
+                    }).pop();
+
+                    assign(changed, article);
+                    NewsStore.emitChange();
+                });
+            } else {
+                NewsStore.emitEvent(EventsConstants.EVENT_VALIDATION, NewsStore._getValidationError());
+            }
             break;
 
         case NewsConstants.NEWS_ADD:
             console.log('"' + action.type + '" handled');
             var news = _news.slice(0);
 
-            var article = {
-                title: action.data.title,
-                body:  action.data.body,
-                show:  action.data.show,
-                stick: action.data.stick,
-                dc:    moment().format('YYYY-MM-DD HH:mm:ss'),
-                sort:  news.length ? news.sort(function (a, b) {
-                    return a.sort > b.sort ? 1 : -1;
-                }).pop().sort + 1 : 1
-            };
+            var article = action.data;
 
             if (NewsStore._validate(article)) {
                 api.call('news:create', article).then(function (res) {
@@ -129,7 +132,7 @@ AppDispatcher.register(function (action) {
                     NewsStore.emitChange();
                 });
             } else {
-                NewsStore.emitValidation(NewsStore._getValidationError());
+                NewsStore.emitEvent(EventsConstants.EVENT_VALIDATION, NewsStore._getValidationError());
             }
 
             break;

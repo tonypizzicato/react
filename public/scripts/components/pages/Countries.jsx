@@ -10,8 +10,6 @@ var $                = require('jquery'),
     DropDownMenu     = mui.DropDownMenu,
 
     EventsConstants  = require('../../constants/EventsConstants'),
-    LeaguesActions   = require('../../actions/LeaguesActions'),
-    LeaguesStore     = require('../../stores/LeaguesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
     CountriesStore   = require('../../stores/CountriesStore'),
 
@@ -25,9 +23,14 @@ var CountriesApp = React.createClass({
 
     mixins: [Router.State],
 
+    propTypes: function () {
+        return {
+            leagues: React.PropTypes.array.required
+        }
+    },
+
     getInitialState: function () {
         return {
-            leagues:         [],
             countries:       [],
             selectedCountry: {}
         }
@@ -37,43 +40,30 @@ var CountriesApp = React.createClass({
         _calls = [];
         _deferred = new $.Deferred();
 
-        LeaguesStore.addChangeListener(this._onChange);
+        _deferred.then(function () {
+        }.bind(this));
+
         CountriesStore.addChangeListener(this._onChange);
 
-        LeaguesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
-        CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
-
         // Load entities
-        LeaguesActions.load();
         CountriesActions.load();
     },
 
     componentWillUnmount: function () {
-        LeaguesStore.removeChangeListener(this._onChange);
         CountriesStore.removeChangeListener(this._onChange);
-
-        LeaguesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
-        CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
     },
 
-    _onCall: function (call) {
-        _calls.push(call);
-
-        if (_calls.length == 2) {
-            $.when(_calls[0], _calls[1]).done(function () {
-                _deferred.resolve();
-            }.bind(this));
-        }
+    _onTabChange: function() {
+        this.setState({
+            selectedCountry: this.getInitialState().selectedCountry
+        });
     },
 
     _onChange: function () {
-        _deferred.then(function () {
-            this.setState({
-                leagues:         LeaguesStore.getAll(),
-                countries:       CountriesStore.getAll(),
-                selectedCountry: this.getInitialState().selectedCountry
-            });
-        }.bind(this));
+        this.setState({
+            countries:       CountriesStore.getAll(),
+            selectedCountry: this.getInitialState().selectedCountry
+        });
     },
 
     _onDelete: function (e) {
@@ -95,7 +85,7 @@ var CountriesApp = React.createClass({
     },
 
     render: function () {
-        var tabItems = this.state.leagues.map(function (league) {
+        var tabItems = this.props.leagues.map(function (league) {
             var countriesItems = this.state.countries.filter(function (country) {
                 return country.leagueId == league._id
             }.bind(this));
@@ -110,7 +100,7 @@ var CountriesApp = React.createClass({
             );
         }.bind(this));
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
         );
     }
 });
