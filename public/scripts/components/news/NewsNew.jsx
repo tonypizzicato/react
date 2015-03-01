@@ -87,7 +87,7 @@ var NewsNew = React.createClass({
             leagueId: this.props.leagueId
         };
 
-        this.setState({article: article, validation: {}});
+        this.setState({validation: this.getInitialState().validation});
         if (this.props.article._id) {
             article._id = this.props.article._id;
             NewsActions.save(article);

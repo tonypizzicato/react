@@ -1,23 +1,22 @@
 "use strict";
 
-var _                 = require('underscore'),
-    assign            = require('object-assign'),
-    moment            = require('moment'),
-    EventEmitter      = require('events').EventEmitter,
+var _                     = require('underscore'),
+    assign                = require('object-assign'),
+    EventEmitter          = require('events').EventEmitter,
 
-    AppDispatcher     = require('../dispatcher/app-dispatcher'),
+    AppDispatcher         = require('../dispatcher/app-dispatcher'),
 
-    EventsConstants   = require('../constants/EventsConstants'),
-    PreviewsConstants = require('../constants/PreviewsConstants'),
+    EventsConstants       = require('../constants/EventsConstants'),
+    GameArticlesConstants = require('../constants/GameArticlesConstants'),
 
-    api               = require('../utils/api');
+    api                   = require('../utils/api');
 
 
-var _previews        = [],
+var _articles        = [],
     _validationError = null;
 
 
-var PreviewsStore = assign({}, EventEmitter.prototype, {
+var GameArticlesStore = assign({}, EventEmitter.prototype, {
     emitChange: function () {
         this.emit(EventsConstants.EVENT_CHANGE);
     },
@@ -42,12 +41,17 @@ var PreviewsStore = assign({}, EventEmitter.prototype, {
         this.removeListener(EventsConstants.EVENT_VALIDATION, cb);
     },
 
-    getAll: function () {
-        return _previews;
+    getAll: function (type) {
+        if (typeof type === "string") {
+            return _articles.filter(function (item) {
+                return item.type == type;
+            })
+        }
+        return _articles;
     },
 
-    get: function (gameId) {
-        return _.findWhere(_previews, {gameId: gameId});
+    get: function (gameId, type) {
+        return _.findWhere(_articles, {gameId: gameId});
     },
 
     /**
@@ -97,57 +101,57 @@ var PreviewsStore = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function (action) {
 
     switch (action.type) {
-        case PreviewsConstants.PREVIEWS_LOAD:
+        case GameArticlesConstants.GAME_ARTICLES_LOAD:
             console.log('"' + action.type + '" handled');
-            api.call('previews:list').done(function (result) {
-                _previews = result;
-                PreviewsStore.emitChange();
+
+            api.call('game-articles:list').done(function (result) {
+                _articles = result;
+                GameArticlesStore.emitChange();
             });
             break;
 
-        case PreviewsConstants.PREVIEWS_SAVE:
+        case GameArticlesConstants.GAME_ARTICLES_SAVE:
             console.log('"' + action.type + '" handled');
 
-            if (PreviewsStore._validate(action.data)) {
-                api.call('previews:save', action.data).then(function (res) {
-                    _previews.push(res);
-                    PreviewsStore.emitChange();
+            if (GameArticlesStore._validate(action.data)) {
+                api.call('game-articles:save', action.data).then(function (res) {
+                    _articles.push(res);
+                    GameArticlesStore.emitChange();
                 });
             } else {
-                PreviewsStore.emitValidation(PreviewsStore._getValidationError());
+                GameArticlesStore.emitValidation(GameArticlesStore._getValidationError());
             }
 
             break;
 
-        case PreviewsConstants.PREVIEWS_ADD:
+        case GameArticlesConstants.GAME_ARTICLES_ADD:
             console.log('"' + action.type + '" handled');
-            var previews = _previews.slice(0);
 
-            if (PreviewsStore._validate(action.data)) {
-                api.call('previews:create', action.data).then(function (res) {
-                    _previews.push(res);
-                    PreviewsStore.emitChange();
+            if (GameArticlesStore._validate(action.data)) {
+                api.call('game-articles:create', action.data).then(function (res) {
+                    _articles.push(res);
+                    GameArticlesStore.emitChange();
                 });
             } else {
-                PreviewsStore.emitValidation(PreviewsStore._getValidationError());
+                GameArticlesStore.emitValidation(GameArticlesStore._getValidationError());
             }
 
             break;
 
-        case PreviewsConstants.PREVIEWS_DELETE:
-            api.call('previews:delete', {_id: action.data._id}).then(function () {
-                _previews = _.filter(_previews, function (item) {
+        case GameArticlesConstants.GAME_ARTICLES_DELETE:
+            api.call('game-articles:delete', {_id: action.data._id}).then(function () {
+                _articles = _.filter(_articles, function (item) {
                     return item._id != action.data._id
                 });
 
-                PreviewsStore.emitChange();
+                GameArticlesStore.emitChange();
             });
 
             break;
 
         default:
-            console.log('action "' + action.type + '" was not handled in Previews store');
+            console.log('action "' + action.type + '" was not handled in GameArticles store');
     }
 });
 
-module.exports = PreviewsStore;
+module.exports = GameArticlesStore;

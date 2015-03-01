@@ -22,10 +22,6 @@ var routes = {
             path:   '/news/%(_id)s',
             method: 'PUT'
         },
-        'edit':   {
-            path:   '/news',
-            method: 'PUT'
-        },
         'delete': {
             path:   '/news/%(_id)s',
             method: 'DELETE'
@@ -115,6 +111,25 @@ var routes = {
         },
         'delete': {
             path:   '/previews/%(_id)s',
+            method: 'DELETE'
+        }
+    },
+
+    'game-articles': {
+        'list':   {
+            path:   '/game-articles',
+            method: 'GET'
+        },
+        'create': {
+            path:   '/game-articles',
+            method: 'POST'
+        },
+        'save':   {
+            path:   '/game-articles/%(_id)s',
+            method: 'PUT'
+        },
+        'delete': {
+            path:   '/game-articles/%(_id)s',
             method: 'DELETE'
         }
     }
