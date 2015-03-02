@@ -30,7 +30,7 @@
     "react-router": "^0.12.4",
     "react-tagsinput": "^0.3.1",
     "react-tap-event-plugin": "^0.1.4",
-    "react-typeahead": "^1.0.1",
+    "react-typeahead": "git+https://github.com/fmoo/react-typeahead#master",
     "serve-favicon": "^2.2.0",
     "underscore": "^1.8.2",
     "underscore.string": "^3.0.3"

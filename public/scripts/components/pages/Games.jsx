@@ -108,6 +108,10 @@ var GamesApp = React.createClass({
         this.setState({selectedArticle: this.getInitialState().selectedArticle});
     },
 
+    _onGameChanged: function (e) {
+        console.dir(e);
+    },
+
     render: function () {
         var tabItems = this.props.leagues.map(function (league) {
             var countries = this.state.countries.filter(function (item) {
@@ -144,7 +148,19 @@ var GamesApp = React.createClass({
                         <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
                     ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>)
 
-                    gamesInput = (<Typeahead className="s_float_r" options={gamesItems} placeholder="Input teams names" />);
+                    gamesInput = (
+                        <Typeahead
+                            className="mui-text-field"
+                            options={gamesItems}
+                            placeholder="Input teams names"
+                            onOptionSelected={this._onGameChanged}
+                            customClasses={{
+                                input:    'mui-text-field-input',
+                                results:  's_position_absolute',
+                                listItem: ''
+                            }}
+                            key={tournaments[this.state.selectedTournament]._id} />
+                    );
 
                     innerTabs = (
                         <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
