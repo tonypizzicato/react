@@ -1,6 +1,7 @@
 "ues strict";
 
-var React               = require('react'),
+var _                   = require('underscore'),
+    React               = require('react'),
     mui                 = require('material-ui'),
 
     Typeahead           = require('react-typeahead').Typeahead,
@@ -42,7 +43,7 @@ var GamesApp = React.createClass({
             selectedCountry:    0,
             selectedTournament: 0,
             selectedArticle:    {},
-            selectedGame:       null,
+            selectedGame:       {},
             validation:         {}
         }
     },
@@ -72,7 +73,24 @@ var GamesApp = React.createClass({
     },
 
     _gamesChange: function () {
-        this.setState({games: GamesStore.getAll()});
+        var games = GamesStore.getAll();
+
+        games.sort(function (a, b) {
+            return a.tourNumber <= b.tourNumber ? -1 : 1;
+        });
+
+        games.forEach(function (item) {
+            if (item.teams.length != 2 || !item.teams[0] || !item.teams[1]) {
+                console.warn('No team for game ' + item._id);
+                return;
+            }
+            item.text = item.teams[0].name + ' - ' + item.teams[1].name + ' (' + item.tourNumber + ' tour)';
+            if (item.score) {
+                item.text += ' ' + item.score.ft[0] + ':' + item.score.ft[1];
+            }
+        });
+
+        this.setState({games: games});
     },
 
     _articleChange: function () {
@@ -108,8 +126,10 @@ var GamesApp = React.createClass({
         this.setState({selectedArticle: this.getInitialState().selectedArticle});
     },
 
-    _onGameChanged: function (e) {
-        console.dir(e);
+    _onGameChanged: function (string) {
+        var game = _.findWhere(this.state.games, {text: string});
+
+        this.setState({selectedGame: game});
     },
 
     render: function () {
@@ -125,65 +145,21 @@ var GamesApp = React.createClass({
             if (countries.length) {
                 var tournaments = countries[this.state.selectedCountry] ? countries[this.state.selectedCountry].tournaments : [];
 
-                var tournamentsItems = tournaments.map(function (item) {
-                    return {text: item.name, id: item._id};
-                });
-
-                var gamesItems = tournaments.length ? this.state.games.filter(function (item) {
-                    return item.tournamentId == tournaments[this.state.selectedTournament]._id;
-                }.bind(this))
-                    .map(function (item) {
-                        return item.teams[0].name + ' - ' + item.teams[1].name + ' (' + item.tourNumber + ')';
-                    }) : [];
-
                 var countriesMenu = countryItems.length > 1 ? (
                     <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect} selectedIndex={this.state.selectedCountry} />
                 ) : (<span className="mui-label s_ml_24">{this.state.countries[0].name}</span>);
 
-                var tournamentsMenu = '';
-                var gamesInput = '';
-                var innerTabs = '';
-                if (tournamentsItems.length) {
-                    tournamentsMenu = tournamentsItems.length > 1 ? (
-                        <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
-                    ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>)
-
-                    gamesInput = (
-                        <Typeahead
-                            className="mui-text-field"
-                            options={gamesItems}
-                            placeholder="Input teams names"
-                            onOptionSelected={this._onGameChanged}
-                            customClasses={{
-                                input:    'mui-text-field-input',
-                                results:  's_position_absolute',
-                                listItem: ''
-                            }}
-                            key={tournaments[this.state.selectedTournament]._id} />
-                    );
-
-                    innerTabs = (
-                        <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
-                            <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
-                                <GameArticleForm type="preview" article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
-                            </Tab>
-                            <Tab label="Review" key={this.state.selectedTournament + '-review'}>
-                                <GameArticleForm type="review" article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
-                            </Tab>
-                            <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
-                                photo uploader
-                            </Tab>
-                        </Tabs>
-                    )
-                }
+                var tournamentsMenu = this._tournamentsMenuComponent(tournaments);
+                var gamesInput = this._gamesInputComponent(league, tournaments);
+                var innerTabs = this._innerTabsComponent(tournaments);
 
                 tab = (
                     <div>
                         <Toolbar className="s_mt_12">
                             <ToolbarGroup key={0} float="left">
-                            {countriesMenu}
-                            {tournamentsMenu}
-                            {gamesInput}
+                                {countriesMenu}
+                                {tournamentsMenu}
+                                {gamesInput}
                             </ToolbarGroup>
                         </Toolbar>
                         {innerTabs}
@@ -200,6 +176,73 @@ var GamesApp = React.createClass({
 
         return (
             <Tabs className="s_mb_24">{tabItems}</Tabs>
+        );
+    },
+
+    _innerTabsComponent: function (tournaments) {
+        if (!tournaments.length) {
+            return '';
+        }
+
+        return (
+            <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
+                <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
+                    <GameArticleForm type="preview" game={this.state.selectedGame} article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
+                </Tab>
+                <Tab label="Review" key={this.state.selectedTournament + '-review'}>
+                    <GameArticleForm type="review" game={this.state.selectedGame} article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
+                </Tab>
+                <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
+                    photo uploader
+                </Tab>
+            </Tabs>
+        );
+    },
+
+    _tournamentsMenuComponent: function (tournaments) {
+        if (!tournaments.length) {
+            return '';
+        }
+
+        var tournamentsItems = tournaments.map(function (item) {
+            return {text: item.name, id: item._id};
+        });
+
+        return tournamentsItems.length > 1 ? (
+            <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
+        ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>);
+    },
+
+    _gamesInputComponent: function (league, tournaments) {
+        if (!tournaments.length) {
+            return '';
+        }
+
+        var selectedTournament = this.state.selectedTournament;
+        var gamesItems = this.state.games
+            .filter(function (item) {
+                return item.tournamentId == tournaments[selectedTournament]._id;
+            })
+            .map(function (item) {
+                return item.text;
+            });
+
+        if (!gamesItems.length) {
+            return '';
+        }
+
+        return (
+            <Typeahead
+                className="mui-text-field"
+                options={gamesItems}
+                placeholder="Input teams names"
+                onOptionSelected={this._onGameChanged}
+                customClasses={{
+                    input:    'mui-text-field-input',
+                    results:  's_position_absolute',
+                    listItem: ''
+                }}
+                key={league._id + '-' + tournaments[this.state.selectedTournament]._id} />
         );
     }
 });

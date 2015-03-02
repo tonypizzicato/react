@@ -15,7 +15,7 @@ var GameArticleForm = React.createClass({
     propTypes: function () {
         return {
             article: React.PropTypes.object,
-            gameId:  React.PropTypes.string.required,
+            game:    React.PropTypes.object,
             type:    React.PropTypes.string.required
         }
     },
@@ -24,7 +24,8 @@ var GameArticleForm = React.createClass({
         return {
             article: {
                 body: ''
-            }
+            },
+            game:    {}
         }
     },
 
@@ -50,7 +51,7 @@ var GameArticleForm = React.createClass({
     },
 
     _onChange: function () {
-        var article = GameArticlesStore.get(this.props.gameId, this.props.type);
+        var article = GameArticlesStore.get(this.props.game._id, this.props.type);
         if (!article) {
             article = this.getInitialState().article;
         }
@@ -60,8 +61,9 @@ var GameArticleForm = React.createClass({
 
     _onSave: function () {
         var article = {
-            body: this.refs.body.getValue(),
-            type: this.props.type
+            body:   this.refs.body.getValue(),
+            type:   this.props.type,
+            gameId: this.props.game._id
         };
 
         this.setState({validation: this.getInitialState().validation});
