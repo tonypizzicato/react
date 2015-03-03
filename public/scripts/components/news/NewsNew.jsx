@@ -15,8 +15,9 @@ var React                = require('react'),
     NewsActions          = require('../../actions/NewsActions'),
     NewsStore            = require('../../stores/NewsStore'),
 
-    MediumEditor         = require('./../MediumEditor.jsx'),
-    TagsField            = require('./../TagsField.jsx');
+    MediumEditor         = require('../MediumEditor.jsx'),
+    TagsField            = require('../TagsField.jsx'),
+    ImageUpload          = require('../ImageUpload.jsx');
 
 var leaguesItems = [
     {payload: '0', text: 'All'},
@@ -37,6 +38,7 @@ var NewsNew = React.createClass({
                 teaser: '',
                 show:   false,
                 stick:  false,
+                image:  null,
                 tags:   []
             },
             leagueId: null
@@ -84,7 +86,8 @@ var NewsNew = React.createClass({
             show:     this.refs.show.isToggled(),
             stick:    this.refs.stick.isToggled(),
             tags:     this.refs.tags.getTags(),
-            leagueId: this.props.leagueId
+            leagueId: this.props.leagueId,
+            image:    this.refs.image.getImage()
         };
 
         this.setState({validation: this.getInitialState().validation});
@@ -140,6 +143,8 @@ var NewsNew = React.createClass({
                         defaultValue={this.props.article.body}
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                         ref="body" />
+
+                    <ImageUpload image={this.props.article.image} ref="image" />
 
                     <div className="s_width_half">
                         <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
