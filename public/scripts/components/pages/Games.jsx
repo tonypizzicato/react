@@ -40,6 +40,7 @@ var GamesApp = React.createClass({
             countries:          [],
             games:              [],
             articles:           [],
+            selectedLeague:     0,
             selectedCountry:    0,
             selectedTournament: 0,
             selectedArticle:    {},
@@ -54,10 +55,11 @@ var GamesApp = React.createClass({
         GamesStore.addChangeListener(this._gamesChange);
 
         CountriesActions.load();
+        GameArticlesActions.load();
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.leagues.length !== this.props.leagues.length) {
+        if (nextProps.leagues.length && !this.state.games.length) {
             GamesActions.load({leagueId: nextProps.leagues[0]._id});
         }
     },
@@ -101,6 +103,10 @@ var GamesApp = React.createClass({
         this.setState({selectedArticle: this.getInitialState().selectedArticle});
     },
 
+    _onLeagueTabChange: function (leagueId) {
+        this.setState({selectedLeague: leagueId});
+    },
+
     _onCountrySelect: function (e, index) {
         this.setState({selectedCountry: index});
 
@@ -111,8 +117,6 @@ var GamesApp = React.createClass({
 
     _onTournamentSelect: function (e, index) {
         this.setState({selectedTournament: index});
-
-        GameArticlesActions.load();
     },
 
     _onValidationError: function (validation) {
@@ -133,7 +137,7 @@ var GamesApp = React.createClass({
     },
 
     render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
+        var tabItems = this.props.leagues.map(function (league, index) {
             var countries = this.state.countries.filter(function (item) {
                 return item.leagueId == league._id;
             });
@@ -171,7 +175,7 @@ var GamesApp = React.createClass({
                 )
             }
 
-            return (<Tab label={league.name} key={league._id}>{tab}</Tab>);
+            return (<Tab label={league.name} onActive={this._onLeagueTabChange} index={index} key={league._id}>{tab}</Tab>);
         }.bind(this));
 
         return (
@@ -184,13 +188,16 @@ var GamesApp = React.createClass({
             return '';
         }
 
+        var preview = GameArticlesStore.get(this.state.selectedGame._id, 'preview'),
+            review = GameArticlesStore.get(this.state.selectedGame._id, 'review');
+
         return (
             <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
                 <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
-                    <GameArticleForm type="preview" game={this.state.selectedGame} article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
+                    <GameArticleForm type="preview" game={this.state.selectedGame} article={preview} onCancel={this._onArticleCancel} />
                 </Tab>
                 <Tab label="Review" key={this.state.selectedTournament + '-review'}>
-                    <GameArticleForm type="review" game={this.state.selectedGame} article={this.state.selectedArticle} onCancel={this._onArticleCancel} />
+                    <GameArticleForm type="review" game={this.state.selectedGame} article={review} onCancel={this._onArticleCancel} />
                 </Tab>
                 <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
                     photo uploader

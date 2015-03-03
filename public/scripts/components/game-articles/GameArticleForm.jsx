@@ -94,6 +94,7 @@ var GameArticleForm = React.createClass({
                     placehoder="Статья"
                     defaultValue={this.props.article.body}
                     errorText={this.state.validation.preview ? 'Поле не может быть пустым' : null}
+                    key={this.props.article._id}
                     ref="body" />
 
                 <div className="buttons s_float_r s_width_quarter">

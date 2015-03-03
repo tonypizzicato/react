@@ -51,7 +51,7 @@ var GameArticlesStore = assign({}, EventEmitter.prototype, {
     },
 
     get: function (gameId, type) {
-        return _.findWhere(_articles, {gameId: gameId});
+        return _.findWhere(_articles, {gameId: gameId, type: type});
     },
 
     /**
@@ -115,7 +115,12 @@ AppDispatcher.register(function (action) {
 
             if (GameArticlesStore._validate(action.data)) {
                 api.call('game-articles:save', action.data).then(function (res) {
-                    _articles.push(res);
+
+                    var changed = _articles.filter(function (item) {
+                        return item._id == action.data._id;
+                    }).pop();
+
+                    assign(changed, action.data);
                     GameArticlesStore.emitChange();
                 });
             } else {
