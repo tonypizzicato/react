@@ -60,7 +60,9 @@ var GamesApp = React.createClass({
 
     componentWillReceiveProps: function (nextProps) {
         if (nextProps.leagues.length && !this.state.games.length) {
-            GamesActions.load({leagueId: nextProps.leagues[0]._id});
+            nextProps.leagues.forEach(function (item) {
+                GamesActions.load({leagueId: item._id});
+            });
         }
     },
 

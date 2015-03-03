@@ -4,6 +4,7 @@ var React               = require('react'),
     mui                 = require('material-ui'),
 
     Button              = mui.RaisedButton,
+    Toggle              = mui.Toggle,
 
     MediumEditor        = require('../MediumEditor.jsx'),
 
@@ -62,6 +63,7 @@ var GameArticleForm = React.createClass({
     _onSave: function () {
         var article = {
             body:   this.refs.body.getValue(),
+            show:   this.refs.show.isToggled(),
             type:   this.props.type,
             gameId: this.props.game._id
         };
@@ -80,6 +82,7 @@ var GameArticleForm = React.createClass({
         this.setState({validation: this.getInitialState().validation});
 
         this.refs.body.setValue('');
+        this.refs.show.setToggled(false);
 
         if (this.props.onCancel) {
             this.props.onCancel();
@@ -97,9 +100,23 @@ var GameArticleForm = React.createClass({
                     key={this.props.article._id}
                     ref="body" />
 
-                <div className="buttons s_float_r s_width_quarter">
-                    <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
-                    <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
+                <div className="s_position_relative s_overflow_hidden" key="article-state-radio">
+                    <div className="s_float_l s_width_half s_mt_12">
+                        <div className="s_width_quarter s_display_inline-block">
+                            <Toggle
+                                name="show"
+                                value="show"
+                                label="Show"
+                                defaultToggled={this.props.article.show}
+                                key={this.props.article._id + '-show'}
+                                ref="show" />
+                        </div>
+                    </div>
+
+                    <div className="buttons s_float_r s_width_quarter">
+                        <Button className="button_type_cancel s_mt_12" label="Cancel" secondary={true} onClick={this._onCancel} />
+                        <Button className="button_type_save s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
+                    </div>
                 </div>
             </div>
         );
