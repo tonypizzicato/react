@@ -17,7 +17,7 @@ var assign             = require('object-assign'),
     TournamentsActions = require('../../actions/TournamentsActions'),
     TournamentsStore   = require('../../stores/TournamentsStore');
 
-var TournamentNew = React.createClass({
+var TournamentForm = React.createClass({
 
     getDefaultProps: function () {
         return {
@@ -60,7 +60,7 @@ var TournamentNew = React.createClass({
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             state:    this.refs.state.getSelectedValue(),
-            country:  this.state.country,
+            country:  this.props.countries[this.refs.country.state.selectedIndex],
             leagueId: this.props.leagueId,
             show:     this.refs.show.isToggled()
         };
@@ -174,4 +174,4 @@ var TournamentNew = React.createClass({
     }
 });
 
-module.exports = TournamentNew;
+module.exports = TournamentForm;

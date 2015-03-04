@@ -70,8 +70,8 @@ var NewsStore = assign({}, EventEmitter.prototype, {
         };
 
         var hasImage = function (value, article) {
-            return article.stick && value && value.length;
-        }
+            return !article.stick || (value && value.length);
+        };
 
         var rules = {
             title: notEmpty,

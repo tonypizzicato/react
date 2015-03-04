@@ -12,14 +12,12 @@ var $                  = require('jquery'),
     DropDownMenu       = mui.DropDownMenu,
 
     EventsConstants    = require('../../constants/EventsConstants'),
-    //LeaguesActions       = require('../../actions/LeaguesActions'),
-    //LeaguesStore         = require('../../stores/LeaguesStore'),
     CountriesActions   = require('../../actions/CountriesActions'),
     CountriesStore     = require('../../stores/CountriesStore'),
     TournamentsActions = require('../../actions/TournamentsActions'),
     TournamentStore    = require('../../stores/TournamentsStore'),
 
-    TournamentNew      = require('../tournaments/TournamentNew.jsx'),
+    TournamentForm      = require('../tournaments/TournamentForm.jsx'),
     TournamentsList    = require('../tournaments/TournamentsList.jsx');
 
 var _calls = [],
@@ -37,7 +35,6 @@ var TournamentApp = React.createClass({
 
     getInitialState: function () {
         return {
-            //leagues:            [],
             countries:          [],
             tournaments:        [],
             selectedTournament: {}
@@ -54,7 +51,6 @@ var TournamentApp = React.createClass({
             }
 
             this.setState({
-                //leagues:            LeaguesStore.getAll(),
                 countries:          CountriesStore.getAll(),
                 tournaments:        TournamentStore.getAll(),
                 selectedTournament: this.getInitialState().selectedTournament
@@ -63,7 +59,6 @@ var TournamentApp = React.createClass({
 
         TournamentStore.addChangeListener(this._onChange);
 
-        //LeaguesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
         CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
 
@@ -76,7 +71,6 @@ var TournamentApp = React.createClass({
     componentWillUnmount: function () {
         TournamentStore.removeChangeListener(this._onChange);
 
-        //LeaguesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
     },
@@ -84,8 +78,6 @@ var TournamentApp = React.createClass({
     componentWillReceiveProps: function (nextProps) {
         console.log('RECEIVED NEW PROPS');
         if (nextProps.leagues.length !== this.props.leagues.length) {
-            // Load entities
-            //LeaguesActions.load();
             CountriesActions.load();
             TournamentsActions.load();
         }
@@ -95,7 +87,7 @@ var TournamentApp = React.createClass({
         _calls.push(call);
 
         if (_calls.length == 2) {
-            $.when(_calls[0], _calls[1]/*, _calls[2]*/).done(function () {
+            $.when(_calls[0], _calls[1]).done(function () {
                 _deferred.resolve();
             }.bind(this));
         }
@@ -143,7 +135,7 @@ var TournamentApp = React.createClass({
 
             return (
                 <Tab label={league.name} key={league._id}>
-                    <TournamentNew tournament={this.state.selectedTournament} countries={countries} leagueId={league._id} onCancel={this._onCancel} key={key} />
+                    <TournamentForm tournament={this.state.selectedTournament} countries={countries} leagueId={league._id} onCancel={this._onCancel} key={key} />
                     <TournamentsList tournaments={tournamentsItems} onEdit={this._onEdit} />
                 </Tab>
             );

@@ -15,15 +15,17 @@ var ImageUpload = React.createClass({
 
     propTypes: function () {
         return {
-            label: React.PropTypes.string,
-            image: React.PropTypes.string
+            label:     React.PropTypes.string,
+            image:     React.PropTypes.string,
+            errorText: React.PropTypes.string
         }
     },
 
     getDefaultProps: function () {
         return {
-            label: "Select image",
-            image: ''
+            label:     "Select image",
+            image:     null,
+            errorText: null
         }
     },
 
@@ -47,8 +49,8 @@ var ImageUpload = React.createClass({
         }.bind(this);
     },
 
-    _onDelete: function() {
-      console.log('remove image');
+    _onDelete: function () {
+        console.log('remove image');
     },
 
     _onClick: function () {
@@ -58,7 +60,7 @@ var ImageUpload = React.createClass({
     },
 
     getImage: function () {
-        return this.state.uploaded ? this._reader.result : null;
+        return this.state.uploaded ? (this._reader ? this._reader.result : this.props.image) : null;
     },
 
     render: function () {
@@ -66,10 +68,16 @@ var ImageUpload = React.createClass({
             'mui-file-input-image':         true,
             'mui-file-input-image-visible': this.state.uploaded
         });
+        var closeClass = cx({
+            'mui-file-input-image-close': true,
+            's_display_none':             !this.state.uploaded
+        });
+
+        var error = this.props.errorText ? (<span className="mui-file-input-error">{this.props.errorText}</span>) : '';
 
         return (
             <div className="mui-file-input-container">
-                <ActionButton className="mui-file-input-image-close" iconClassName="mdfi_navigation_close" onClick={this._onDelete} />
+                <ActionButton className={closeClass} iconClassName="mdfi_navigation_close" onClick={this._onDelete} />
                 <img src={this.props.image} className={previewClass} ref="preview" />
                 <input className="file-input" type="file" onChange={this._onImage} ref="upload" />
 
@@ -78,6 +86,7 @@ var ImageUpload = React.createClass({
                         <Icon className="mdfi_image_photo s_mr_6 s_t_4"/>
                         <span className="mui-flat-button-label">{this.props.label}</span>
                     </Button>
+                    {error}
                 </div>
             </div>
         );
