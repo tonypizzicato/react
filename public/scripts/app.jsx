@@ -1,6 +1,7 @@
 var React                = require('react'),
     Router               = require('react-router'),
     injectTapEventPlugin = require("react-tap-event-plugin"),
+    mui                  = require('material-ui'),
 
     a11y                 = require('react-a11y'),
 

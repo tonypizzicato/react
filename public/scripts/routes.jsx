@@ -12,10 +12,15 @@ var React          = require('react'),
     UsersApp       = require('./components/pages/users.jsx'),
     NewsApp        = require('./components/pages/News.jsx'),
     MediaApp       = require('./components/pages/media.jsx'),
-    GamesApp       = require('./components/pages/Games.jsx');
+    GamesApp       = require('./components/pages/Games.jsx'),
+    Auth           = require('./components/auth.jsx');
 
 var Routes = (
     <Route name="root" path="/" handler={MainApp}>
+        <Route name="signup" handler={Auth.SignUp}/>
+        <Route name="login" handler={Auth.SignIn}/>
+        <Route name="logout" handler={Auth.LogOut}/>
+
         <Route name="users" handler={UsersApp} />
         <Route name="countries" handler={CountriesApp} />
         <Route name="tournaments" handler={TournamentsApp} />

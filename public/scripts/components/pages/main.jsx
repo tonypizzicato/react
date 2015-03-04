@@ -4,6 +4,8 @@ var React          = require('react'),
     Router         = require('react-router'),
     mui            = require('material-ui'),
 
+    Link           = Router.Link,
+
     Canvas         = mui.AppCanvas,
     AppBar         = mui.AppBar,
 
@@ -27,7 +29,8 @@ var MainApp = React.createClass({
 
     getInitialState: function () {
         return {
-            leagues: []
+            loggedIn: false,
+            leagues:  []
         }
     },
 
@@ -45,11 +48,18 @@ var MainApp = React.createClass({
     },
 
     render: function () {
+
+        var loginOrOut = this.state.loggedIn ?
+            <Link to="logout">Log out</Link> :
+            <Link to="login">Sign in</Link>;
+
         console.log('MAIN RENDERING');
         return (
             <div>
                 <Canvas>
-                    <AppBar className="mui-dark-theme" title="Amateur Admin App" zDepth={0} />
+                    <AppBar className="mui-dark-theme" title="Amateur Admin App" zDepth={0}>
+                    {loginOrOut}
+                    </AppBar>
 
                     <WithNav
                         menuItems={menuItems}
