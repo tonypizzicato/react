@@ -69,16 +69,21 @@ var NewsStore = assign({}, EventEmitter.prototype, {
             return value.length > 0;
         };
 
+        var hasImage = function (value, article) {
+            return article.stick && value && value.length;
+        }
+
         var rules = {
             title: notEmpty,
-            body:  notEmpty
+            body:  notEmpty,
+            image: hasImage
         };
 
         var result = true,
             ruleResult;
         for (var rule in rules) {
             if (article.hasOwnProperty(rule)) {
-                ruleResult = rules[rule](article[rule]);
+                ruleResult = rules[rule](article[rule], article);
                 if (!ruleResult) {
                     _validationError = _validationError || {};
                     _validationError[rule] = true;

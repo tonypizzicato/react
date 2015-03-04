@@ -59,12 +59,16 @@
 .s_width_half {
   width: 50%;
 }
-.generate-margins(4, 12);
+
+.generate-margins(4, 6);
 
 .page-with-nav-content {
-  .generate-margins(4, 12);
+  .generate-margins(4, 6);
 }
 
+.s_t_4 {
+  top: 4px;
+}
 
 .generate-margins(@n, @step, @i: 0) when (@i =< @n) {
   @margin: @step * @i;
@@ -73,7 +77,8 @@
   }
   .s_mb_@{margin} {
     margin-bottom: 1px * @margin;
-  }.s_ml_@{margin} {
+  }
+  .s_ml_@{margin} {
     margin-left: 1px * @margin;
   }
   .s_mr_@{margin} {
@@ -84,7 +89,8 @@
   }
   .s_pb_@{margin} {
     padding-bottom: 1px * @margin;
-  }.s_pl_@{margin} {
+  }
+  .s_pl_@{margin} {
     padding-left: 1px * @margin;
   }
   .s_pr_@{margin} {

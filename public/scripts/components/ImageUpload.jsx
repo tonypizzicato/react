@@ -1,34 +1,84 @@
 "use strict";
 
-var React = require('react'),
-    mui   = require('material-ui');
+var _            = require('underscore'),
+    React        = require('react'),
+    cx           = React.addons.classSet,
+    mui          = require('material-ui'),
+
+    Button       = mui.FlatButton,
+    Icon         = mui.FontIcon,
+    ActionButton = mui.FloatingActionButton;
 
 var ImageUpload = React.createClass({
 
     _reader: null,
 
-    _previewImage: function () {
+    propTypes: function () {
+        return {
+            label: React.PropTypes.string,
+            image: React.PropTypes.string
+        }
+    },
+
+    getDefaultProps: function () {
+        return {
+            label: "Select image",
+            image: ''
+        }
+    },
+
+    getInitialState: function () {
+        return {
+            uploaded: this.props.image
+        }
+    },
+
+    _onImage: function () {
         this._reader = new FileReader();
         this._reader.readAsDataURL(this.refs.upload.getDOMNode().files[0]);
 
-        this._reader.onload = function (oFREvent) {
-            this.refs.preview.getDOMNode().src = oFREvent.target.result;
+        this._reader.onload = function (e) {
+            this.refs.preview.getDOMNode().src = e.target.result;
+            this.setState({uploaded: true});
+        }.bind(this);
+
+        this._reader.onprogress = function (e) {
+            console.dir(e);
         }.bind(this);
     },
 
+    _onDelete: function() {
+      console.log('remove image');
+    },
+
+    _onClick: function () {
+        _.delay(function () {
+            this.refs.upload.getDOMNode().click();
+        }.bind(this), 600);
+    },
+
     getImage: function () {
-        return this._reader.result;
+        return this.state.uploaded ? this._reader.result : null;
     },
 
     render: function () {
-        var style = {
-            width:  '100%',
-            height: this.props.image ? 'auto' : 0
-        };
+        var previewClass = cx({
+            'mui-file-input-image':         true,
+            'mui-file-input-image-visible': this.state.uploaded
+        });
+
         return (
-            <div>
-                <img ref="preview" src={this.props.image} style={style} />
-                <input ref="upload" type="file" onChange={this._previewImage} />
+            <div className="mui-file-input-container">
+                <ActionButton className="mui-file-input-image-close" iconClassName="mdfi_navigation_close" onClick={this._onDelete} />
+                <img src={this.props.image} className={previewClass} ref="preview" />
+                <input className="file-input" type="file" onChange={this._onImage} ref="upload" />
+
+                <div className="mui-file-input">
+                    <Button onClick={this._onClick} >
+                        <Icon className="mdfi_image_photo s_mr_6 s_t_4"/>
+                        <span className="mui-flat-button-label">{this.props.label}</span>
+                    </Button>
+                </div>
             </div>
         );
     }

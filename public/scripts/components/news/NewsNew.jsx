@@ -144,7 +144,7 @@ var NewsNew = React.createClass({
                         errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                         ref="body" />
 
-                    <ImageUpload image={this.props.article.image} ref="image" />
+                    <ImageUpload label="Select preview image (required if article is sticked)" image={this.props.article.image} ref="image" />
 
                     <div className="s_width_half">
                         <DropDownMenu menuItems={leaguesItems} autoWidth={false} />
@@ -167,9 +167,6 @@ var NewsNew = React.createClass({
                         </div>
                     </div>
 
-                    <div className="s_width_half">
-                        <input className="btn btn-default btn-file" type="file" onChange={this._handleFile} accept="image/*;capture=camera"/>
-                    </div>
                     <div className="">
                         <div className="s_position_relative s_overflow_hidden s_mt_24">
                             <div className="s_float_l s_width_half">
