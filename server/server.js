@@ -8,9 +8,12 @@ var express      = require('express'),
     cookieParser = require('cookie-parser'),
     favicon      = require('serve-favicon'),
 
+    hbs          = require('hbs'),
     mongoose     = require('mongoose'),
     auth         = require('./auth'),
-    routes       = require('./routes');
+    routes       = require('./routes'),
+
+    morgan       = require('morgan');
 
 
 // Configure server
@@ -33,11 +36,17 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use(morgan('combined'));
+
 // connect to Mongo when the app initializes
 mongoose.connect('mongodb://localhost/admin_amateur');
 
 auth.init(app);
 routes.init(app);
+
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views/');
+
 
 /**
  * Development Settings

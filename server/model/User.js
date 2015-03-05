@@ -1,7 +1,7 @@
 "use strict";
 
 var mongoose    = require('mongoose'),
-    bcrypt      = require('bcrypt'),
+    bcrypt      = require('bcrypt-nodejs'),
     Schema      = mongoose.Schema,
     ObjectId    = Schema.ObjectId,
     SALT_FACTOR = 10;
@@ -18,35 +18,36 @@ var userSchema = new Schema({
     roles:    {type: Array, required: true, default: ['user']}
 });
 
+userSchema.options.toJSON = {
+    transform: function (doc, ret, options) {
+        delete ret.__v;
+        delete ret.password;
+        delete ret.dc;
+        return ret;
+    }
+};
+
 // Bcrypt middleware
 userSchema.pre('save', function (next) {
     var user = this;
 
-    if (!user.isModified('password')) return next();
+    if (!user.isModified('password')) {
+        return next();
+    }
 
-    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
-        if (err) {
-            return next(err);
-        }
-
-        bcrypt.hash(user.password, salt, function (err, hash) {
-            if (err) {
-                return next(err);
-            }
-            user.password = hash;
-            next();
-        });
-    });
+    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(SALT_FACTOR));
+    next();
 });
 
 // Password verification
-userSchema.methods.verifyPassword = function (candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-        if (err) {
-            return cb(err);
-        }
-        cb(null, isMatch);
-    });
+userSchema.methods.verifyPassword = function (candidatePassword) {
+    var equal = true;
+
+    if (!bcrypt.compareSync(candidatePassword, this.password)) {
+        equal = false
+    }
+
+    return equal;
 };
 
 // Export user model

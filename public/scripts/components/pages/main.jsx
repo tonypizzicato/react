@@ -8,6 +8,7 @@ var React          = require('react'),
 
     Canvas         = mui.AppCanvas,
     AppBar         = mui.AppBar,
+    Icon           = mui.FontIcon,
 
     WithNav        = require('./with-nav.jsx'),
 
@@ -31,7 +32,7 @@ var MainApp = React.createClass({
 
     getInitialState: function () {
         return {
-            loggedIn: false,
+            loggedIn: AuthStore.loggedIn(),
             leagues:  []
         }
     },
@@ -58,15 +59,18 @@ var MainApp = React.createClass({
     render: function () {
 
         var loginOrOut = this.state.loggedIn ?
-            <Link to="logout">Log out</Link> :
-            <Link to="login">Sign in</Link>;
+            <Link to="logout">Logout</Link> :
+            <Link to="login">Login</Link>;
 
         console.log('MAIN RENDERING');
         return (
             <div>
                 <Canvas>
                     <AppBar className="mui-dark-theme" title="Amateur Admin App" zDepth={0}>
-                    {loginOrOut}
+                        <div className="login">
+                            <Icon className="mdfi_action_account_circle" />
+                            {loginOrOut}
+                        </div>
                     </AppBar>
 
                     <WithNav

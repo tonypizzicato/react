@@ -115,7 +115,7 @@ var Login = React.createClass({
         var user = {
             email:    this.refs.email.getValue(),
             password: this.refs.password.getValue()
-        }
+        };
 
         var validation = {},
             isValid = true;

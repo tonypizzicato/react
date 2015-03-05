@@ -11,8 +11,20 @@ var _               = require('underscore'),
     EventsConstants = require('../constants/EventsConstants'),
     AuthConstants   = require('../constants/AuthConstants');
 
+var initUser = function () {
+    var el = document.getElementById('user'),
+        user = null;
+    if (el.dataset.user !== undefined) {
+        if (el.dataset.user.length) {
+            user = JSON.parse(el.dataset.user);
+        }
+        el.remove();
+    }
 
-var _user = null;
+    return user;
+};
+
+var _user = initUser();
 
 var Store = assign({}, EventEmitter.prototype, {
 

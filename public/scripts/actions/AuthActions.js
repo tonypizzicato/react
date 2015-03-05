@@ -10,11 +10,11 @@ module.exports = {
             data: data
         });
     },
-    login:  function (username, password) {
+    login:  function (email, password) {
         AppDispatcher.dispatch({
             type: AuthConstants.AUTH_LOGIN,
             data: {
-                username: username,
+                email:    email,
                 password: password
             }
         });

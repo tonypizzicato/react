@@ -16,7 +16,7 @@ var routes = {
         },
         'logout': {
             path:   '/logout',
-            method: 'DELETE'
+            method: 'GET'
         }
     },
     'news': {
@@ -163,7 +163,7 @@ var mapParams = function (route, params) {
     }
 
     return parts.join('/');
-}
+};
 
 var get = function (routeName, params) {
     var parts = routeName.split(':'),
@@ -175,11 +175,13 @@ var get = function (routeName, params) {
         }
     }
 
+    var base = basePath;
+
     if (params && params['host']) {
-        basePath = params['host'];
+        base = params['host'];
     }
 
-    route.path = basePath + s.sprintf(route.path, params);
+    route.path = base + s.sprintf(route.path, params);
 
     return route;
 }
