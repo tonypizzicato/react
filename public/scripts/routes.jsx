@@ -13,13 +13,13 @@ var React          = require('react'),
     NewsApp        = require('./components/pages/News.jsx'),
     MediaApp       = require('./components/pages/media.jsx'),
     GamesApp       = require('./components/pages/Games.jsx'),
-    Auth           = require('./components/auth.jsx');
+    Auth           = require('./components/Auth.jsx');
 
 var Routes = (
     <Route name="root" path="/" handler={MainApp}>
         <Route name="signup" handler={Auth.SignUp}/>
-        <Route name="login" handler={Auth.SignIn}/>
-        <Route name="logout" handler={Auth.LogOut}/>
+        <Route name="login" handler={Auth.Login}/>
+        <Route name="logout" handler={Auth.Logout}/>
 
         <Route name="users" handler={UsersApp} />
         <Route name="countries" handler={CountriesApp} />

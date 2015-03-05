@@ -4,6 +4,8 @@ var _                   = require('underscore'),
     React               = require('react'),
     mui                 = require('material-ui'),
 
+    Authentication      = require('../Auth.jsx').Authentication,
+
     Typeahead           = require('react-typeahead').Typeahead,
 
     Paper               = mui.Paper,
@@ -28,6 +30,8 @@ var _                   = require('underscore'),
 
 
 var GamesApp = React.createClass({
+
+    mixins: [Authentication],
 
     propTypes: function () {
         return {

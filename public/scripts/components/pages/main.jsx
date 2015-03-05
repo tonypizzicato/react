@@ -11,6 +11,8 @@ var React          = require('react'),
 
     WithNav        = require('./with-nav.jsx'),
 
+    AuthStore      = require('../../stores/AuthStore'),
+
     LeaguesActions = require('../../actions/LeaguesActions'),
     LeaguesStore   = require('../../stores/LeaguesStore');
 
@@ -35,12 +37,18 @@ var MainApp = React.createClass({
     },
 
     componentDidMount: function () {
+        AuthStore.addChangeListener(this._authChange);
         LeaguesStore.addChangeListener(this._leaguesChange);
         LeaguesActions.load();
     },
 
     componentWillUnmount: function () {
+        AuthStore.removeChangeListener(this._authChange);
         LeaguesStore.removeChangeListener(this._leaguesChange);
+    },
+
+    _authChange: function () {
+        this.setState({loggedIn: AuthStore.loggedIn()});
     },
 
     _leaguesChange: function () {

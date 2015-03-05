@@ -5,6 +5,20 @@ var s = require('underscore.string');
 var basePath = 'http://localhost:9000/api';
 
 var routes = {
+    'auth': {
+        'signup': {
+            path:   '/signup',
+            method: 'POST'
+        },
+        'login':  {
+            path:   '/login',
+            method: 'POST'
+        },
+        'logout': {
+            path:   '/logout',
+            method: 'DELETE'
+        }
+    },
     'news': {
         'list':   {
             path:   '/news',
@@ -159,6 +173,10 @@ var get = function (routeName, params) {
         if (!route) {
             throw Error('No existing route for ' + routeName);
         }
+    }
+
+    if (params && params['host']) {
+        basePath = params['host'];
     }
 
     route.path = basePath + s.sprintf(route.path, params);

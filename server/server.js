@@ -6,7 +6,11 @@ var express      = require('express'),
     fs           = require('fs'),
     bodyParser   = require('body-parser'),
     cookieParser = require('cookie-parser'),
-    favicon      = require('serve-favicon');
+    favicon      = require('serve-favicon'),
+
+    mongoose     = require('mongoose'),
+    auth         = require('./auth'),
+    routes       = require('./routes');
 
 
 // Configure server
@@ -29,6 +33,12 @@ app.use(session({
     saveUninitialized: true
 }));
 
+// connect to Mongo when the app initializes
+mongoose.connect('mongodb://localhost/admin_amateur');
+
+auth.init(app);
+routes.init(app);
+
 /**
  * Development Settings
  */
@@ -48,7 +58,7 @@ if (app.get('env') === 'production') {
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.json({
         message: err.message,
         error:   {}
     });
