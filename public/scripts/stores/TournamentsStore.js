@@ -1,7 +1,6 @@
 "use strict";
 
 var _                    = require('underscore'),
-    moment               = require('moment'),
     assign               = require('object-assign'),
     EventEmitter         = require('events').EventEmitter,
 
@@ -10,7 +9,8 @@ var _                    = require('underscore'),
     EventsConstants      = require('../constants/EventsConstants'),
     TournamentsConstants = require('../constants/TournamentsConstants'),
 
-    api                  = require('../utils/api');
+    routes               = require('../utils/api-routes'),
+    api                  = require('../utils/api').init(routes.routes, routes.basePath);
 
 
 var _tournaments     = [],

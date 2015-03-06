@@ -4,8 +4,10 @@ var React       = require('react'),
     Router      = require('react-router'),
     mui         = require('material-ui'),
 
+    Paper       = mui.Paper,
     Tabs        = mui.Tabs,
     Tab         = mui.Tab,
+    Snackbar    = mui.Snackbar,
 
     TextField   = mui.TextField,
     Button      = mui.RaisedButton,
@@ -17,14 +19,16 @@ var Auth = React.createClass({
 
     render: function () {
         return (
-            <Tabs>
-                <Tab label="Login" >
-                    <Login />
-                </Tab>
-                <Tab label="Signup" >
-                    <SignUp />
-                </Tab>
-            </Tabs>
+            <Paper className="login-form">
+                <Tabs>
+                    <Tab label="Login">
+                        <Login />
+                    </Tab>
+                    <Tab label="Signup">
+                        <SignUp />
+                    </Tab>
+                </Tabs>
+            </Paper>
         )
     }
 });
@@ -42,11 +46,17 @@ var SignUp = React.createClass({
         var user = {
             username: this.refs.username.getValue(),
             email:    this.refs.email.getValue(),
-            password: this.refs.password.getValue()
+            password: this.refs.password.getValue(),
+            vk:       this.refs.vk.getValue()
         }
 
         var validation = {},
             isValid = true;
+
+        function validateEmail(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
 
         for (var field in user) {
             if (user[field].length == 0) {
@@ -54,6 +64,9 @@ var SignUp = React.createClass({
                 isValid = false;
             }
         }
+
+        validation.email = !validateEmail(user.email);
+        isValid = isValid && !validation.email;
 
         this.setState({validation: validation});
         if (isValid) {
@@ -75,7 +88,7 @@ var SignUp = React.createClass({
                     className="s_display_block"
                     hintText="your@e.mail"
                     floatingLabelText="Email"
-                    errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
+                    errorText={this.state.validation.email ? 'Поле не заполнено или заполнено неверно' : null}
                     type="email"
                     ref="email" />
 
@@ -87,7 +100,15 @@ var SignUp = React.createClass({
                     type="password"
                     ref="password" />
 
-                <Button className="button_type_save s_float_r s_mt_36" label="SignUp" secondary={true} onClick={this._onSave} />
+                <TextField
+                    className="s_display_block"
+                    hintText="https://vk.com/id111111"
+                    floatingLabelText="VK page"
+                    errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
+                    type="text"
+                    ref="vk" />
+
+                <Button className="button_type_save s_width_full s_mt_24" label="SignUp" secondary={true} onClick={this._onSave} />
 
             </div>
 
@@ -105,10 +126,20 @@ var Login = React.createClass({
 
     componentDidMount: function () {
         AuthStore.addChangeListener(this._onLogin);
+        AuthStore.addUnauthorizedListener(this._onError);
     },
 
     componentWillUnmount: function () {
         AuthStore.removeChangeListener(this._onLogin);
+        AuthStore.removeUnauthorizedListener(this._onError);
+    },
+
+    _onError: function (e) {
+        if (e.status == 401) {
+            this.refs.errCredentials.show();
+        } else {
+            this.refs.errConnection.show();
+        }
     },
 
     _onSave: function () {
@@ -127,7 +158,9 @@ var Login = React.createClass({
             }
         }
 
-        this.setState({validation: validation});
+        this.setState({
+            validation: validation
+        });
         if (isValid) {
             AuthActions.login(user.email, user.password);
         }
@@ -166,7 +199,15 @@ var Login = React.createClass({
                     type="password"
                     ref="password" />
 
-                <Button className="button_type_save s_float_r s_mt_36" label="Login" secondary={true} onClick={this._onSave} />
+                <Button className="button_type_save s_width_full s_mt_24" label="Login" secondary={true} onClick={this._onSave} />
+
+                <Snackbar
+                    message="Wrong login or password"
+                    ref="errCredentials" />
+
+                <Snackbar
+                    message="Ooops! Server error occurred."
+                    ref="errConnection" />
             </div>
         );
     }
@@ -210,6 +251,7 @@ var Authentication = {
 };
 
 module.exports = {
+    Auth:           Auth,
     SignUp:         Auth,
     Login:          Auth,
     Logout:         Logout,

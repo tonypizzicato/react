@@ -15,3 +15,14 @@
 .text_align_c {
   text-align: center;
 }
+
+.generate-font-size(24, 1, 7);
+
+.generate-font-size(@n, @step, @i: 0) when (@i =< @n) {
+  @size: @step + @i;
+  .text_font-size_@{size} {
+    font-size: 1px * @size;
+  }
+
+  .generate-font-size(@n, @step, (@i + 1));
+}

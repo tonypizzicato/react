@@ -10,7 +10,8 @@ var _                  = require('underscore'),
     EventsConstants    = require('../constants/EventsConstants'),
     CountriesConstants = require('../constants/CountriesConstants'),
 
-    api                = require('../utils/api');
+    routes             = require('../utils/api-routes'),
+    api                = require('../utils/api').init(routes.routes, routes.basePath);
 
 
 var _countries       = [],

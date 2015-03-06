@@ -32,6 +32,17 @@ var init = function (app) {
         req.logout();
         res.json({});
     });
+
+    app.get('/users', function (req, res) {
+        User.find().exec(function (err, docs) {
+            if (err) {
+                res.status(500).json({error: err});
+                return;
+            }
+
+            res.json(docs);
+        });
+    });
 };
 
 module.exports.init = init;

@@ -1,8 +1,6 @@
 "use strict";
 
-var s = require('underscore.string');
-
-var basePath = 'http://localhost:9000/api';
+var basePath = 'http://localhost:9009/api';
 
 var routes = {
     'auth': {
@@ -149,43 +147,5 @@ var routes = {
     }
 };
 
-var mapParams = function (route, params) {
-    var parts = route.split('/');
-    for (var i in parts) {
-        if (parts[i].indexOf(':') === 0) {
-            var param = params[parts[i]];
-            if (param === undefined) {
-                throw Error('Parameter ":' + parts[i] + '" for "' + route + '" not defined');
-            }
-
-            parts[i] = param;
-        }
-    }
-
-    return parts.join('/');
-};
-
-var get = function (routeName, params) {
-    var parts = routeName.split(':'),
-        route = JSON.parse(JSON.stringify(routes));
-    for (var i in parts) {
-        route = route[parts[i]];
-        if (!route) {
-            throw Error('No existing route for ' + routeName);
-        }
-    }
-
-    var base = basePath;
-
-    if (params && params['host']) {
-        base = params['host'];
-    }
-
-    route.path = base + s.sprintf(route.path, params);
-
-    return route;
-}
-
-module.exports = {
-    get: get
-};
+module.exports.routes = routes;
+module.exports.basePath = basePath;

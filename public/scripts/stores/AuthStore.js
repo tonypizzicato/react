@@ -4,7 +4,8 @@ var _               = require('underscore'),
     assign          = require('object-assign'),
     EventEmitter    = require('events').EventEmitter,
 
-    api             = require('../utils/api'),
+    routes          = require('../utils/routes'),
+    api             = require('../utils/api').init(routes.routes, routes.basePath),
 
     AppDispatcher   = require('../dispatcher/app-dispatcher'),
 
@@ -40,6 +41,18 @@ var Store = assign({}, EventEmitter.prototype, {
         this.removeListener(EventsConstants.EVENT_CHANGE, cb);
     },
 
+    emitUnauthorized: function (e) {
+        this.emit(AuthConstants.AUTH_UNAUTHORIZED, e);
+    },
+
+    addUnauthorizedListener: function (cb) {
+        this.addListener(AuthConstants.AUTH_UNAUTHORIZED, cb);
+    },
+
+    removeUnauthorizedListener: function (cb) {
+        this.removeListener(AuthConstants.AUTH_UNAUTHORIZED, cb);
+    },
+
     getUser: function () {
         return _user;
     },
@@ -51,7 +64,7 @@ var Store = assign({}, EventEmitter.prototype, {
 
 
 AppDispatcher.register(function (action) {
-    var options = assign({}, action.data, {host: 'http://localhost:3000'});
+    var options = assign({}, action.data);
 
     switch (action.type) {
         case AuthConstants.AUTH_SIGNUP:
@@ -67,6 +80,8 @@ AppDispatcher.register(function (action) {
             api.call('auth:login', options).done(function (response) {
                 _user = response;
                 Store.emitChange();
+            }).fail(function (res) {
+                Store.emitUnauthorized(res);
             });
             Store.emitChange();
 

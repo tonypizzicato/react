@@ -11,6 +11,7 @@ var React          = require('react'),
     Icon           = mui.FontIcon,
 
     WithNav        = require('./with-nav.jsx'),
+    Auth           = require('../Auth.jsx').Auth,
 
     AuthStore      = require('../../stores/AuthStore'),
 
@@ -62,6 +63,13 @@ var MainApp = React.createClass({
             <Link to="logout">Logout</Link> :
             <Link to="login">Login</Link>;
 
+        var content = '';
+        if (this.state.loggedIn) {
+            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} />)
+        } else {
+            content = <Auth />
+        }
+
         console.log('MAIN RENDERING');
         return (
             <div>
@@ -72,10 +80,7 @@ var MainApp = React.createClass({
                             {loginOrOut}
                         </div>
                     </AppBar>
-
-                    <WithNav
-                        menuItems={menuItems}
-                        leagues={this.state.leagues} />
+                    {content}
                 </Canvas>
             </div>
         )

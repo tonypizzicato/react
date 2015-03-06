@@ -2,7 +2,6 @@
 
 var _               = require('underscore'),
     assign          = require('object-assign'),
-    moment          = require('moment'),
     EventEmitter    = require('events').EventEmitter,
 
     AppDispatcher   = require('../dispatcher/app-dispatcher'),
@@ -10,7 +9,8 @@ var _               = require('underscore'),
     EventsConstants = require('../constants/EventsConstants'),
     NewsConstants   = require('../constants/NewsConstants'),
 
-    api             = require('../utils/api');
+    routes          = require('../utils/api-routes'),
+    api             = require('../utils/api').init(routes.routes, routes.basePath);
 
 
 var _news            = [],

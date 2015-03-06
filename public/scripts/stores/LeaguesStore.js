@@ -4,7 +4,8 @@ var _                = require('underscore'),
     assign           = require('object-assign'),
     EventEmitter     = require('events').EventEmitter,
 
-    api              = require('../utils/api'),
+    routes           = require('../utils/api-routes'),
+    api              = require('../utils/api').init(routes.routes, routes.basePath),
 
     AppDispatcher    = require('../dispatcher/app-dispatcher'),
 
