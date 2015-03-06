@@ -17,6 +17,7 @@ var _                   = require('underscore'),
     Button              = mui.RaisedButton,
 
     Editor              = require('../MediumEditor.jsx'),
+    Dropzone            = require('../Dropzone.jsx'),
     GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
 
     CountriesStore      = require('../../stores/CountriesStore'),
@@ -129,11 +130,10 @@ var GamesApp = React.createClass({
         this.setState({validation: validation});
     },
 
-    componentWillUpdate: function () {
-    },
-
     _onArticleCancel: function () {
-        this.setState({selectedArticle: this.getInitialState().selectedArticle});
+        this.setState({
+            selectedArticle: this.getInitialState().selectedArticle
+        });
     },
 
     _onGameChanged: function (string) {
@@ -206,7 +206,7 @@ var GamesApp = React.createClass({
                     <GameArticleForm type="review" game={this.state.selectedGame} article={review} onCancel={this._onArticleCancel} />
                 </Tab>
                 <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
-                    photo uploader
+                    <Dropzone />
                 </Tab>
             </Tabs>
         );
