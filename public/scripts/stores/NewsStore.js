@@ -171,7 +171,7 @@ AppDispatcher.register(function (action) {
             break;
 
         default:
-            console.log('action "' + action.type + '" was not handled in News store');
+            break;
     }
 });
 

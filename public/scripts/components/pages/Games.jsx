@@ -1,32 +1,36 @@
 "ues strict";
 
-var _ = require('underscore'),
-    React = require('react'),
-    mui = require('material-ui'),
+var _                   = require('underscore'),
+    React               = require('react'),
+    mui                 = require('material-ui'),
 
-    Authentication = require('../Auth.jsx').Authentication,
+    Authentication      = require('../Auth.jsx').Authentication,
 
-    Typeahead = require('react-typeahead').Typeahead,
+    Typeahead           = require('react-typeahead').Typeahead,
 
-    Paper = mui.Paper,
-    Tabs = mui.Tabs,
-    Tab = mui.Tab,
-    Toolbar = mui.Toolbar,
-    ToolbarGroup = mui.ToolbarGroup,
-    DropDownMenu = mui.DropDownMenu,
-    Button = mui.RaisedButton,
+    Paper               = mui.Paper,
+    Tabs                = mui.Tabs,
+    Tab                 = mui.Tab,
+    Toolbar             = mui.Toolbar,
+    ToolbarGroup        = mui.ToolbarGroup,
+    DropDownMenu        = mui.DropDownMenu,
+    Button              = mui.RaisedButton,
 
-    Editor = require('../MediumEditor.jsx'),
-    Dropzone = require('../Dropzone.jsx'),
-    GameArticleForm = require('../game-articles/GameArticleForm.jsx'),
+    Editor              = require('../MediumEditor.jsx'),
+    Dropzone            = require('../Dropzone.jsx'),
+    Photos              = require('../Photos.jsx'),
+    GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
 
-    CountriesStore = require('../../stores/CountriesStore'),
-    CountriesActions = require('../../actions/CountriesActions'),
+    CountriesStore      = require('../../stores/CountriesStore'),
+    CountriesActions    = require('../../actions/CountriesActions'),
 
-    GamesStore = require('../../stores/GamesStore'),
-    GamesActions = require('../../actions/GamesActions'),
+    PhotosStore         = require('../../stores/PhotosStore'),
+    PhotosActions       = require('../../actions/PhotosActions'),
 
-    GameArticlesStore = require('../../stores/GameArticlesStore'),
+    GamesStore          = require('../../stores/GamesStore'),
+    GamesActions        = require('../../actions/GamesActions'),
+
+    GameArticlesStore   = require('../../stores/GameArticlesStore'),
     GameArticlesActions = require('../../actions/GameArticlesActions');
 
 
@@ -42,15 +46,16 @@ var GamesApp = React.createClass({
 
     getInitialState: function () {
         return {
-            countries: [],
-            games: [],
-            articles: [],
-            selectedLeague: 0,
-            selectedCountry: 0,
+            countries:          [],
+            games:              [],
+            articles:           [],
+            photos:             [],
+            selectedLeague:     0,
+            selectedCountry:    0,
             selectedTournament: 0,
-            selectedArticle: {},
-            selectedGame: {},
-            validation: {}
+            selectedArticle:    {},
+            selectedGame:       {},
+            validation:         {}
         }
     },
 
@@ -58,6 +63,7 @@ var GamesApp = React.createClass({
         CountriesStore.addChangeListener(this._countriesChange);
         GameArticlesStore.addChangeListener(this._articleChange);
         GamesStore.addChangeListener(this._gamesChange);
+        PhotosStore.addChangeListener(this._photosChange);
 
         CountriesActions.load();
         GameArticlesActions.load();
@@ -75,6 +81,7 @@ var GamesApp = React.createClass({
         CountriesStore.removeChangeListener(this._countriesChange);
         GameArticlesStore.removeChangeListener(this._articleChange);
         GamesStore.removeChangeListener(this._gamesChange);
+        PhotosStore.removeChangeListener(this._photosChange);
     },
 
     _countriesChange: function () {
@@ -104,6 +111,10 @@ var GamesApp = React.createClass({
 
     _articleChange: function () {
         console.dir(GameArticlesStore.getAll())
+    },
+
+    _photosChange: function () {
+        this.setState({photos: PhotosStore.getAll()});
     },
 
     _onGameTabChange: function (e) {
@@ -140,6 +151,13 @@ var GamesApp = React.createClass({
         var game = _.findWhere(this.state.games, {text: string});
 
         this.setState({selectedGame: game});
+        PhotosActions.load('games', game._id);
+    },
+
+    _onPhotosUpload: function () {
+        if (this.state.selectedGame._id) {
+            PhotosActions.load('games', this.state.selectedGame._id);
+        }
     },
 
     render: function () {
@@ -157,7 +175,7 @@ var GamesApp = React.createClass({
 
                 var countriesMenu = countryItems.length > 1 ? (
                     <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect}
-                                  selectedIndex={this.state.selectedCountry}/>
+                        selectedIndex={this.state.selectedCountry}/>
                 ) : (<span className="mui-label s_ml_24">{this.state.countries[0].name}</span>);
 
                 var tournamentsMenu = this._tournamentsMenuComponent(tournaments);
@@ -204,14 +222,22 @@ var GamesApp = React.createClass({
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
                     <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
                         <GameArticleForm type="preview" game={this.state.selectedGame} article={preview}
-                                         onCancel={this._onArticleCancel}/>
+                            onCancel={this._onArticleCancel}/>
                     </Tab>
                     <Tab label="Review" key={this.state.selectedTournament + '-review'}>
                         <GameArticleForm type="review" game={this.state.selectedGame} article={review}
-                                         onCancel={this._onArticleCancel}/>
+                            onCancel={this._onArticleCancel}/>
                     </Tab>
                     <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
-                        <Dropzone url={GamesStore.getImagesUrl(this.state.selectedGame)}/>
+                        <Dropzone
+                            url={PhotosStore.getImagesUrl('games', this.state.selectedGame._id)}
+                            onUpload={this._onPhotosUpload}
+                            key={this.state.selectedGame._id + '-dropzone'}/>
+                        <Photos
+                            className="s_display_inline-block s_mt_12 s_mr_6 s_position_relative"
+                            size="150"
+                            photos={this.state.photos}
+                            key={this.state.selectedGame._id + '-photos'}/>
                     </Tab>
                 </Tabs>
             );
@@ -233,7 +259,7 @@ var GamesApp = React.createClass({
 
         return tournamentsItems.length > 1 ? (
             <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect}
-                          selectedIndex={this.state.selectedTournament}/>
+                selectedIndex={this.state.selectedTournament}/>
         ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>);
     },
 

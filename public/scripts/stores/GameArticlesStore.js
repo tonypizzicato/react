@@ -9,8 +9,8 @@ var _                     = require('underscore'),
     EventsConstants       = require('../constants/EventsConstants'),
     GameArticlesConstants = require('../constants/GameArticlesConstants'),
 
-    routes             = require('../utils/api-routes'),
-    api                = require('../utils/api').init(routes.routes, routes.basePath);
+    routes                = require('../utils/api-routes'),
+    api                   = require('../utils/api').init(routes.routes, routes.basePath);
 
 
 var _articles        = [],
@@ -156,7 +156,7 @@ AppDispatcher.register(function (action) {
             break;
 
         default:
-            console.log('action "' + action.type + '" was not handled in GameArticles store');
+            break;
     }
 });
 

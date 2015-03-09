@@ -44,7 +44,7 @@ AppDispatcher.register(function (action) {
             break;
 
         default:
-            console.log('action "' + action.type + '" was not handled in Users store');
+            break;
     }
 });
 

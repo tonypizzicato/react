@@ -186,6 +186,7 @@ var Login = React.createClass({
                 <TextField
                     className="s_display_block"
                     hintText="your@e.mail"
+                    value="tony.grebnev@gmail.com"
                     floatingLabelText="Email"
                     errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
                     type="email"

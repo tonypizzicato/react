@@ -31,6 +31,15 @@ var GameArticlesActions = {
                 _id: id
             }
         });
+    },
+
+    images: function (id) {
+        AppDispatcher.dispatch({
+            type: GameArticlesConstants.GAME_ARTICLES_IMAGES_LOAD,
+            data: {
+                _id: id
+            }
+        });
     }
 };
 

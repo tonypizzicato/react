@@ -143,10 +143,25 @@ var routes = {
         'delete': {
             path:   '/game-articles/%(_id)s',
             method: 'DELETE'
+        }
+    },
+
+    'images': {
+        'list': {
+            path:   '/%(type)s/%(postId)s/images/',
+            method: 'GET'
         },
-        'images': {
-            path:   '/game-articles/%(_id)s/images',
+        'create': {
+            path:   '/%(type)s/%(postId)s/images',
             method: 'POST'
+        },
+        'save': {
+            path:   '/%(type)s/%(postId)s/images/%(_id)s',
+            method: 'PUT'
+        },
+        'delete': {
+            path:   '/%(type)s/%(postId)s/images/%(_id)s',
+            method: 'DELETE'
         }
     }
 };

@@ -10,14 +10,18 @@ var _               = require('underscore'),
     AppDispatcher   = require('../dispatcher/app-dispatcher'),
 
     EventsConstants = require('../constants/EventsConstants'),
-    GamesConstants  = require('../constants/GamesConstants');
+    PhotosConstants = require('../constants/PhotosConstants');
 
 
-var _games = [];
+var _photos = [];
 
 var Store = assign({}, EventEmitter.prototype, {
     getAll: function () {
-        return _games;
+        return _photos;
+    },
+
+    getImagesUrl: function (type, postId) {
+        return api.get('images:create', {type: type, postId: postId}).path;
     },
 
     emitChange: function () {
@@ -47,13 +51,43 @@ var Store = assign({}, EventEmitter.prototype, {
 
 AppDispatcher.register(function (action) {
     switch (action.type) {
-        case GamesConstants.GAMES_LOAD:
-            var call = api.call('games:list', action.data).done(function (response) {
-                _games = response;
+        case PhotosConstants.PHOTOS_LOAD:
+            var call = api.call('images:list', action.data).done(function (response) {
+                _photos = response;
                 Store.emitChange();
             });
             Store.emitEvent(EventsConstants.EVENT_CALL, call);
 
+            break;
+
+        case PhotosConstants.PHOTOS_SAVE:
+            var photo = assign({}, action.data),
+                options = assign({}, {silent: false}, action.options);
+
+            api.call('images:save', action.data).then(function () {
+                var changed = _photos.filter(function (item) {
+                    return item._id == photo._id;
+                }).pop();
+
+                assign(changed, photo);
+                if (!options.silent) {
+                    Store.emitChange();
+                }
+            });
+
+            break;
+
+        case PhotosConstants.PHOTOS_DELETE:
+            api.call('images:delete', action.data).then(function () {
+                _photos = _.filter(_photos, function (item) {
+                    return item._id != action.data._id
+                });
+
+                Store.emitChange();
+            });
+            break;
+
+        default:
             break;
     }
 });

@@ -1,14 +1,14 @@
 "use strict";
 
-var _ = require('underscore'),
-    React = require('react'),
-    cx = React.addons.classSet,
-    mui = require('material-ui'),
+var _            = require('underscore'),
+    React        = require('react'),
+    cx           = React.addons.classSet,
+    mui          = require('material-ui'),
 
-    Dropzone = require('dropzone'),
+    Dropzone     = require('dropzone'),
 
-    Button = mui.FlatButton,
-    Icon = mui.FontIcon,
+    Button       = mui.FlatButton,
+    Icon         = mui.FontIcon,
     ActionButton = mui.FloatingActionButton;
 
 var DropzoneComponent = React.createClass({
@@ -18,7 +18,8 @@ var DropzoneComponent = React.createClass({
     propTypes: function () {
         return {
             url:            React.PropTypes.string.required,
-            uploadMultiple: React.PropTypes.bool
+            uploadMultiple: React.PropTypes.bool,
+            onUpload:       React.PropTypes.func
         }
     },
 
@@ -40,18 +41,22 @@ var DropzoneComponent = React.createClass({
         this._loader = new Dropzone(this.refs.dropzone.getDOMNode(), {
             url:              this.props.url,
             autoProcessQueue: false,
-            parallelUploads:  1,
+            parallelUploads:  5,
+            addRemoveLinks:   true,
             uploadMultiple:   this.props.uploadMultiple
         });
+
+        if (this.props.onUpload) {
+            this._loader.on('processingmultiple', this.props.onUpload);
+        }
 
     },
 
     render: function () {
         return (
-            <div>
-                <div className="dropzone mui-dropzone-container s_mt_24" ref="dropzone"/>
-                <ActionButton iconClassName="mdfi_file_file_upload" className="s_mt_12 s_float_r"
-                              onClick={this._onClick}/>
+            <div className="mui-dropzone-container s_mt_24">
+                <div className="dropzone" ref="dropzone"/>
+                <ActionButton iconClassName="mdfi_file_file_upload" className="s_mt_12" onClick={this._onClick}/>
             </div>
         );
     }
