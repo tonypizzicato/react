@@ -73,7 +73,6 @@ var WithNav = React.createClass({
     },
 
     render: function () {
-        console.log('WITH NAV RENDERING');
         var loaderClass = 'page-loader' + (this.state.loading ? ' page-loader_active' : '');
 
         return (

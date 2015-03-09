@@ -13,11 +13,8 @@ var $                = require('jquery'),
     CountriesActions = require('../../actions/CountriesActions'),
     CountriesStore   = require('../../stores/CountriesStore'),
 
-    CountryNew       = require('../countries/CountryNew.jsx'),
+    CountryForm       = require('../countries/CountryForm.jsx'),
     CountriesList    = require('../countries/CountriesList.jsx');
-
-var _calls = [],
-    _deferred;
 
 var CountriesApp = React.createClass({
 
@@ -37,12 +34,6 @@ var CountriesApp = React.createClass({
     },
 
     componentDidMount: function () {
-        _calls = [];
-        _deferred = new $.Deferred();
-
-        _deferred.then(function () {
-        }.bind(this));
-
         CountriesStore.addChangeListener(this._onChange);
 
         // Load entities
@@ -90,11 +81,9 @@ var CountriesApp = React.createClass({
                 return country.leagueId == league._id
             }.bind(this));
 
-            var key = league._id + '_' + (this.state.selectedCountry._id ? this.state.selectedCountry._id : Math.random().toString());
-
             return (
                 <Tab label={league.name} key={league._id} >
-                    <CountryNew country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel} key={key} />
+                    <CountryForm country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel} />
                     <CountriesList countries={countriesItems} onDelete={this._onDelete} onEdit={this._onEdit} />
                 </Tab>
             );

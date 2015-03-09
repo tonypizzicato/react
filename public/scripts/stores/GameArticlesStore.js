@@ -103,7 +103,6 @@ AppDispatcher.register(function (action) {
 
     switch (action.type) {
         case GameArticlesConstants.GAME_ARTICLES_LOAD:
-            console.log('"' + action.type + '" handled');
 
             api.call('game-articles:list').done(function (result) {
                 _articles = result;
@@ -112,7 +111,6 @@ AppDispatcher.register(function (action) {
             break;
 
         case GameArticlesConstants.GAME_ARTICLES_SAVE:
-            console.log('"' + action.type + '" handled');
 
             if (GameArticlesStore._validate(action.data)) {
                 api.call('game-articles:save', action.data).then(function (res) {
@@ -131,7 +129,6 @@ AppDispatcher.register(function (action) {
             break;
 
         case GameArticlesConstants.GAME_ARTICLES_ADD:
-            console.log('"' + action.type + '" handled');
 
             if (GameArticlesStore._validate(action.data)) {
                 api.call('game-articles:create', action.data).then(function (res) {

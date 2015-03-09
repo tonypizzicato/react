@@ -16,15 +16,15 @@ var React            = require('react'),
     CountriesActions = require('../../actions/CountriesActions'),
     CountriesStore   = require('../../stores/CountriesStore');
 
-var CountryNew = React.createClass({
+var CountryForm = React.createClass({
 
     getDefaultProps: function () {
         return {
             country:  {
-                name:   '',
-                slug:   '',
-                state:  'CREATED',
-                show:   false
+                name:  '',
+                slug:  '',
+                state: 'CREATED',
+                show:  false
             },
             leagueId: null
         }
@@ -42,6 +42,12 @@ var CountryNew = React.createClass({
 
     componentWillUnmount: function () {
         CountriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        if (!nextProps.country.hasOwnProperty('_id')) {
+            this._clearForm();
+        }
     },
 
     _onValidationError: function (validation) {
@@ -69,19 +75,23 @@ var CountryNew = React.createClass({
     _onCancel: function () {
         this.setState({validation: this.getInitialState().validation});
 
-        this.refs.name.setValue('');
-        this.refs.slug.setValue('');
-        this.refs.state.setSelectedValue('CREATED');
-        this.refs.show.setToggled(false);
+        this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
     },
 
+    _clearForm: function () {
+        this.refs.name.setValue('');
+        this.refs.slug.setValue('');
+        this.refs.state.setSelectedValue('CREATED');
+        this.refs.show.setToggled(false);
+    },
+
     render: function () {
         return (
-            <div className="panel panel_type_country-create s_pt_0">
+            <div className="panel panel_type_country-create s_pt_0" key={this.props.country._id ? this.props.country._id : 'country-form'}>
                 <TextField
                     defaultValue={this.props.country.name}
                     hintText="Введите название страны"
@@ -136,4 +146,4 @@ var CountryNew = React.createClass({
     }
 });
 
-module.exports = CountryNew;
+module.exports = CountryForm;

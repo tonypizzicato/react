@@ -86,7 +86,7 @@ var NewsApp = React.createClass({
             if (!this.state.countries.length) {
                 return (
                     <Tab label={league.name} key={league._id} >
-                        <span className="loading">Loading data</span>
+                        <div className="loading text_align_c s_mt_12">Loading data</div>
                     </Tab>
                 );
             }

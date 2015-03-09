@@ -13,7 +13,7 @@ var _               = require('underscore'),
     GamesConstants  = require('../constants/GamesConstants');
 
 
-var _games = [];
+var _games = {};
 
 var Store = assign({}, EventEmitter.prototype, {
     getAll: function () {
@@ -49,7 +49,7 @@ AppDispatcher.register(function (action) {
     switch (action.type) {
         case GamesConstants.GAMES_LOAD:
             var call = api.call('games:list', action.data).done(function (response) {
-                _games = response;
+                _games[action.data.leagueId] = response;
                 Store.emitChange();
             });
             Store.emitEvent(EventsConstants.EVENT_CALL, call);

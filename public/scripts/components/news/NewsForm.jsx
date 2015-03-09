@@ -179,7 +179,7 @@ var NewsForm = React.createClass({
 
                         <div className="buttons s_float_r s_width_quarter">
                             <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
-
+                            <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
                         </div>
                     </div>
                 </div>

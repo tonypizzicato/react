@@ -1,6 +1,5 @@
 @import "../../node_modules/material-ui/src/less/scaffolding";
 @import "../../node_modules/material-ui/src/less/components";
-@import "_s";
 @import "_text";
 @import "_input";
 
@@ -19,6 +18,10 @@
 
 *:focus {
   outline: none;
+}
+
+.mui-app-bar {
+  z-index: 50;
 }
 
 .mui-app-bar .login {
@@ -372,7 +375,7 @@
   -webkit-transform:  translateX(100%) translateY(-100%) rotate(45deg);
   transform:          translateX(100%) translateY(-100%) rotate(45deg);
   pointer-events:     none;
-  z-index:            10;
+  z-index:            51;
 }
 
 .page-loader.page-loader_active {
@@ -498,7 +501,7 @@
 }
 
 .mui-dropzone-container .dropzone {
-  border:  2px dashed #34495e;
+  border:  2px dashed m#34495e;
   z-index: 1;
 }
 
@@ -538,3 +541,5 @@
   color:      rgba(236, 240, 241, 1.0);
   opacity:    1;
 }
+
+@import "_s";

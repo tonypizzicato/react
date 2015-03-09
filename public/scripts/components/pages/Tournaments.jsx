@@ -76,7 +76,6 @@ var TournamentApp = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        console.log('RECEIVED NEW PROPS');
         if (nextProps.leagues.length !== this.props.leagues.length) {
             CountriesActions.load();
             TournamentsActions.load();
@@ -120,7 +119,6 @@ var TournamentApp = React.createClass({
     },
 
     render: function () {
-        console.log("TOURNAMENTS RENDERING");
         var tabItems = this.props.leagues.map(function (league) {
 
             var tournamentsItems = this.state.tournaments.filter(function (tournament) {

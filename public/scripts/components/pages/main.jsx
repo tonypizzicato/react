@@ -23,7 +23,6 @@ var menuItems = [
     {route: 'countries', text: 'Countries'},
     {route: 'tournaments', text: 'Tournaments'},
     {route: 'news', text: 'News'},
-    {route: 'media', text: 'Media'},
     {route: 'games', text: 'Games'}
 ];
 

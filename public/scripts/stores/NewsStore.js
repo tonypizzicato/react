@@ -100,7 +100,6 @@ AppDispatcher.register(function (action) {
 
     switch (action.type) {
         case NewsConstants.NEWS_LOAD:
-            console.log('"' + action.type + '" handled');
             api.call('news:list').done(function (result) {
                 _news = result;
                 NewsStore.emitChange();
@@ -108,7 +107,6 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_SAVE:
-            console.log('"' + action.type + '" handled');
             var article = action.data;
 
             if (NewsStore._validate(article)) {
@@ -126,7 +124,6 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_ADD:
-            console.log('"' + action.type + '" handled');
             var news = _news.slice(0);
 
             var article = action.data;
@@ -143,7 +140,7 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_DELETE:
-            api.call('news:delete', {_id: action.data._id}).then(function () {
+            api.call('news:delete', action.data).then(function () {
                 _news = _.filter(_news, function (item) {
                     return item._id != action.data._id
                 });
@@ -154,7 +151,6 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_SORT:
-            console.log('"' + action.type + '" handled');
             var current = _news.filter(function (item) {
                 return item._id == action.data._id;
             }).pop();

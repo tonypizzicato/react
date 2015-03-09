@@ -47,7 +47,7 @@ var CountriesList = React.createClass({
             CountriesActions.save({
                 _id:  item._id,
                 sort: index
-            }, {silent: true})
+            }, {silent: true});
         })
     },
 

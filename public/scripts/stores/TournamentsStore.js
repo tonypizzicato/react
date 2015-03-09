@@ -101,7 +101,6 @@ var Store = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function (action) {
     switch (action.type) {
         case TournamentsConstants.TOURNAMENTS_LOAD:
-            console.log('"' + action.type + '" handled');
             var call = api.call('tournaments:list').done(function (result) {
                 _tournaments = result;
                 Store.emitChange();

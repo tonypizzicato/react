@@ -35,7 +35,6 @@ var Store = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function (action) {
     switch (action.type) {
         case UsersConstants.USERS_LOAD:
-            console.log('"' + action.type + '" handled');
             api.call('users:list').done(function (res) {
                 _users = res;
                 Store.emitChange();

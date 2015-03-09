@@ -101,7 +101,6 @@ var Store = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function (action) {
     switch (action.type) {
         case CountriesConstants.COUNTRIES_LOAD:
-            console.log('"' + action.type + '" handled');
             var call = api.call('countries:list').done(function (result) {
                 _countries = result;
                 Store.emitChange();
