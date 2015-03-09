@@ -18,6 +18,20 @@ var _articles        = [],
 
 
 var GameArticlesStore = assign({}, EventEmitter.prototype, {
+
+    getAll: function (type) {
+        if (typeof type === "string") {
+            return _articles.filter(function (item) {
+                return item.type == type;
+            })
+        }
+        return _articles;
+    },
+
+    get: function (gameId, type) {
+        return _.findWhere(_articles, {gameId: gameId, type: type});
+    },
+
     emitChange: function () {
         this.emit(EventsConstants.EVENT_CHANGE);
     },
@@ -40,19 +54,6 @@ var GameArticlesStore = assign({}, EventEmitter.prototype, {
 
     removeValidationListener: function (cb) {
         this.removeListener(EventsConstants.EVENT_VALIDATION, cb);
-    },
-
-    getAll: function (type) {
-        if (typeof type === "string") {
-            return _articles.filter(function (item) {
-                return item.type == type;
-            })
-        }
-        return _articles;
-    },
-
-    get: function (gameId, type) {
-        return _.findWhere(_articles, {gameId: gameId, type: type});
     },
 
     /**

@@ -1,25 +1,31 @@
 "use strict";
 
-var _ = require('underscore'),
-    moment = require('moment'),
-    assign = require('object-assign'),
-    EventEmitter = require('events').EventEmitter,
+var _                  = require('underscore'),
+    moment             = require('moment'),
+    assign             = require('object-assign'),
+    EventEmitter       = require('events').EventEmitter,
 
-    AppDispatcher = require('../dispatcher/app-dispatcher'),
+    AppDispatcher      = require('../dispatcher/app-dispatcher'),
 
-    EventsConstants = require('../constants/EventsConstants'),
+    EventsConstants    = require('../constants/EventsConstants'),
     CountriesConstants = require('../constants/CountriesConstants'),
 
-    routes = require('../utils/api-routes'),
-    api = require('../utils/api').init(routes.routes, routes.basePath);
+    routes             = require('../utils/api-routes'),
+    api                = require('../utils/api').init(routes.routes, routes.basePath);
 
 
-var _countries = [],
+var _countries       = [],
     _validationError = null;
 
 var Store = assign({}, EventEmitter.prototype, {
     getAll: function () {
         return _countries;
+    },
+
+    getByLeague: function (leagueId) {
+        return _countries.filter(function (item) {
+            return item.leagueId == leagueId;
+        });
     },
 
     emitChange: function () {
@@ -52,7 +58,7 @@ var Store = assign({}, EventEmitter.prototype, {
      * @private
      */
     _getValidationError: function () {
-        var err = _validationError;
+        var err          = _validationError;
         _validationError = null;
 
         return err;
@@ -70,8 +76,8 @@ var Store = assign({}, EventEmitter.prototype, {
         };
 
         var rules = {
-            name: notEmpty,
-            slug: notEmpty,
+            name:     notEmpty,
+            slug:     notEmpty,
             leagueId: notEmpty
         };
 
@@ -87,9 +93,9 @@ var Store = assign({}, EventEmitter.prototype, {
             if (entity.hasOwnProperty(rule)) {
                 ruleResult = rules[rule](entity[rule]);
                 if (!ruleResult) {
-                    _validationError = _validationError || {};
+                    _validationError       = _validationError || {};
                     _validationError[rule] = true;
-                    result = false;
+                    result                 = false;
                 }
             }
         }
@@ -101,7 +107,7 @@ var Store = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function (action) {
     switch (action.type) {
         case CountriesConstants.COUNTRIES_LOAD:
-            var call = api.call('countries:list').done(function (result) {
+            var call      = api.call('countries:list').done(function (result) {
                 _countries = result;
                 Store.emitChange();
             });
@@ -112,7 +118,7 @@ AppDispatcher.register(function (action) {
         case CountriesConstants.COUNTRIES_ADD:
             var countries = _countries.slice(0);
 
-            var country = assign({}, action.data);
+            var country  = assign({}, action.data);
             country.sort = countries.length ? countries.sort(function (a, b) {
                 return a.sort > b.sort ? 1 : -1;
             }).pop().sort + 1 : 1;
@@ -128,7 +134,7 @@ AppDispatcher.register(function (action) {
             break;
 
         case CountriesConstants.COUNTRIES_SAVE:
-            var country = action.data;
+            var country  = action.data;
 
             if (Store._validate(country)) {
                 api.call('countries:save', country).then(function () {

@@ -1,6 +1,6 @@
 "use strict";
 
-var AppDispatcher      = require('../dispatcher/app-dispatcher'),
+var AppDispatcher = require('../dispatcher/app-dispatcher'),
     CountriesConstants = require('../constants/CountriesConstants');
 
 var CountriesActions = {
@@ -28,7 +28,7 @@ var CountriesActions = {
         AppDispatcher.dispatch({
             type: CountriesConstants.COUNTRIES_SORT,
             data: {
-                _id:  id,
+                _id: id,
                 dir: dir
             }
         })
