@@ -143,6 +143,10 @@ var routes = {
         'delete': {
             path:   '/game-articles/%(_id)s',
             method: 'DELETE'
+        },
+        'images': {
+            path:   '/game-articles/%(_id)s/images',
+            method: 'POST'
         }
     }
 };

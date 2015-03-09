@@ -6,7 +6,7 @@ var $ = require('jquery'),
 var Api = function (optRoutes, optBasePath) {
     this.routes = optRoutes;
     this.basePath = optBasePath;
-}
+};
 
 Api.prototype.call = function (routeName, data) {
     var route = this.get(routeName, data);
@@ -16,7 +16,7 @@ Api.prototype.call = function (routeName, data) {
         url:  route.path,
         data: data || {}
     });
-}
+};
 
 Api.prototype.get = function (routeName, params) {
     var parts = routeName.split(':'),
@@ -31,7 +31,7 @@ Api.prototype.get = function (routeName, params) {
     route.path = this.basePath + s.sprintf(route.path, params);
 
     return route;
-}
+};
 
 var apis = {};
 var init = function (routes, basePath) {
@@ -40,6 +40,6 @@ var init = function (routes, basePath) {
     }
 
     return apis[basePath];
-}
+};
 
 module.exports.init = init;

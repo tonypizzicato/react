@@ -1,32 +1,32 @@
 "ues strict";
 
-var _                   = require('underscore'),
-    React               = require('react'),
-    mui                 = require('material-ui'),
+var _ = require('underscore'),
+    React = require('react'),
+    mui = require('material-ui'),
 
-    Authentication      = require('../Auth.jsx').Authentication,
+    Authentication = require('../Auth.jsx').Authentication,
 
-    Typeahead           = require('react-typeahead').Typeahead,
+    Typeahead = require('react-typeahead').Typeahead,
 
-    Paper               = mui.Paper,
-    Tabs                = mui.Tabs,
-    Tab                 = mui.Tab,
-    Toolbar             = mui.Toolbar,
-    ToolbarGroup        = mui.ToolbarGroup,
-    DropDownMenu        = mui.DropDownMenu,
-    Button              = mui.RaisedButton,
+    Paper = mui.Paper,
+    Tabs = mui.Tabs,
+    Tab = mui.Tab,
+    Toolbar = mui.Toolbar,
+    ToolbarGroup = mui.ToolbarGroup,
+    DropDownMenu = mui.DropDownMenu,
+    Button = mui.RaisedButton,
 
-    Editor              = require('../MediumEditor.jsx'),
-    Dropzone            = require('../Dropzone.jsx'),
-    GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
+    Editor = require('../MediumEditor.jsx'),
+    Dropzone = require('../Dropzone.jsx'),
+    GameArticleForm = require('../game-articles/GameArticleForm.jsx'),
 
-    CountriesStore      = require('../../stores/CountriesStore'),
-    CountriesActions    = require('../../actions/CountriesActions'),
+    CountriesStore = require('../../stores/CountriesStore'),
+    CountriesActions = require('../../actions/CountriesActions'),
 
-    GamesStore          = require('../../stores/GamesStore'),
-    GamesActions        = require('../../actions/GamesActions'),
+    GamesStore = require('../../stores/GamesStore'),
+    GamesActions = require('../../actions/GamesActions'),
 
-    GameArticlesStore   = require('../../stores/GameArticlesStore'),
+    GameArticlesStore = require('../../stores/GameArticlesStore'),
     GameArticlesActions = require('../../actions/GameArticlesActions');
 
 
@@ -42,15 +42,15 @@ var GamesApp = React.createClass({
 
     getInitialState: function () {
         return {
-            countries:          [],
-            games:              [],
-            articles:           [],
-            selectedLeague:     0,
-            selectedCountry:    0,
+            countries: [],
+            games: [],
+            articles: [],
+            selectedLeague: 0,
+            selectedCountry: 0,
             selectedTournament: 0,
-            selectedArticle:    {},
-            selectedGame:       {},
-            validation:         {}
+            selectedArticle: {},
+            selectedGame: {},
+            validation: {}
         }
     },
 
@@ -156,7 +156,8 @@ var GamesApp = React.createClass({
                 var tournaments = countries[this.state.selectedCountry] ? countries[this.state.selectedCountry].tournaments : [];
 
                 var countriesMenu = countryItems.length > 1 ? (
-                    <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect} selectedIndex={this.state.selectedCountry} />
+                    <DropDownMenu menuItems={countryItems} onChange={this._onCountrySelect}
+                                  selectedIndex={this.state.selectedCountry}/>
                 ) : (<span className="mui-label s_ml_24">{this.state.countries[0].name}</span>);
 
                 var tournamentsMenu = this._tournamentsMenuComponent(tournaments);
@@ -181,7 +182,8 @@ var GamesApp = React.createClass({
                 )
             }
 
-            return (<Tab label={league.name} onActive={this._onLeagueTabChange} index={index} key={league._id}>{tab}</Tab>);
+            return (
+                <Tab label={league.name} onActive={this._onLeagueTabChange} index={index} key={league._id}>{tab}</Tab>);
         }.bind(this));
 
         return (
@@ -194,22 +196,30 @@ var GamesApp = React.createClass({
             return '';
         }
 
-        var preview = GameArticlesStore.get(this.state.selectedGame._id, 'preview'),
-            review = GameArticlesStore.get(this.state.selectedGame._id, 'review');
+        if (this.state.selectedGame._id) {
+            var preview = GameArticlesStore.get(this.state.selectedGame._id, 'preview'),
+                review = GameArticlesStore.get(this.state.selectedGame._id, 'review');
 
-        return (
-            <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
-                <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
-                    <GameArticleForm type="preview" game={this.state.selectedGame} article={preview} onCancel={this._onArticleCancel} />
-                </Tab>
-                <Tab label="Review" key={this.state.selectedTournament + '-review'}>
-                    <GameArticleForm type="review" game={this.state.selectedGame} article={review} onCancel={this._onArticleCancel} />
-                </Tab>
-                <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
-                    <Dropzone />
-                </Tab>
-            </Tabs>
-        );
+            return (
+                <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
+                    <Tab label="Preview" key={this.state.selectedTournament + '-preview'}>
+                        <GameArticleForm type="preview" game={this.state.selectedGame} article={preview}
+                                         onCancel={this._onArticleCancel}/>
+                    </Tab>
+                    <Tab label="Review" key={this.state.selectedTournament + '-review'}>
+                        <GameArticleForm type="review" game={this.state.selectedGame} article={review}
+                                         onCancel={this._onArticleCancel}/>
+                    </Tab>
+                    <Tab label="Media" key={this.state.selectedTournament + '-photo'}>
+                        <Dropzone url={GamesStore.getImagesUrl(this.state.selectedGame)}/>
+                    </Tab>
+                </Tabs>
+            );
+        } else {
+            return (
+                <div className="text_align_c font-weight_bold s_mt_24">Select game first</div>
+            )
+        }
     },
 
     _tournamentsMenuComponent: function (tournaments) {
@@ -222,7 +232,8 @@ var GamesApp = React.createClass({
         });
 
         return tournamentsItems.length > 1 ? (
-            <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect} selectedIndex={this.state.selectedTournament} />
+            <DropDownMenu menuItems={tournamentsItems} onChange={this._onTournamentSelect}
+                          selectedIndex={this.state.selectedTournament}/>
         ) : (<span className="mui-label s_ml_24">{tournaments[0].name}</span>);
     },
 
@@ -255,7 +266,7 @@ var GamesApp = React.createClass({
                     results:  's_position_absolute',
                     listItem: ''
                 }}
-                key={league._id + '-' + tournaments[this.state.selectedTournament]._id} />
+                key={league._id + '-' + tournaments[this.state.selectedTournament]._id}/>
         );
     }
 });

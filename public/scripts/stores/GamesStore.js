@@ -20,6 +20,10 @@ var Store = assign({}, EventEmitter.prototype, {
         return _games;
     },
 
+    getImagesUrl: function(game) {
+        return api.get('game-articles:images', game).path;
+    },
+
     emitChange: function () {
         this.emit(EventsConstants.EVENT_CHANGE);
     },

@@ -1,20 +1,20 @@
 "use strict";
 
-var _                  = require('underscore'),
-    moment             = require('moment'),
-    assign             = require('object-assign'),
-    EventEmitter       = require('events').EventEmitter,
+var _ = require('underscore'),
+    moment = require('moment'),
+    assign = require('object-assign'),
+    EventEmitter = require('events').EventEmitter,
 
-    AppDispatcher      = require('../dispatcher/app-dispatcher'),
+    AppDispatcher = require('../dispatcher/app-dispatcher'),
 
-    EventsConstants    = require('../constants/EventsConstants'),
+    EventsConstants = require('../constants/EventsConstants'),
     CountriesConstants = require('../constants/CountriesConstants'),
 
-    routes             = require('../utils/api-routes'),
-    api                = require('../utils/api').init(routes.routes, routes.basePath);
+    routes = require('../utils/api-routes'),
+    api = require('../utils/api').init(routes.routes, routes.basePath);
 
 
-var _countries       = [],
+var _countries = [],
     _validationError = null;
 
 var Store = assign({}, EventEmitter.prototype, {
@@ -70,8 +70,8 @@ var Store = assign({}, EventEmitter.prototype, {
         };
 
         var rules = {
-            name:     notEmpty,
-            slug:     notEmpty,
+            name: notEmpty,
+            slug: notEmpty,
             leagueId: notEmpty
         };
 
@@ -113,15 +113,10 @@ AppDispatcher.register(function (action) {
         case CountriesConstants.COUNTRIES_ADD:
             var countries = _countries.slice(0);
 
-            var country = {
-                name:     action.data.name,
-                slug:     action.data.slug,
-                state:    action.data.state,
-                leagueId: action.data.leagueId,
-                sort:     countries.length ? countries.sort(function (a, b) {
-                    return a.sort > b.sort ? 1 : -1;
-                }).pop().sort + 1 : 1
-            };
+            var country = assign({}, action.data);
+            country.sort = countries.length ? countries.sort(function (a, b) {
+                return a.sort > b.sort ? 1 : -1;
+            }).pop().sort + 1 : 1;
 
             if (Store._validate(country)) {
                 api.call('countries:create', country).then(function (res) {
