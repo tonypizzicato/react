@@ -1,22 +1,25 @@
 "use strict";
 
-var _                = require('underscore'),
-    assign           = require('object-assign'),
-    React            = require('react'),
-    mui              = require('material-ui'),
+var _ = require('underscore'),
+    assign = require('object-assign'),
+    React = require('react'),
+    cx = React.addons.classSet,
+    mui = require('material-ui'),
 
-    Toolbar          = mui.Toolbar,
-    ToolbarGroup     = mui.ToolbarGroup,
+    Transition = React.addons.CSSTransitionGroup,
 
-    Typeahead        = require('react-typeahead').Typeahead,
+    Toolbar = mui.Toolbar,
+    ToolbarGroup = mui.ToolbarGroup,
 
-    DropDownMenu     = require('../DropDownMenu.jsx'),
+    Typeahead = require('react-typeahead').Typeahead,
 
-    CountriesStore   = require('../../stores/CountriesStore'),
+    DropDownMenu = require('../DropDownMenu.jsx'),
+
+    CountriesStore = require('../../stores/CountriesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
 
-    GamesStore       = require('../../stores/GamesStore'),
-    GamesActions     = require('../../actions/GamesActions');
+    GamesStore = require('../../stores/GamesStore'),
+    GamesActions = require('../../actions/GamesActions');
 
 var GamesToolbar = React.createClass({
 
@@ -90,7 +93,7 @@ var GamesToolbar = React.createClass({
     },
 
     _updatedCountryState: function (index) {
-        var country     = this.state.countries[index],
+        var country = this.state.countries[index],
             tournaments = country.tournaments;
 
         tournaments = tournaments.map(function (item) {
@@ -136,7 +139,7 @@ var GamesToolbar = React.createClass({
 
     _onGameSelect: function (gameString) {
         var tournament = this.state.tournaments[this.state.tournamentIndex];
-        var game       = GamesStore.getByTournament(this.props.leagueId, tournament._id)[this.state.games.indexOf(gameString)];
+        var game = GamesStore.getByTournament(this.props.leagueId, tournament._id)[this.state.games.indexOf(gameString)];
 
         if (this.props.onGameSelect) {
             this.props.onGameSelect(game);
@@ -151,18 +154,18 @@ var GamesToolbar = React.createClass({
         console.log('GamesToolbar rendering ' + this.props.leagueId);
 
         var countriesMenu =
-                <DropDownMenu
-                    menuItems={this.state.countries}
-                    selectedIndex={this.state.countryIndex}
-                    noDataText="No Countries"
-                    onChange={this._onCountrySelect}/>;
+            <DropDownMenu
+                menuItems={this.state.countries}
+                selectedIndex={this.state.countryIndex}
+                noDataText="No Countries"
+                onChange={this._onCountrySelect}/>;
 
         var tournamentsMenu =
-                <DropDownMenu
-                    menuItems={this.state.tournaments}
-                    onChange={this._onTournamentSelect}
-                    noDataText="No Tournaments"
-                    selectedIndex={this.state.tournamentIndex}/>;
+            <DropDownMenu
+                menuItems={this.state.tournaments}
+                onChange={this._onTournamentSelect}
+                noDataText="No Tournaments"
+                selectedIndex={this.state.tournamentIndex}/>;
 
         var gamesInput = this.state.hasTournament ?
             <Typeahead
@@ -171,20 +174,26 @@ var GamesToolbar = React.createClass({
                 placeholder="Input teams names"
                 onOptionSelected={this._onGameSelect}
                 customClasses={{
-                        input:    'mui-text-field-input',
-                        results:  's_position_absolute',
-                        listItem: ''
-                    }}
+                    input:    'mui-text-field-input',
+                    results:  's_position_absolute',
+                    listItem: ''
+                }}
                 key={this.props.leagueId + '-' + this.state.tournaments[this.state.tournamentIndex]._id}/> : '';
 
+        var cls = cx({
+            's_mt_12': true
+        });
+
         return (
-            <Toolbar className="s_mt_12">
-                <ToolbarGroup float="left">
-                    {countriesMenu}
-                    {tournamentsMenu}
-                    {gamesInput}
-                </ToolbarGroup>
-            </Toolbar>
+            <Transition transitionName="load">
+                <Toolbar className={cls} key={this.props.leagueId + '-toolbar'}>
+                    <ToolbarGroup float="left">
+                        {countriesMenu}
+                        {tournamentsMenu}
+                        {gamesInput}
+                    </ToolbarGroup>
+                </Toolbar>
+            </Transition>
         );
     }
 });

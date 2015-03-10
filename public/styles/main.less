@@ -286,6 +286,24 @@
   padding-left: 0;
 }
 
+.mui-toolbar {
+  position: relative;
+}
+
+.load-enter .mui-toolbar:after {
+  content:    " ";
+  display:    inline-block;
+  position:   absolute;
+  height:     100%;
+  width:      0;
+  left:       0;
+  background: #2c3e50;
+}
+
+.load-enter.load-enter-active .mui-toolbar:after {
+  width: 100%;
+}
+
 .mui-toolbar .mui-drop-down-menu .mui-menu-control .mui-menu-label {
   padding-left: 24px;
 }
@@ -501,7 +519,7 @@
 }
 
 .mui-dropzone-container .dropzone {
-  border:  2px dashed m#34495e;
+  border:  2px dashed m #34495e;
   z-index: 1;
 }
 

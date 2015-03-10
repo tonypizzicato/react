@@ -42,8 +42,8 @@ var Editor = React.createClass({
 
         if (this.isMounted()) {
             var reg = /<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>(?:\s*|<\w+\s*\/?>)<\/\1>/gi;
-            value = this._editor.serialize()['element-0'].value;
-            value = value.replace(reg, '');
+            value   = this._editor.serialize()['element-0'].value;
+            value   = value.replace(reg, '');
         }
 
         this.setValue(value);
@@ -63,11 +63,6 @@ var Editor = React.createClass({
             console.log('blur');
         }
         if (!focus && (!e.relatedTarget || e.relatedTarget.className.indexOf('medium-editor-action') === -1)) {
-            //var value = this.getValue();
-
-            //if (!value.length) {
-            //this.setValue(value);
-            //}
             this.setState({activated: false});
         } else {
             this.setState({activated: true});
@@ -86,7 +81,6 @@ var Editor = React.createClass({
             disableDoubleReturn: true,
             firstHeader:         'h1',
             secondHeader:        'h2',
-            delay:               1000,
             targetBlank:         true
         });
 
@@ -143,10 +137,10 @@ var Editor = React.createClass({
                 {floatingLabelTextElement}
                 {hintTextElement}
 
-                <div className="editable" ref="editor" />
+                <div className="editable" ref="editor"/>
 
-                <hr className="mui-edit-field-underline" />
-                <hr className="mui-edit-field-focus-underline" />
+                <hr className="mui-edit-field-underline"/>
+                <hr className="mui-edit-field-focus-underline"/>
 
                 {errorTextElement}
             </div>

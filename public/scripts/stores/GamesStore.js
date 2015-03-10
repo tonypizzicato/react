@@ -66,7 +66,10 @@ AppDispatcher.register(function (action) {
                 _games[action.data.leagueId].sort(function (a, b) {
                     return a.tourNumber <= b.tourNumber ? -1 : 1;
                 });
-                Store.emitChange();
+
+                setTimeout(function() {
+                    Store.emitChange();
+                }, 125000);
             });
             Store.emitEvent(EventsConstants.EVENT_CALL, call);
 

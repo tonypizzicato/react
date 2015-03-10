@@ -9,7 +9,6 @@ var React               = require('react'),
     Toolbar             = require('./GamesToolbar.jsx'),
     GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
 
-    Editor              = require('../MediumEditor.jsx'),
     Dropzone            = require('../Dropzone.jsx'),
     Photos              = require('../Photos.jsx'),
 
@@ -64,12 +63,6 @@ var GamesTab = React.createClass({
 
     _photosChange: function () {
         this.setState({photos: PhotosStore.getAll()});
-    },
-
-    _onTabChange: function (tab) {
-        if (this.props.onTabChange) {
-            this.props.onTabChange(tab);
-        }
     },
 
     _onGameSelect: function (game) {
