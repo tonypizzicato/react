@@ -43,14 +43,6 @@ var ImageUpload = React.createClass({
             this.refs.preview.getDOMNode().src = e.target.result;
             this.setState({uploaded: true});
         }.bind(this);
-
-        this._reader.onprogress = function (e) {
-            console.dir(e);
-        }.bind(this);
-    },
-
-    _onDelete: function () {
-        console.log('remove image');
     },
 
     _onClick: function () {

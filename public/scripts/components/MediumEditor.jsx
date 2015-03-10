@@ -59,9 +59,6 @@ var Editor = React.createClass({
     _handleBlur: function (e) {
         var focus = e.type == 'focus';
 
-        if (!focus) {
-            console.log('blur');
-        }
         if (!focus && (!e.relatedTarget || e.relatedTarget.className.indexOf('medium-editor-action') === -1)) {
             this.setState({activated: false});
         } else {

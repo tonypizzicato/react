@@ -20,6 +20,15 @@
   font-weight: bold;
 }
 
+blockquote {
+  display:     block;
+  border-left: 6px solid #ddd;
+  margin:      10px;
+  padding:     10px 0 10px 30px;
+  font-style:  italic;
+  color:       #555;
+}
+
 .generate-font-size(24, 1, 7);
 
 .generate-font-size(@n, @step, @i: 0) when (@i =< @n) {

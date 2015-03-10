@@ -135,6 +135,7 @@ var NewsForm = React.createClass({
                     className="s_mb_24"
                     hintText="Введите тело новости"
                     placehoder="Новость"
+                    floatingLabelText="Тело новости"
                     defaultValue={this.props.article.body}
                     errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                     ref="body" />

@@ -54,7 +54,7 @@ var NewsItem = React.createClass({
         });
 
         return (
-            <Paper className="list-item">
+            <Paper className="list-item list-item_type_news">
                 <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
                     <div className="list-item__header">
                         <div className="s_display_inline-block s_valign_m">

@@ -47,19 +47,13 @@ var GamesTab = React.createClass({
     },
 
     componentDidMount: function () {
-        GameArticlesStore.addChangeListener(this._articlesChange);
         PhotosStore.addChangeListener(this._photosChange);
 
         GameArticlesActions.load();
     },
 
     componentWillUnmount: function () {
-        GameArticlesStore.removeChangeListener(this._articlesChange);
         PhotosStore.removeChangeListener(this._photosChange);
-    },
-
-    _articlesChange: function () {
-        console.dir(GameArticlesStore.getAll())
     },
 
     _photosChange: function () {
@@ -103,16 +97,22 @@ var GamesTab = React.createClass({
             tabsContent = (
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
                     <Tab label="Preview">
-                        <GameArticleForm type="preview" game={this.state.game} article={preview}
+                        <GameArticleForm
+                            type="preview"
+                            game={this.state.game}
+                            article={preview}
                             onCancel={this._onArticleCancel}
                             key={this.state.game._id + '-preview'}/>
                     </Tab>
                     <Tab label="Review">
-                        <GameArticleForm type="review" game={this.state.game} article={review}
+                        <GameArticleForm
+                            type="review"
+                            game={this.state.game}
+                            article={review}
                             onCancel={this._onArticleCancel}
                             key={this.state.game._id + '-review'}/>
                     </Tab>
-                    <Tab label="Media" key={this.state.game._id + '-photo'}>
+                    <Tab label="Media" key={this.state.game._id + '-media'}>
                         <Dropzone
                             url={PhotosStore.getImagesUrl('games', this.state.game._id)}
                             onUpload={this._onPhotosUpload}

@@ -50,7 +50,6 @@ var PhotosList = React.createClass({
     },
 
     _onDrop: function (from, to) {
-        console.log('dropped image');
         var items = this.state.photos.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 

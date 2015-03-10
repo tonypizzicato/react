@@ -69,7 +69,6 @@ var MainApp = React.createClass({
             content = <Auth />
         }
 
-        console.log('MAIN RENDERING');
         return (
             <div>
                 <Canvas>
