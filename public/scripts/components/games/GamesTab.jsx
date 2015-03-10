@@ -1,6 +1,7 @@
 "use strict";
 
-var React               = require('react'),
+var _                   = require('underscore'),
+    React               = require('react'),
     mui                 = require('material-ui'),
 
     Tabs                = mui.Tabs,
@@ -85,7 +86,9 @@ var GamesTab = React.createClass({
 
     _onPhotosUpload: function () {
         if (!!this.state.game._id) {
-            PhotosActions.load('games', this.state.game._id);
+            _.delay(function () {
+                PhotosActions.load('games', this.state.game._id);
+            }.bind(this), 1000);
         }
     },
 
@@ -95,19 +98,19 @@ var GamesTab = React.createClass({
 
         if (!!this.state.game._id) {
             var preview = GameArticlesStore.get(this.state.game._id, 'preview'),
-                review  = GameArticlesStore.get(this.state.game._id, 'review');
+                review = GameArticlesStore.get(this.state.game._id, 'review');
 
             tabsContent = (
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
                     <Tab label="Preview">
                         <GameArticleForm type="preview" game={this.state.game} article={preview}
-                                         onCancel={this._onArticleCancel}
-                                         key={this.state.game._id + '-preview'}/>
+                            onCancel={this._onArticleCancel}
+                            key={this.state.game._id + '-preview'}/>
                     </Tab>
                     <Tab label="Review">
                         <GameArticleForm type="review" game={this.state.game} article={review}
-                                         onCancel={this._onArticleCancel}
-                                         key={this.state.game._id + '-review'}/>
+                            onCancel={this._onArticleCancel}
+                            key={this.state.game._id + '-review'}/>
                     </Tab>
                     <Tab label="Media" key={this.state.game._id + '-photo'}>
                         <Dropzone

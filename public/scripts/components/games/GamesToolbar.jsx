@@ -1,25 +1,25 @@
 "use strict";
 
-var _ = require('underscore'),
-    assign = require('object-assign'),
-    React = require('react'),
-    cx = React.addons.classSet,
-    mui = require('material-ui'),
+var _                = require('underscore'),
+    assign           = require('object-assign'),
+    React            = require('react'),
+    cx               = React.addons.classSet,
+    mui              = require('material-ui'),
 
-    Transition = React.addons.CSSTransitionGroup,
+    Transition       = React.addons.CSSTransitionGroup,
 
-    Toolbar = mui.Toolbar,
-    ToolbarGroup = mui.ToolbarGroup,
+    Toolbar          = mui.Toolbar,
+    ToolbarGroup     = mui.ToolbarGroup,
 
-    Typeahead = require('react-typeahead').Typeahead,
+    Typeahead        = require('react-typeahead').Typeahead,
 
-    DropDownMenu = require('../DropDownMenu.jsx'),
+    DropDownMenu     = require('../DropDownMenu.jsx'),
 
-    CountriesStore = require('../../stores/CountriesStore'),
+    CountriesStore   = require('../../stores/CountriesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
 
-    GamesStore = require('../../stores/GamesStore'),
-    GamesActions = require('../../actions/GamesActions');
+    GamesStore       = require('../../stores/GamesStore'),
+    GamesActions     = require('../../actions/GamesActions');
 
 var GamesToolbar = React.createClass({
 
@@ -151,21 +151,19 @@ var GamesToolbar = React.createClass({
     },
 
     render: function () {
-        console.log('GamesToolbar rendering ' + this.props.leagueId);
-
         var countriesMenu =
-            <DropDownMenu
-                menuItems={this.state.countries}
-                selectedIndex={this.state.countryIndex}
-                noDataText="No Countries"
-                onChange={this._onCountrySelect}/>;
+                <DropDownMenu
+                    menuItems={this.state.countries}
+                    selectedIndex={this.state.countryIndex}
+                    noDataText="No Countries"
+                    onChange={this._onCountrySelect}/>;
 
         var tournamentsMenu =
-            <DropDownMenu
-                menuItems={this.state.tournaments}
-                onChange={this._onTournamentSelect}
-                noDataText="No Tournaments"
-                selectedIndex={this.state.tournamentIndex}/>;
+                <DropDownMenu
+                    menuItems={this.state.tournaments}
+                    onChange={this._onTournamentSelect}
+                    noDataText="No Tournaments"
+                    selectedIndex={this.state.tournamentIndex}/>;
 
         var gamesInput = this.state.hasTournament ?
             <Typeahead
@@ -184,15 +182,19 @@ var GamesToolbar = React.createClass({
             's_mt_12': true
         });
 
-        return (
-            <Transition transitionName="load">
-                <Toolbar className={cls} key={this.props.leagueId + '-toolbar'}>
-                    <ToolbarGroup float="left">
+        var content = this.isMounted() ? (
+            <Toolbar className={cls} key={this.props.leagueId + '-toolbar'}>
+                <ToolbarGroup float="left">
                         {countriesMenu}
                         {tournamentsMenu}
                         {gamesInput}
-                    </ToolbarGroup>
-                </Toolbar>
+                </ToolbarGroup>
+            </Toolbar>
+        ) : '';
+
+        return (
+            <Transition transitionName="load">
+                {content}
             </Transition>
         );
     }

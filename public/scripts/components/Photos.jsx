@@ -7,6 +7,8 @@ var React         = require('react'),
 
     Button        = mui.IconButton,
 
+    Image         = require('./Image.jsx'),
+
     PhotosActions = require('../actions/PhotosActions'),
     PhotosStore   = require('../stores/PhotosStore');
 
@@ -36,11 +38,11 @@ var PhotosList = React.createClass({
     },
 
     componentDidMount: function () {
-        //PhotosStore.addChangeListener(this._onChange);
+        PhotosStore.addChangeListener(this._onChange);
     },
 
     componentWillUnmount: function () {
-        //PhotosStore.removeChangeListener(this._onChange);
+        PhotosStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function () {
@@ -119,7 +121,7 @@ var PhotoItem = React.createClass({
         })
         return (
             <Dragon className={classes} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <img src={this.props.image.thumb} width={this.props.size} />
+                <Image src={this.props.image.thumb} width="150" height="150" />
                 <Button
                     className="photos__item_delete"
                     iconClassName="mdfi_action_highlight_remove"

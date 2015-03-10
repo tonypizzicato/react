@@ -67,9 +67,7 @@ AppDispatcher.register(function (action) {
                     return a.tourNumber <= b.tourNumber ? -1 : 1;
                 });
 
-                setTimeout(function() {
-                    Store.emitChange();
-                }, 125000);
+                Store.emitChange();
             });
             Store.emitEvent(EventsConstants.EVENT_CALL, call);
 
