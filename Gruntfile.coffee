@@ -144,7 +144,7 @@ module.exports = (grunt)->
     watch:
       options:
         nospawn: true
-        livereload: true
+        livereload: 35730
       coffee:
         files: ["<%= app.public %>/scripts/**/*.{coffee}"]
         tasks: ["coffee:dist"]

@@ -18,8 +18,9 @@ var TournamentItem = React.createClass({
                 slug:    React.PropTypes.string,
                 country: React.PropTypes.object,
                 state:   React.PropTypes.string
-            }),
-            onEdit:     React.PropTypes.func
+            }).required,
+            onEdit:     React.PropTypes.func.required,
+            onDrop:     React.PropTypes.func.required
         };
     },
 
@@ -31,7 +32,7 @@ var TournamentItem = React.createClass({
 
     render: function () {
         var visibilityClass = cx({
-            'list-item__visibility':         true,
+            'list-item__visibility':      true,
             'mdfi_action_visibility':     true,
             'mdfi_action_visibility_off': !this.props.tournament.show
         });
@@ -59,7 +60,7 @@ var TournamentItem = React.createClass({
                                 {this.props.tournament.state}
                             </div>
                             <div className="s_display_inline-block s_valign_m s_float_r">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.tournament._id} data-sort="-1" />
+                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.tournament._id} />
                             </div>
                         </div>
                     </div>

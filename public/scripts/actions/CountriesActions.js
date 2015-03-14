@@ -24,16 +24,6 @@ var CountriesActions = {
         })
     },
 
-    sort: function (id, dir) {
-        AppDispatcher.dispatch({
-            type: CountriesConstants.COUNTRIES_SORT,
-            data: {
-                _id: id,
-                dir: dir
-            }
-        })
-    },
-
     delete: function (id) {
         AppDispatcher.dispatch({
             type: CountriesConstants.COUNTRIES_DELETE,

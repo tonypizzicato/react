@@ -1,6 +1,6 @@
 "use strict";
 
-var basePath = 'http://localhost:9009/api';
+var basePath = 'http://localhost:9000/api';
 
 var routes = {
     'auth': {
@@ -48,6 +48,10 @@ var routes = {
         'item': {
             path:   '/leagues/%(_id)s',
             method: 'GET'
+        },
+        'save': {
+            path:   '/leagues/%(_id)s',
+            method: 'PUT'
         }
     },
 
@@ -147,7 +151,7 @@ var routes = {
     },
 
     'images': {
-        'list': {
+        'list':   {
             path:   '/%(type)s/%(postId)s/images/',
             method: 'GET'
         },
@@ -155,7 +159,7 @@ var routes = {
             path:   '/%(type)s/%(postId)s/images',
             method: 'POST'
         },
-        'save': {
+        'save':   {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'PUT'
         },

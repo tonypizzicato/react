@@ -150,22 +150,6 @@ AppDispatcher.register(function (action) {
 
             break;
 
-        case NewsConstants.NEWS_SORT:
-            var current = _news.filter(function (item) {
-                return item._id == action.data._id;
-            }).pop();
-            var old = _news.filter(function (item) {
-                return item._id != action.data._id && item.sort == current.sort - action.data.dir;
-            }).pop();
-
-            if (old) {
-                old.sort = current.sort;
-                current.sort -= action.data.dir;
-
-                NewsStore.emitChange();
-            }
-            break;
-
         default:
             break;
     }

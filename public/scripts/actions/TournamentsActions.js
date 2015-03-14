@@ -25,16 +25,6 @@ var TournamentsActions = {
         })
     },
 
-    sort: function (id, dir) {
-        AppDispatcher.dispatch({
-            type: TournamentsConstants.TOURNAMENTS_SORT,
-            data: {
-                _id: id,
-                dir: dir
-            }
-        })
-    },
-
     delete: function (id) {
         AppDispatcher.dispatch({
             type: TournamentsConstants.TOURNAMENTS_DELETE,

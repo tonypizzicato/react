@@ -24,16 +24,6 @@ var NewsActions = {
         })
     },
 
-    sort: function (id, dir) {
-        AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_SORT,
-            data: {
-                _id: id,
-                dir: dir
-            }
-        })
-    },
-
     delete: function (id) {
         AppDispatcher.dispatch({
             type: NewsConstants.NEWS_DELETE,

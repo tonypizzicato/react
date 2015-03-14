@@ -5,11 +5,8 @@ var $                  = require('jquery'),
     Router             = require('react-router'),
     mui                = require('material-ui'),
 
-    Dragon             = require('react-dragon'),
-
     Tabs               = mui.Tabs,
     Tab                = mui.Tab,
-    DropDownMenu       = mui.DropDownMenu,
 
     EventsConstants    = require('../../constants/EventsConstants'),
     CountriesActions   = require('../../actions/CountriesActions'),

@@ -57,6 +57,7 @@ var TournamentForm = React.createClass({
 
     _onSave: function () {
         var tournament = {
+            _id:      this.props.tournament._id,
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             state:    this.refs.state.getSelectedValue(),
@@ -66,12 +67,7 @@ var TournamentForm = React.createClass({
         };
 
         this.setState({validation: {}});
-        if (this.props.tournament._id) {
-            tournament._id = this.props.tournament._id;
-            TournamentsActions.save(tournament);
-        } else {
-            TournamentsActions.add(tournament);
-        }
+        TournamentsActions.save(tournament);
     },
 
     _onCancel: function () {

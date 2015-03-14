@@ -19,10 +19,6 @@ var CountryItem = React.createClass({
         }
     },
 
-    _changeSort: function () {
-        console.log('sort');
-    },
-
     render: function () {
         var visibilityClass = cx({
             'list-item__visibility':      true,
