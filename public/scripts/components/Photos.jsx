@@ -117,7 +117,8 @@ var PhotoItem = React.createClass({
     render: function () {
         var classes = cx({
             'photos__item': true
-        })
+        });
+
         return (
             <Dragon className={classes} element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <Image src={this.props.image.thumb} width="150" height="150" />

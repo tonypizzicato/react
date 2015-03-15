@@ -144,6 +144,8 @@ var NewsForm = React.createClass({
                     label="Select preview image (required if article is sticked)"
                     image={this.props.article.image}
                     errorText={this.state.validation.image ? 'Загрузите изображение для новости' : null}
+                    width="863px"
+                    height="308px"
                     key={this.props.article._id + '-image-upload'}
                     ref="image" />
 

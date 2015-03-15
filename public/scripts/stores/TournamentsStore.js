@@ -21,6 +21,12 @@ var Store = assign({}, EventEmitter.prototype, {
         return _tournaments;
     },
 
+    getByLeague: function (id) {
+        return _.filter(_tournaments, function (item) {
+            return item.leagueId == id;
+        });
+    },
+
     emitChange: function () {
         this.emit(EventsConstants.EVENT_CHANGE);
     },

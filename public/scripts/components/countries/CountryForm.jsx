@@ -9,7 +9,6 @@ var React            = require('react'),
     RadioButtonGroup = mui.RadioButtonGroup,
     RadioButton      = mui.RadioButton,
     Button           = mui.RaisedButton,
-    Toggle           = mui.Toggle,
 
     EventsConstants  = require('../../constants/EventsConstants'),
 

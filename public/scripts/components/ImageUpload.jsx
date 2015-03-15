@@ -7,7 +7,9 @@ var _            = require('underscore'),
 
     Button       = mui.FlatButton,
     Icon         = mui.FontIcon,
-    ActionButton = mui.FloatingActionButton;
+    ActionButton = mui.FloatingActionButton,
+
+    Image        = require('./Image.jsx');
 
 var ImageUpload = React.createClass({
 
@@ -17,7 +19,9 @@ var ImageUpload = React.createClass({
         return {
             label:     React.PropTypes.string,
             image:     React.PropTypes.string,
-            errorText: React.PropTypes.string
+            errorText: React.PropTypes.string,
+            width:     React.PropTypes.string,
+            height:    React.PropTypes.string
         }
     },
 
@@ -25,13 +29,16 @@ var ImageUpload = React.createClass({
         return {
             label:     "Select image",
             image:     null,
-            errorText: null
+            errorText: null,
+            width:     'auto',
+            height:    'auto'
         }
     },
 
     getInitialState: function () {
         return {
-            uploaded: this.props.image
+            uploaded: !!this.props.image,
+            image:    this.props.image
         }
     },
 
@@ -40,19 +47,36 @@ var ImageUpload = React.createClass({
         this._reader.readAsDataURL(this.refs.upload.getDOMNode().files[0]);
 
         this._reader.onload = function (e) {
-            this.refs.preview.getDOMNode().src = e.target.result;
-            this.setState({uploaded: true});
+
+            this.setState({
+                image:    e.target.result,
+                uploaded: true
+            });
         }.bind(this);
     },
 
     _onClick: function () {
         _.delay(function () {
             this.refs.upload.getDOMNode().click();
-        }.bind(this), 600);
+        }.bind(this), 300);
     },
 
     getImage: function () {
-        return this.state.uploaded ? (this._reader ? this._reader.result : this.props.image) : null;
+        return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
+    },
+
+    setImage: function (image) {
+        this.setState({
+            image:    image,
+            uploaded: !!image
+        })
+    },
+
+    _onDelete: function () {
+        this.setState({
+            image:    null,
+            uploaded: false
+        });
     },
 
     render: function () {
@@ -66,11 +90,12 @@ var ImageUpload = React.createClass({
         });
 
         var error = this.props.errorText ? (<span className="mui-file-input-error">{this.props.errorText}</span>) : '';
+        var image = this.state.image ? <Image src={this.state.image} className={previewClass} width={this.props.width} height={this.props.height} ref="preview" /> : '';
 
         return (
-            <div className="mui-file-input-container">
+            <div className="mui-file-input-container s_mt_36">
+                {image}
                 <ActionButton className={closeClass} iconClassName="mdfi_navigation_close" onClick={this._onDelete} />
-                <img src={this.props.image} className={previewClass} ref="preview" />
                 <input className="file-input" type="file" onChange={this._onImage} ref="upload" />
 
                 <div className="mui-file-input">

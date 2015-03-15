@@ -34,12 +34,11 @@ var Image = React.createClass({
     },
 
     componentDidMount: function () {
-        var self = this
-        var img = document.createElement('img')
+        var img = document.createElement('img');
 
         img.onload = function () {
-            self.setState({loaded: true})
-        };
+            this.setState({loaded: true});
+        }.bind(this);
 
         img.onerror = function () {
             img.src = 'http://placehold.it/' + this.props.width + '&text=load%20error';
@@ -50,11 +49,10 @@ var Image = React.createClass({
 
     render: function () {
         var divStyles = {
-            position:      'relative',
-            width:         this.props.width,
-            height:        this.props.height,
-            paddingBottom: Math.round(100 / Number(this.props.aspectRatio)) + '%'
-        }
+            position: 'relative',
+            width:    this.props.width,
+            height:   this.props.height
+        };
 
         var imageStyles = {
             position:           'absolute',
@@ -62,17 +60,18 @@ var Image = React.createClass({
             right:              0,
             bottom:             0,
             left:               0,
+            borderRadius:       '6px',
             backgroundSize:     this.props.style.size,
             backgroundPosition: 'center center',
             backgroundImage:    'url(' + this.props.src + ')',
             opacity:            this.state.loaded ? 100 : 0,
             transition:         this.props.transition || 'opacity 0.6s ease'
-        }
+        };
 
         var cls = cx({
-            'image':             true,
-            'image_loading_yes': !this.state.loaded
-        });
+                'image':             true,
+                'image_loading_yes': !this.state.loaded
+            }) + ' ' + this.props.className;
 
         return (
             <div className={cls} style={divStyles}>

@@ -24,7 +24,8 @@ var menuItems = [
     {route: 'countries', text: 'Countries'},
     {route: 'tournaments', text: 'Tournaments'},
     {route: 'news', text: 'News'},
-    {route: 'games', text: 'Games'}
+    {route: 'games', text: 'Games'},
+    {route: 'contacts', text: 'Contacts'}
 ];
 
 var MainApp = React.createClass({

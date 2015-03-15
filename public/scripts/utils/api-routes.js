@@ -167,6 +167,25 @@ var routes = {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'DELETE'
         }
+    },
+
+    'contacts': {
+        'list':   {
+            path:   '/contacts',
+            method: 'GET'
+        },
+        'create': {
+            path:   '/contacts',
+            method: 'POST'
+        },
+        'save':   {
+            path:   '/contacts/%(_id)s',
+            method: 'PUT'
+        },
+        'delete': {
+            path:   '/contacts/%(_id)s',
+            method: 'DELETE'
+        }
     }
 };
 
