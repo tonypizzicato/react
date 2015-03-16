@@ -29,6 +29,12 @@ var ContactsList = React.createClass({
         }
     },
 
+    componentWillReceiveProps: function (nextProps) {
+        if (this.state.contacts.length != nextProps.contacts.length) {
+            this.setState({contacts: nextProps.contacts});
+        }
+    },
+
     _onDrop: function (from, to) {
         var items = this.state.contacts.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
@@ -48,11 +54,11 @@ var ContactsList = React.createClass({
     },
 
     render: function () {
-        if (!this.props.contacts.length) {
+        if (!this.state.contacts.length) {
             return false;
         }
 
-        var items = this.props.contacts.map(function (item, i) {
+        var items = this.state.contacts.map(function (item, i) {
             return (
                 <ContactItem contact={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id} />
             );
