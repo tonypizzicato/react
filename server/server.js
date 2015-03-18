@@ -45,13 +45,16 @@ auth.init(app);
 routes.init(app);
 
 app.set('view engine', 'hbs');
-app.set('views', __dirname + '/views/');
 
 
+var clientDir, viewsDir;
 /**
  * Development Settings
  */
 if (app.get('env') === 'development') {
+    clientDir = '/public';
+    viewsDir = '/views';
+
     app.use(favicon(__dirname + '/../public/favicon.ico'));
     app.use(express.static(path.join(__dirname, '../.tmp')));
     app.use(express.static(path.join(__dirname, '../public')));
@@ -62,8 +65,13 @@ if (app.get('env') === 'development') {
  * Production Settings
  */
 if (app.get('env') === 'production') {
+    clientDir = '/../dist';
+    viewsDir = '/../dist/views';
     app.use(express.static(path.join(__dirname, '../dist')));
 }
+
+app.set('views', __dirname + viewsDir);
+app.set('public', __dirname + clientDir);
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

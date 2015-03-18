@@ -21,8 +21,9 @@ module.exports = (grunt)->
       # Configurable paths
       public: "public"
       dist:   "dist"
-      server: "."
+      server: "server"
       tmp:    ".tmp"
+      vendor: "node_modules"
 
     env:
       build:
@@ -62,7 +63,103 @@ module.exports = (grunt)->
           paths: ["<%= app.public %>/styles"]
 
         files:
-          "<%= app.dist %>/styles/main.css": "<%= app.public %>/styles/main.less"
+          "<%= app.tmp %>/styles/main.css": "<%= app.public %>/styles/main.less"
+
+      # The following *-min tasks produce minified files in the dist folder
+    imagemin:
+      dist:
+        files: [
+          expand: true
+          cwd:    "<%= app.public %>/images"
+          src:    "**/*.{gif,jpeg,jpg,png}"
+          dest:   "<%= app.dist %>/images"
+        ]
+
+
+      #uglify2: {} // https://github.com/mishoo/UglifyJS2
+    cssmin:
+      target:
+        files: [{
+          expand: true
+          cwd: '<%= app.tmp %>/styles'
+          src: ['*.css', '!*.min.css']
+          dest: '<%= app.dist %>/styles'
+          ext: '.min.css'
+        }]
+
+
+      # Renames files for browser caching purposes
+    rev:
+      dist:
+        files:
+          src: [
+            "<%= app.dist %>/scripts/**/*.js"
+            "<%= app.dist %>/styles/**/*.css"
+            "<%= app.dist %>/images/**/*.{gif,jpeg,jpg,png}"
+            "<%= app.dist %>/styles/fonts/{,*/}*.*"
+          ]
+
+
+      # Reads HTML for usemin blocks to enable smart builds that automatically
+      # concat, minify and revision files. Creates configurations in memory so
+      # additional tasks can operate on them
+    useminPrepare:
+      options:
+        dest: "<%= app.dist %>"
+
+      html: [
+          "<%= app.server %>/views/index.hbs"
+      ]
+
+
+      # Performs rewrites based on rev and the useminPrepare configuration
+    usemin:
+      options:
+        assetsDirs: ["<%= app.dist %>"]
+
+      html: ["<%= app.dist %>/views/index.hbs"]
+      css:  ["<%= app.dist %>/styles/**/*.css"]
+
+    svgmin:
+      dist:
+        files: [
+          expand: true
+          cwd:    "<%= app.public %>/images"
+          src:    "**/*.svg"
+          dest:   "<%= app.dist %>/images"
+        ]
+
+    htmlmin:
+      dist:
+        options:
+          collapseBooleanAttributes: true
+          collapseWhitespace:        true
+          removeAttributeQuotes:     true
+          removeCommentsFromCDATA:   true
+          removeEmptyAttributes:     true
+          removeOptionalTags:        true
+          removeRedundantAttributes: true
+          useShortDoctype:           true
+
+        files: [
+          expand: true
+          cwd:    "<%= app.dist %>"
+          src:    ["{,*/}*.{html,hbs}"]
+          dest:   "<%= app.dist %>"
+        ]
+
+  # Add vendor prefixed styles
+    autoprefixer:
+      options:
+        browsers: ["last 1 version"]
+
+      dist:
+        files: [
+          expand: true
+          cwd:    ".tmp/styles/"
+          src:    "**/*.css"
+          dest:   ".tmp/styles/"
+        ]
 
     copy:
       dist:
@@ -74,11 +171,8 @@ module.exports = (grunt)->
             dest:   "<%= app.dist %>"
             src:    [
               "*.{ico,png,txt}"
-              ".htaccess"
               "{,*/}*.html"
               "styles/fonts/{,*/}*.*"
-              "vendor/bootstrap-sass/vendor/assets/fonts/bootstrap/*.*"
-              "vendor/fontawesome/fonts/*.*"
             ]
           }
           {
@@ -89,23 +183,39 @@ module.exports = (grunt)->
             dest:   "<%= app.dist %>"
             src:    ["views/{,*/}*.hbs"]
           }
-        ]
-
-      bodge:
-        files: [
-          expand: true
-          dot:    true
-          cwd:    "<%= app.public %>/scripts"
-          dest:   "<%= app.tmp %>"
-          src:    ["**/*.js"]
+          {
+            expand:  true
+            dot:     true
+            dest:    "<%= app.dist %>/fonts"
+            cwd:     'node_modules/material-design-fonticons/fonts/mdfonticon'
+            src:     ["**"]
+          }
         ]
 
       styles:
-        expand: true
-        dot:    true
-        cwd:    "<%= app.public %>/styles"
-        dest:   "<%= app.tmp %>/styles/"
-        src:    "{,*/}*.css"
+        files: [
+          {
+            expand: true
+            dot:    true
+            cwd:    "<%= app.public %>/styles"
+            dest:   "<%= app.tmp %>/styles/"
+            src:    "{,*/}*.css"
+          }
+          {
+          # client app vendor files
+            expand: true
+            dot:    true
+            cwd:    "<%= app.vendor %>"
+            dest:   "<%= app.tmp %>/styles"
+            src:    [
+              "dropzone/dist/dropzone.css"
+              "dropzone/dist/basic.css"
+              "medium-editor/dist/css/medium-editor.css"
+              "medium-editor/dist/css/themes/flat.css"
+            ]
+          }
+        ]
+
 
       fonts:
         files: [
@@ -140,6 +250,7 @@ module.exports = (grunt)->
             debug:     false
         files:
           "<%= app.dist %>/scripts/build.js": ["<%= app.public %>/scripts/app.{js,jsx}"]
+          "<%= app.tmp %>/concat/scripts/build.js": ["<%= app.public %>/scripts/app.{js,jsx}"]
 
     watch:
       options:
@@ -174,12 +285,29 @@ module.exports = (grunt)->
         "copy:styles"
       ]
       dist: [
-        "coffee"
-        "less"
+        "less:dev"
         "copy:styles"
-        "imagemin"
-        "svgmin"
       ]
 
   grunt.registerTask "serve", ["clean:server", "concurrent:server", "browserify:dev", "watch"]
-  grunt.registerTask "build", ["env:build", "browserify:build"]
+  grunt.registerTask "build", [
+    "clean:dist",
+    "env:build",
+    "concurrent:dist",
+
+    "useminPrepare"
+    "concat"
+    "autoprefixer"
+    "cssmin"
+    "copy:dist"
+
+    "imagemin"
+    "svgmin"
+
+    "browserify:build"
+    "uglify"
+
+    "rev"
+    "usemin"
+    "htmlmin"
+  ]
