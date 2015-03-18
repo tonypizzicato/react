@@ -1,0 +1,41 @@
+// TEXT
+
+.text_color_muted {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.text_align_l {
+  text-align: left;
+}
+
+.text_align_r {
+  text-align: right;
+}
+
+.text_align_c {
+  text-align: center;
+}
+
+.font-weight_bold {
+  font-weight: bold;
+}
+
+blockquote {
+  display:     block;
+  border-left: 6px solid #ddd;
+  margin:      10px;
+  padding:     10px 0 10px 30px;
+  font-style:  italic;
+  color:       #555;
+}
+
+.generate-font-size(24, 1, 7);
+
+.generate-font-size(@n, @step, @i: 0) when (@i =< @n) {
+  @size: @step + @i;
+  .text_font-size_@{size} {
+    font-size: 1px * @size;
+  }
+
+  .generate-font-size(@n, @step, (@i + 1));
+}

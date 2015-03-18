@@ -1,0 +1,104 @@
+// S
+
+.s_position_relative {
+  position: relative;
+}
+
+.s_position_absolute {
+  position: absolute;
+}
+
+.s_overflow_hidden {
+  overflow: hidden;
+}
+
+.s_valign_m {
+  vertical-align: middle;
+}
+
+.s_valign_t {
+  vertical-align: top;
+}
+
+.s_valign_b {
+  vertical-align: bottom;
+}
+
+.s_display_block {
+  display: block;
+}
+
+.s_display_inline-block {
+  display: inline-block;
+}
+
+.s_display_none {
+  display: none;
+}
+
+.s_float_r {
+  float: right;
+}
+
+.s_float_l {
+  float: left;
+}
+
+.s_float_n {
+  float: none;
+}
+
+.s_width_quarter {
+  width: 25%;
+}
+
+.s_width_third {
+  width: 33.13%;
+}
+
+.s_width_half {
+  width: 50%;
+}
+
+.s_width_full {
+  width: 100%;
+}
+
+.generate-margins(8, 6);
+
+.page-with-nav-content {
+  .generate-margins(8, 6);
+}
+
+.s_t_4 {
+  top: 4px;
+}
+
+.generate-margins(@n, @step, @i: 0) when (@i =< @n) {
+  @margin: @step * @i;
+  .s_mt_@{margin} {
+    margin-top: 1px * @margin;
+  }
+  .s_mb_@{margin} {
+    margin-bottom: 1px * @margin;
+  }
+  .s_ml_@{margin} {
+    margin-left: 1px * @margin;
+  }
+  .s_mr_@{margin} {
+    margin-right: 1px * @margin;
+  }
+  .s_pt_@{margin} {
+    padding-top: 1px * @margin;
+  }
+  .s_pb_@{margin} {
+    padding-bottom: 1px * @margin;
+  }
+  .s_pl_@{margin} {
+    padding-left: 1px * @margin;
+  }
+  .s_pr_@{margin} {
+    padding-right: 1px * @margin;
+  }
+  .generate-margins(@n, @step, (@i + 1));
+}
