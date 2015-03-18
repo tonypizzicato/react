@@ -171,7 +171,6 @@ module.exports = (grunt)->
             dest:   "<%= app.dist %>"
             src:    [
               "*.{ico,png,txt}"
-              "{,*/}*.html"
               "styles/fonts/{,*/}*.*"
             ]
           }
@@ -232,6 +231,20 @@ module.exports = (grunt)->
             dest:    "<%= app.public %>/fonts"
             cwd:     'node_modules/material-design-fonticons/fonts/mdfonticon'
             src:     ["**"]
+          }
+        ]
+    replace:
+      dist:
+        src: "<%= app.dist %>/views/index.hbs"
+        dest: "<%= app.dist %>/views/index.hbs"
+        replacements: [
+          {
+            from: "href=/styles/"
+            to: "href=/admin/site/styles/"
+          },
+          {
+            from: "src=/scripts/"
+            to: "src=/admin/site/scripts/"
           }
         ]
 
@@ -310,4 +323,5 @@ module.exports = (grunt)->
     "rev"
     "usemin"
     "htmlmin"
+    "replace:dist"
   ]
