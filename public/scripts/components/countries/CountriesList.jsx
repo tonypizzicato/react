@@ -11,13 +11,15 @@ var CountriesList = React.createClass({
 
     propTypes: function () {
         return {
-            countries: React.PropTypes.array
+            countries: React.PropTypes.array,
+            leagueId:  React.PropTypes.string
         }
     },
 
     getDefaultProps: function () {
         return {
-            countries: []
+            countries: [],
+            leagueId:  null
         }
     },
 
@@ -45,10 +47,11 @@ var CountriesList = React.createClass({
 
         items.forEach(function (item, index) {
             CountriesActions.save({
-                _id:  item._id,
-                sort: index
+                _id:      item._id,
+                sort:     index,
+                leagueId: this.props.leagueId
             }, {silent: true});
-        })
+        }.bind(this))
     },
 
     render: function () {
