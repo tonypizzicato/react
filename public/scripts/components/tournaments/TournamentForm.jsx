@@ -60,6 +60,7 @@ var TournamentForm = React.createClass({
             _id:      this.props.tournament._id,
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
+            vk:       this.refs.vk.getValue(),
             state:    this.refs.state.getSelectedValue(),
             country:  this.props.countries[this.refs.country.state.selectedIndex],
             leagueId: this.props.leagueId,
@@ -124,6 +125,14 @@ var TournamentForm = React.createClass({
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
+                <TextField
+                    defaultValue={this.props.tournament.vk}
+                    placehoder="https://vk.com/amateurenglishleague"
+                    floatingLabelText="URL страницы турнира в Вконтакте"
+                    disabled={disabled}
+                    errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
+                    ref="vk" />
+
                 {countriesDropDown}
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
@@ -138,8 +147,8 @@ var TournamentForm = React.createClass({
                                     label="CREATED"
                                     disabled={true} />
                                 <RadioButton
-                                    value="IN PROGRESS"
-                                    label="IN PROGRESS"
+                                    value="IN_PROGRESS"
+                                    label="IN_PROGRESS"
                                     disabled={true} />
                                 <RadioButton
                                     value="ARCHIVE"

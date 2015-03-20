@@ -15,6 +15,8 @@ var React                = require('react'),
     NewsActions          = require('../../actions/NewsActions'),
     NewsStore            = require('../../stores/NewsStore'),
 
+    AuthStore            = require('../../stores/AuthStore'),
+
     MediumEditor         = require('../MediumEditor.jsx'),
     TagsField            = require('../TagsField.jsx'),
     ImageUpload          = require('../ImageUpload.jsx');
@@ -75,7 +77,8 @@ var NewsForm = React.createClass({
             tags:     this.refs.tags.getTags(),
             leagueId: this.props.leagueId,
             country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
-            image:    this.refs.image.getImage()
+            image:    this.refs.image.getImage(),
+            author:   AuthStore.getUser().username
         };
 
         this.setState({validation: this.getInitialState().validation});

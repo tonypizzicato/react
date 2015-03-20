@@ -84,7 +84,7 @@ var CountriesApp = React.createClass({
             return (
                 <Tab label={league.name} key={league._id} >
                     <CountryForm country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel} />
-                    <CountriesList countries={countriesItems} onDelete={this._onDelete} onEdit={this._onEdit} />
+                    <CountriesList countries={countriesItems} leagueId={league._id} onDelete={this._onDelete} onEdit={this._onEdit} />
                 </Tab>
             );
         }.bind(this));
