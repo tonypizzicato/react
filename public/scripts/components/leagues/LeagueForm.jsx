@@ -6,6 +6,7 @@ var assign          = require('object-assign'),
 
     Paper           = mui.Paper,
     TextField       = mui.TextField,
+    Toggle          = mui.Toggle,
     Button          = mui.RaisedButton,
 
     EventsConstants = require('../../constants/EventsConstants'),
@@ -26,7 +27,8 @@ var LeagueForm = React.createClass({
             league: {
                 _id:  null,
                 name: '',
-                slug: ''
+                slug: '',
+                show: false
             }
         }
     },
@@ -53,7 +55,8 @@ var LeagueForm = React.createClass({
         var league = {
             _id:  this.props.league._id,
             name: this.refs.name.getValue(),
-            slug: this.refs.slug.getValue()
+            slug: this.refs.slug.getValue(),
+            show: this.refs.show.isToggled()
         };
 
         this.setState({validation: {}});
@@ -90,7 +93,19 @@ var LeagueForm = React.createClass({
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
                     ref="slug" />
 
+
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
+                    <div className="s_float_l s_width_half">
+                        <div className="s_width_quarter s_display_inline-block s_mt_24">
+                            <Toggle
+                                name="show"
+                                value="show"
+                                ref="show"
+                                defaultToggled={this.props.league.show}
+                                label="Show" />
+                        </div>
+                    </div>
+
                     <div className="buttons s_float_r s_width_quarter">
                         <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} disabled={!this.props.league.name} onClick={this._onCancel} />
                         <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} disabled={!this.props.league.name} onClick={this._onSave} />

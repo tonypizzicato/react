@@ -31,7 +31,8 @@ var LeagueItem = React.createClass({
     render: function () {
         var visibilityClass = cx({
             'list-item__visibility':  true,
-            'mdfi_action_visibility': true
+            'mdfi_action_visibility': true,
+            'mdfi_action_visibility_off': !this.props.league.show
         });
         var item = (
             <Paper>
