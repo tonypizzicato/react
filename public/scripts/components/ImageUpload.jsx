@@ -65,6 +65,10 @@ var ImageUpload = React.createClass({
         return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
     },
 
+    getFile: function() {
+        return this.refs.upload.getDOMNode().files[0];
+    },
+
     setImage: function (image) {
         this.setState({
             image:    image,
