@@ -97,6 +97,7 @@ var NewsForm = React.createClass({
         this.refs.show.setToggled(false);
         this.refs.stick.setToggled(false);
         this.refs.tags.setTags([]);
+        this.refs.image.setImage(null);
     },
 
     _onCancel: function () {
