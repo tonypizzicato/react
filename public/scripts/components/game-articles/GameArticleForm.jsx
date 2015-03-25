@@ -62,10 +62,12 @@ var GameArticleForm = React.createClass({
 
     _onSave: function () {
         var article = {
-            body:   this.refs.body.getValue(),
-            show:   this.refs.show.isToggled(),
-            type:   this.props.type,
-            gameId: this.props.game._id
+            body:        this.refs.body.getValue(),
+            show:        this.refs.show.isToggled(),
+            type:        this.props.type,
+            tournament:  this.props.game.tournamentId,
+            gameId:      this.props.game._id,
+            centralGame: this.refs.central.isToggled()
         };
 
         this.setState({validation: this.getInitialState().validation});
@@ -83,6 +85,7 @@ var GameArticleForm = React.createClass({
 
         this.refs.body.setValue('');
         this.refs.show.setToggled(false);
+        this.refs.central.setToggled(false);
 
         if (this.props.onCancel) {
             this.props.onCancel();
@@ -90,6 +93,16 @@ var GameArticleForm = React.createClass({
     },
 
     render: function () {
+        var centralToggle = this.props.type == 'preview' ? (
+            <div className="s_width_quarter s_display_inline-block">
+                <Toggle
+                    name="central"
+                    value="central"
+                    label="Central"
+                    defaultToggled={this.props.article.centralGame}
+                    key={this.props.article._id + '-central'}
+                    ref="central" />
+            </div>) : false;
         return (
             <div>
                 <MediumEditor
@@ -111,6 +124,7 @@ var GameArticleForm = React.createClass({
                                 key={this.props.article._id + '-show'}
                                 ref="show" />
                         </div>
+                    {centralToggle}
                     </div>
 
                     <div className="buttons s_float_r s_width_quarter">
