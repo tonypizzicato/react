@@ -78,16 +78,21 @@ var GameArticlesStore = assign({}, EventEmitter.prototype, {
         var notEmpty = function (value) {
             return value.length > 0;
         };
+        var hasImage = function (value, article) {
+            return article.type != 'preview' || !!value;
+        };
 
         var rules = {
-            body: notEmpty
+            body:      notEmpty,
+            imageHome: hasImage,
+            imageAway: hasImage
         };
 
         var result = true,
             ruleResult;
         for (var rule in rules) {
             if (article.hasOwnProperty(rule)) {
-                ruleResult = rules[rule](article[rule]);
+                ruleResult = rules[rule](article[rule], article);
                 if (!ruleResult) {
                     _validationError = _validationError || {};
                     _validationError[rule] = true;
