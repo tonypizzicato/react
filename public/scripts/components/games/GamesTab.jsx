@@ -48,12 +48,18 @@ var GamesTab = React.createClass({
 
     componentDidMount: function () {
         PhotosStore.addChangeListener(this._photosChange);
+        GameArticlesStore.addChangeListener(this._articleChange);
 
         GameArticlesActions.load();
     },
 
     componentWillUnmount: function () {
         PhotosStore.removeChangeListener(this._photosChange);
+        GameArticlesStore.removeChangeListener(this._articleChange);
+    },
+
+    _articleChange: function () {
+        this.setState({articles: GameArticlesStore.getAll()});
     },
 
     _photosChange: function () {

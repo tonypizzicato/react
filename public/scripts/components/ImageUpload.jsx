@@ -4,6 +4,7 @@ var _            = require('underscore'),
     React        = require('react'),
     cx           = React.addons.classSet,
     mui          = require('material-ui'),
+    Classable    = mui.Mixins.Classable,
 
     Button       = mui.FlatButton,
     Icon         = mui.FontIcon,
@@ -12,6 +13,8 @@ var _            = require('underscore'),
     Image        = require('./Image.jsx');
 
 var ImageUpload = React.createClass({
+
+    mixins: [Classable],
 
     _reader: null,
 
@@ -65,7 +68,7 @@ var ImageUpload = React.createClass({
         return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
     },
 
-    getFile: function() {
+    getFile: function () {
         return this.refs.upload.getDOMNode().files[0];
     },
 
@@ -84,6 +87,11 @@ var ImageUpload = React.createClass({
     },
 
     render: function () {
+        var clx = this.getClasses(this.props.className, {
+                'mui-file-input-container': true,
+                's_mt_36':                  true
+            });
+
         var previewClass = cx({
             'mui-file-input-image':         true,
             'mui-file-input-image-visible': this.state.uploaded
@@ -97,7 +105,7 @@ var ImageUpload = React.createClass({
         var image = this.state.image ? <Image src={this.state.image} className={previewClass} width={this.props.width} height={this.props.height} ref="preview" /> : '';
 
         return (
-            <div className="mui-file-input-container s_mt_36">
+            <div className={clx}>
                 {image}
                 <ActionButton className={closeClass} iconClassName="mdfi_navigation_close" onClick={this._onDelete} />
                 <input className="file-input" type="file" onChange={this._onImage} ref="upload" />
