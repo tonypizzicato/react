@@ -155,21 +155,21 @@ var GamesToolbar = React.createClass({
                 <DropDownMenu
                     menuItems={this.state.countries}
                     selectedIndex={this.state.countryIndex}
-                    noDataText="No Countries"
+                    noDataText="Нет стран"
                     onChange={this._onCountrySelect}/>;
 
         var tournamentsMenu =
                 <DropDownMenu
                     menuItems={this.state.tournaments}
                     onChange={this._onTournamentSelect}
-                    noDataText="No Tournaments"
+                    noDataText="Нет турниров"
                     selectedIndex={this.state.tournamentIndex}/>;
 
         var gamesInput = this.state.hasTournament ?
             <Typeahead
                 className="mui-text-field"
                 options={this.state.games}
-                placeholder="Input teams names"
+                placeholder="Введите название команд"
                 onOptionSelected={this._onGameSelect}
                 customClasses={{
                     input:    'mui-text-field-input',

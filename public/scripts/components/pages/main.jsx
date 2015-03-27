@@ -19,13 +19,13 @@ var React          = require('react'),
     LeaguesStore   = require('../../stores/LeaguesStore');
 
 var menuItems = [
-    {route: 'users', text: 'Users'},
-    {route: 'leagues', text: 'Leagues'},
-    {route: 'countries', text: 'Countries'},
-    {route: 'tournaments', text: 'Tournaments'},
-    {route: 'news', text: 'News'},
-    {route: 'games', text: 'Games'},
-    {route: 'contacts', text: 'Contacts'}
+    {route: 'users', text: 'Пользователи'},
+    {route: 'leagues', text: 'Лиги'},
+    {route: 'countries', text: 'Страны'},
+    {route: 'tournaments', text: 'Туриниры'},
+    {route: 'news', text: 'Новости'},
+    {route: 'games', text: 'Игры'},
+    {route: 'contacts', text: 'Контакты'}
 ];
 
 var MainApp = React.createClass({
@@ -61,8 +61,8 @@ var MainApp = React.createClass({
     render: function () {
 
         var loginOrOut = this.state.loggedIn ?
-            <Link to="logout">Logout</Link> :
-            <Link to="login">Login</Link>;
+            <Link to="logout">Выход</Link> :
+            <Link to="login">Вход</Link>;
 
         var content = '';
         if (this.state.loggedIn) {
@@ -74,7 +74,7 @@ var MainApp = React.createClass({
         return (
             <div>
                 <Canvas>
-                    <AppBar className="mui-dark-theme" title="Amateur Admin App" zDepth={0}>
+                    <AppBar className="mui-dark-theme" title="Панель управления Amateur" zDepth={0}>
                         <div className="login">
                             <Icon className="mdfi_action_account_circle" />
                             {loginOrOut}

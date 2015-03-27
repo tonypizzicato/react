@@ -67,7 +67,6 @@ var GamesTab = React.createClass({
     },
 
     _onGameSelect: function (game) {
-        console.log('game selected');
         this.setState({game: game});
         PhotosActions.load('games', game._id);
     },
@@ -102,7 +101,7 @@ var GamesTab = React.createClass({
 
             tabsContent = (
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
-                    <Tab label="Preview">
+                    <Tab label="Превью">
                         <GameArticleForm
                             type="preview"
                             game={this.state.game}
@@ -110,7 +109,7 @@ var GamesTab = React.createClass({
                             onCancel={this._onArticleCancel}
                             key={this.state.game._id + '-preview'}/>
                     </Tab>
-                    <Tab label="Review">
+                    <Tab label="Обзор">
                         <GameArticleForm
                             type="review"
                             game={this.state.game}
@@ -118,7 +117,7 @@ var GamesTab = React.createClass({
                             onCancel={this._onArticleCancel}
                             key={this.state.game._id + '-review'}/>
                     </Tab>
-                    <Tab label="Media" key={this.state.game._id + '-media'}>
+                    <Tab label="Фото" key={this.state.game._id + '-media'}>
                         <Dropzone
                             url={PhotosStore.getImagesUrl('games', this.state.game._id)}
                             onUpload={this._onPhotosUpload}
@@ -133,7 +132,7 @@ var GamesTab = React.createClass({
             );
         } else {
             tabsContent = (
-                <div className="text_align_c font-weight_bold s_mt_24">Select game first</div>
+                <div className="text_align_c font-weight_bold s_mt_24">Сначала выберите игру</div>
             )
         }
 

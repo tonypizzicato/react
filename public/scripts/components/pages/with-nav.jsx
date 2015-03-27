@@ -90,7 +90,7 @@ var WithNav = React.createClass({
                 </div>
                 <div className={loaderClass} ref="loader" />
                 <Snackbar
-                    message="Error loading data. Try to repeat your request."
+                    message="Ошибка загрузки данных. Попробуйте повторить запрос."
                     ref="snack" />
 
             </div>

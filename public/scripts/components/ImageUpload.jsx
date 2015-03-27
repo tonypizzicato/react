@@ -30,7 +30,7 @@ var ImageUpload = React.createClass({
 
     getDefaultProps: function () {
         return {
-            label:     "Select image",
+            label:     "Выберите изображение",
             image:     null,
             errorText: null,
             width:     'auto',

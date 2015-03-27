@@ -37,8 +37,9 @@ app.use(bodyParser.json());
 
 app.use(session({
     secret:            'test secret',
-    resave:            false,
+    name:              'asid',
     saveUninitialized: true,
+    resave:            true,
     store:             new SessionMongoStore({mongooseConnection: mongoose.connection})
 }));
 
