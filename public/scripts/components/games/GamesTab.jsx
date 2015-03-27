@@ -92,7 +92,7 @@ var GamesTab = React.createClass({
     },
 
     render: function () {
-        var toolbar = <Toolbar leagueId={this.props.leagueId} onGameSelect={this._onGameSelect}/>;
+        var toolbar = <Toolbar leagueId={this.props.leagueId} games={this.props.games} onGameSelect={this._onGameSelect}/>;
         var tabsContent;
 
         if (!!this.state.game._id) {

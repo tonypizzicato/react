@@ -26,6 +26,7 @@ var GamesToolbar = React.createClass({
     propTypes: function () {
         return {
             leagueId:     React.PropTypes.string.required,
+            games:        React.PropTypes.string.required,
             onGameSelect: React.PropTypes.func
         }
     },
@@ -52,7 +53,7 @@ var GamesToolbar = React.createClass({
         GamesStore.addChangeListener(this._onGamesLoad);
 
         if (!this.state.gamesLoading) {
-            GamesActions.load({leagueId: this.props.leagueId});
+            CountriesActions.load();
             this.setState({gamesLoading: true});
         }
     },
@@ -68,7 +69,7 @@ var GamesToolbar = React.createClass({
                 return {text: item.name, _id: item._id, tournaments: item.tournaments};
             }.bind(this));
 
-        this.setState({countries: countries});
+        this.setState({countries: countries, gamesLoading: false});
 
         if (countries.length && !!countries[this.getInitialState().countryIndex]) {
             var state = this._updatedCountryState(this.getInitialState().countryIndex);
@@ -78,8 +79,11 @@ var GamesToolbar = React.createClass({
     },
 
     _onGamesLoad: function () {
-        CountriesActions.load();
-        this.setState({gamesLoading: false});
+        if (this.state.countries.length && !!this.state.countries[this.getInitialState().countryIndex]) {
+            var state = this._updatedCountryState(this.getInitialState().countryIndex);
+
+            this.setState(state);
+        }
     },
 
     _onCountrySelect: function (e, index) {
@@ -165,7 +169,7 @@ var GamesToolbar = React.createClass({
                     noDataText="Нет турниров"
                     selectedIndex={this.state.tournamentIndex}/>;
 
-        var gamesInput = this.state.hasTournament ?
+        var gamesInput = this.state.hasTournament && this.state.games.length ?
             <Typeahead
                 className="mui-text-field"
                 options={this.state.games}
@@ -176,7 +180,7 @@ var GamesToolbar = React.createClass({
                     results:  's_position_absolute',
                     listItem: ''
                 }}
-                key={this.props.leagueId + '-' + this.state.tournaments[this.state.tournamentIndex]._id}/> : '';
+                key={this.props.leagueId + '-' + this.state.tournaments[this.state.tournamentIndex]._id}/> : <span className="mui-label s_ml_24 s_mr_24">Загружается список команд</span>;
 
         var cls = cx({
             's_mt_12': true

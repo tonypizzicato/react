@@ -16,7 +16,8 @@ var WithNav = React.createClass({
 
     propTypes: function () {
         return {
-            leagues: React.PropTypes.array
+            leagues: React.PropTypes.array,
+            games: React.PropTypes.array
         }
     },
 
@@ -78,7 +79,7 @@ var WithNav = React.createClass({
         return (
             <div className="mui-app-content-canvas page-with-nav">
                 <div className="page-with-nav-content">
-                    <RouteHandler leagues={this.props.leagues} />
+                    <RouteHandler leagues={this.props.leagues} games={this.props.games} />
                 </div>
                 <div className="page-with-nav-secondary-nav">
                     <Menu

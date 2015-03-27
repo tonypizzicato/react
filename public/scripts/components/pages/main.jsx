@@ -1,6 +1,7 @@
 "use strict";
 
-var React          = require('react'),
+var _              = require('underscore'),
+    React          = require('react'),
     Router         = require('react-router'),
     mui            = require('material-ui'),
 
@@ -16,7 +17,9 @@ var React          = require('react'),
     AuthStore      = require('../../stores/AuthStore'),
 
     LeaguesActions = require('../../actions/LeaguesActions'),
-    LeaguesStore   = require('../../stores/LeaguesStore');
+    LeaguesStore   = require('../../stores/LeaguesStore'),
+    GamesActions   = require('../../actions/GamesActions'),
+    GamesStore     = require('../../stores/GamesStore');
 
 var menuItems = [
     {route: 'users', text: 'Пользователи'},
@@ -35,19 +38,23 @@ var MainApp = React.createClass({
     getInitialState: function () {
         return {
             loggedIn: AuthStore.loggedIn(),
-            leagues:  []
+            leagues:  [],
+            games:    []
         }
     },
 
     componentDidMount: function () {
         AuthStore.addChangeListener(this._authChange);
         LeaguesStore.addChangeListener(this._leaguesChange);
+        GamesStore.addChangeListener(this._gamesChange);
+
         LeaguesActions.load();
     },
 
     componentWillUnmount: function () {
         AuthStore.removeChangeListener(this._authChange);
         LeaguesStore.removeChangeListener(this._leaguesChange);
+        GamesStore.removeChangeListener(this._gamesChange);
     },
 
     _authChange: function () {
@@ -55,7 +62,13 @@ var MainApp = React.createClass({
     },
 
     _leaguesChange: function () {
-        this.setState({leagues: LeaguesStore.getAll()});
+        var leagues = LeaguesStore.getAll();
+        this.setState({leagues: leagues});
+        GamesActions.load({leagueId: _.findWhere(leagues, {slug: 'moscow'})._id});
+    },
+
+    _gamesChange: function () {
+        this.setState({games: GamesStore.getAll()});
     },
 
     render: function () {
@@ -66,7 +79,7 @@ var MainApp = React.createClass({
 
         var content = '';
         if (this.state.loggedIn) {
-            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} />)
+            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} games={this.state.games} />)
         } else {
             content = <Auth />
         }
