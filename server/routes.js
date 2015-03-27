@@ -6,12 +6,20 @@ var passport = require('passport'),
 
 var init = function (app) {
 
+    app.get('*', function (req, res, next) {
+        console.log(req.sessionID);
+        console.log(req.session.passport);
+
+        next();
+    });
+
     app.get('/', function (req, res) {
+        console.log('index page requested');
         res.render('index', {user: JSON.stringify(req.user)});
     });
 
     app.post('/login', passport.authenticate('local'), function (req, res) {
-        console.log('login route handled: ' + res);
+        console.log('login route handled: ' + req.user);
         res.json(req.user);
     });
 

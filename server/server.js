@@ -1,25 +1,30 @@
 "use strict";
 
-var express      = require('express'),
-    session      = require('express-session'),
-    path         = require('path'),
-    fs           = require('fs'),
-    bodyParser   = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    favicon      = require('serve-favicon'),
+var express           = require('express'),
+    session           = require('express-session'),
+    path              = require('path'),
+    fs                = require('fs'),
+    bodyParser        = require('body-parser'),
+    cookieParser      = require('cookie-parser'),
+    favicon           = require('serve-favicon'),
 
-    hbs          = require('hbs'),
-    mongoose     = require('mongoose'),
-    auth         = require('./auth'),
-    routes       = require('./routes'),
+    SessionMongoStore = require('connect-mongo')(session),
 
-    morgan       = require('morgan');
+    hbs               = require('hbs'),
+    mongoose          = require('mongoose'),
+    auth              = require('./auth'),
+    routes            = require('./routes'),
+
+    morgan            = require('morgan');
 
 
 // Configure server
 var port = process.env.NODE_PORT || 3000;
 
 var app = express();
+
+// connect to Mongo when the app initializes
+mongoose.connect('mongodb://localhost/admin_amateur');
 
 app.set('port', port);
 app.use(cookieParser());
@@ -32,14 +37,12 @@ app.use(bodyParser.json());
 
 app.use(session({
     secret:            'test secret',
-    resave:            true,
-    saveUninitialized: true
+    resave:            false,
+    saveUninitialized: true,
+    store:             new SessionMongoStore({mongooseConnection: mongoose.connection})
 }));
 
-app.use(morgan('combined'));
-
-// connect to Mongo when the app initializes
-mongoose.connect('mongodb://localhost/admin_amateur');
+//app.use(morgan('combined'));
 
 auth.init(app);
 routes.init(app);

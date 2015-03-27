@@ -9,7 +9,9 @@ var React               = require('react'),
     MediumEditor        = require('../MediumEditor.jsx'),
     ImageUpload         = require('../ImageUpload.jsx'),
 
-    EventsConstants      = require('../../constants/EventsConstants'),
+    EventsConstants     = require('../../constants/EventsConstants'),
+
+    AuthStore           = require('../../stores/AuthStore'),
 
     GameArticlesStore   = require('../../stores/GameArticlesStore'),
     GameArticlesActions = require('../../actions/GameArticlesActions');
@@ -77,7 +79,8 @@ var GameArticleForm = React.createClass({
             type:        this.props.type,
             tournament:  this.props.game.tournamentId,
             gameId:      this.props.game._id,
-            centralGame: this.refs.central.isToggled()
+            centralGame: this.refs.central.isToggled(),
+            author:      AuthStore.getUser().username
         };
 
         if (article.centralGame) {
@@ -105,7 +108,7 @@ var GameArticleForm = React.createClass({
         }
     },
 
-    _clearForm: function() {
+    _clearForm: function () {
         this.refs.body.setValue('');
         this.refs.show.setToggled(false);
         this.refs.central.setToggled(false);
