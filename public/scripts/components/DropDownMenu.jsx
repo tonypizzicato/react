@@ -17,7 +17,7 @@ var DropDownMenu = React.createClass({
 
     getDefaultProps: function () {
         return {
-            noDataText: 'No data'
+            noDataText: 'Нет данных'
         }
     },
 

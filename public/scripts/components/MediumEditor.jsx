@@ -32,8 +32,8 @@ var Editor = React.createClass({
         return {
             id:                undefined,
             defaultValue:      '',
-            floatingLabelText: 'Text to edit',
-            hintText:          'Enter text to edit'
+            floatingLabelText: 'Текст',
+            hintText:          'Введите текст для редактирования'
         };
     },
 

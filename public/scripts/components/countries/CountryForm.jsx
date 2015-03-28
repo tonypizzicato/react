@@ -125,19 +125,19 @@ var CountryForm = React.createClass({
                             </RadioButtonGroup>
                         </div>
 
-                        <div className="s_width_quarter s_display_inline-block s_mt_24">
+                        <div className="s_width_third s_display_inline-block s_mt_24">
                             <Toggle
                                 name="show"
                                 value="show"
                                 ref="show"
                                 defaultToggled={this.props.country.show}
-                                label="Show" />
+                                label="Показывать" />
                         </div>
                     </div>
 
-                    <div className="buttons s_float_r s_width_quarter">
-                        <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
+                    <div className="buttons s_float_r s_width_third">
+                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel} />
+                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave} />
                     </div>
                 </div>
             </div>

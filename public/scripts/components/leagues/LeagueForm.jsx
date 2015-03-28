@@ -96,19 +96,19 @@ var LeagueForm = React.createClass({
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24">
                     <div className="s_float_l s_width_half">
-                        <div className="s_width_quarter s_display_inline-block s_mt_24">
+                        <div className="s_width_third s_display_inline-block s_mt_24">
                             <Toggle
                                 name="show"
                                 value="show"
                                 ref="show"
                                 defaultToggled={this.props.league.show}
-                                label="Show" />
+                                label="Показывать" />
                         </div>
                     </div>
 
-                    <div className="buttons s_float_r s_width_quarter">
-                        <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} disabled={!this.props.league.name} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} disabled={!this.props.league.name} onClick={this._onSave} />
+                    <div className="buttons s_float_r s_width_third">
+                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} disabled={!this.props.league.name} onClick={this._onCancel} />
+                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} disabled={!this.props.league.name} onClick={this._onSave} />
                     </div>
                 </div>
             </div>

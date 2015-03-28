@@ -21,10 +21,10 @@ var Auth = React.createClass({
         return (
             <Paper className="login-form">
                 <Tabs>
-                    <Tab label="Login">
+                    <Tab label="Вход">
                         <Login />
                     </Tab>
-                    <Tab label="Signup">
+                    <Tab label="Регистрация">
                         <SignUp />
                     </Tab>
                 </Tabs>
@@ -79,8 +79,8 @@ var SignUp = React.createClass({
             <div className="panel">
                 <TextField
                     className="s_display_block"
-                    hintText="Your Name"
-                    floatingLabelText="Name"
+                    hintText="Ваше имя"
+                    floatingLabelText="Имя"
                     errorText={this.state.validation.username ? 'Поле не может быть пустым' : null}
                     ref="username" />
 
@@ -95,7 +95,7 @@ var SignUp = React.createClass({
                 <TextField
                     className="s_display_block"
                     hintText="password"
-                    floatingLabelText="Password"
+                    floatingLabelText="Пароль"
                     errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
                     type="password"
                     ref="password" />
@@ -103,12 +103,12 @@ var SignUp = React.createClass({
                 <TextField
                     className="s_display_block"
                     hintText="https://vk.com/id111111"
-                    floatingLabelText="VK page"
+                    floatingLabelText="Адрес страницы Вконтакте"
                     errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
                     type="text"
                     ref="vk" />
 
-                <Button className="button_type_save s_width_full s_mt_24" label="SignUp" secondary={true} onClick={this._onSave} />
+                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave} />
 
             </div>
 
@@ -194,19 +194,19 @@ var Login = React.createClass({
                 <TextField
                     className="s_display_block"
                     hintText="password"
-                    floatingLabelText="Password"
+                    floatingLabelText="Пароль"
                     errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
                     type="password"
                     ref="password" />
 
-                <Button className="button_type_save s_width_full s_mt_24" label="Login" secondary={true} onClick={this._onSave} />
+                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave} />
 
                 <Snackbar
-                    message="Wrong login or password"
+                    message="Неверный логин или пароль"
                     ref="errCredentials" />
 
                 <Snackbar
-                    message="Ooops! Server error occurred."
+                    message="Уууупс! Произошла ошибка при выполнении запроса."
                     ref="errConnection" />
             </div>
         );

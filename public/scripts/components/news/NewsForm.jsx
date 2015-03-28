@@ -145,7 +145,7 @@ var NewsForm = React.createClass({
                     ref="body" />
 
                 <ImageUpload
-                    label="Select preview image (required if article is sticked)"
+                    label="Изображение превью (обязательно если новость закреплена)"
                     image={this.props.article.image}
                     errorText={this.state.validation.image ? 'Загрузите изображение для новости' : null}
                     width="863px"
@@ -160,21 +160,21 @@ var NewsForm = React.createClass({
                         selectedIndex={selectedCountryIndex}
                         ref="country" />
 
-                    <div className="s_width_quarter s_mt_12 s_mb_12">
+                    <div className="s_width_third s_mt_12 s_mb_12">
                         <Toggle
                             className="s_mb_12"
                             name="show"
                             value="show"
                             ref="show"
                             defaultToggled={this.props.article.show}
-                            label="Show" />
+                            label="Показывать" />
                         <Toggle
                             className="s_mb_12"
                             name="stick"
                             value="stick"
                             ref="stick"
                             defaultToggled={this.props.article.stick}
-                            label="Stick" />
+                            label="Прикрепить" />
                     </div>
                 </div>
 
@@ -184,9 +184,9 @@ var NewsForm = React.createClass({
                             <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.article.tags} />
                         </div>
 
-                        <div className="buttons s_float_r s_width_quarter">
-                            <Button className="button_type_cancel s_mt_36" label="Cancel" secondary={true} onClick={this._onCancel} />
-                            <Button className="button_type_save s_float_r s_mt_36" label="Save" primary={true} onClick={this._onSave} />
+                        <div className="buttons s_float_r s_width_third">
+                            <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel} />
+                            <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave} />
                         </div>
                     </div>
                 </div>

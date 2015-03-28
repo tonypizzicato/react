@@ -17,8 +17,8 @@ var TagsField = React.createClass({
     getDefaultProps: function () {
         return {
             tags:              [],
-            floatingLabelText: 'Tags',
-            hintText:          'Input your tags here',
+            floatingLabelText: 'Тэги',
+            hintText:          'Введите тэги',
             availableTags:     [],
             splitSpaces:       true,
             splitSeparator:    ' '
@@ -26,7 +26,7 @@ var TagsField = React.createClass({
     },
 
     _onDelete: function (index) {
-        this.state.tags.splice(index, 1)
+        this.state.tags.splice(index, 1);
 
         this.setState({tags: this.state.tags});
     },

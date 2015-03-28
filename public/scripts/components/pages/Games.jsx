@@ -1,24 +1,32 @@
 "ues strict";
 
-var _                   = require('underscore'),
-    React               = require('react'),
-    mui                 = require('material-ui'),
+var _              = require('underscore'),
+    React          = require('react'),
+    mui            = require('material-ui'),
 
-    Authentication      = require('../Auth.jsx').Authentication,
+    Authentication = require('../Auth.jsx').Authentication,
 
-    Tabs                = mui.Tabs,
-    Tab                 = mui.Tab,
+    Tabs           = mui.Tabs,
+    Tab            = mui.Tab,
 
-    GamesTab            = require('../games/GamesTab.jsx');
+    GamesTab       = require('../games/GamesTab.jsx');
 
 
 var GamesApp = React.createClass({
 
     mixins: [Authentication],
 
+    getDefaultProps: function () {
+        return {
+            leagues: [],
+            games:   []
+        }
+    },
+
     propTypes: function () {
         return {
-            leagues: React.PropTypes.array.required
+            leagues: React.PropTypes.array.required,
+            games:   React.PropTypes.array.required
         }
     },
 
@@ -26,7 +34,7 @@ var GamesApp = React.createClass({
         var tabItems = this.props.leagues.map(function (league) {
             return (
                 <Tab label={league.name} onActive={this._onTabChange} key={league._id + '-tab'}>
-                    <GamesTab leagueId={league._id} key={league._id + '-tab-content'}/>
+                    <GamesTab leagueId={league._id} games={this.props.games} key={league._id + '-tab-content'}/>
                 </Tab>
             );
         }.bind(this));
