@@ -6,6 +6,8 @@ var React      = require('react'),
     moment     = require('moment'),
     date       = require('../../utils/date'),
 
+    Dragon     = require('react-dragon'),
+
     Paper      = mui.Paper,
     Icon       = mui.FontIcon,
     IconButton = mui.IconButton,
@@ -28,9 +30,11 @@ var NewsItem = React.createClass({
 
     propTypes: function () {
         return {
+            index:    React.PropTypes.number.isRequired,
             article:  React.PropTypes.object.isRequired,
             onDelete: React.PropTypes.func.isRequired,
-            onEdit:   React.PropTypes.func.isRequired
+            onEdit:   React.PropTypes.func.isRequired,
+            onDrop:   React.PropTypes.func.isRequired
         }
     },
 
@@ -53,12 +57,15 @@ var NewsItem = React.createClass({
             'mdfi_action_visibility_off': !this.props.article.show
         });
 
-        return (
+        var item = (
             <Paper className="list-item list-item_type_news">
                 <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
                     <div className="list-item__header">
                         <div className="s_display_inline-block s_valign_m">
                             <IconButton iconClassName="mdfi_action_subject" onClick={this._changeActiveState} />
+                        </div>
+                        <div className="list-item__icon s_display_inline-block s_valign_m">
+                            <Icon className="list-item__sort mdfi_action_swap_vert s_pl_0" />
                             <Icon className={visibilityClass} />
                         </div>
 
@@ -87,6 +94,12 @@ var NewsItem = React.createClass({
                     <div className={activeClassBody} dangerouslySetInnerHTML={{__html: this.props.article.body}} />
                 </div>
             </Paper>
+        );
+
+        return (
+            <Dragon key={this.props.article._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
+                {item}
+            </Dragon>
         );
     }
 });

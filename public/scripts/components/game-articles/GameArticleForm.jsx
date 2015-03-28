@@ -5,6 +5,7 @@ var React               = require('react'),
 
     Button              = mui.RaisedButton,
     Toggle              = mui.Toggle,
+    TextField           = mui.TextField,
 
     MediumEditor        = require('../MediumEditor.jsx'),
     ImageUpload         = require('../ImageUpload.jsx'),
@@ -80,6 +81,8 @@ var GameArticleForm = React.createClass({
             tournament:  this.props.game.tournamentId,
             gameId:      this.props.game._id,
             centralGame: this.refs.central.isToggled(),
+            youtube:     this.refs.youtube.getValue(),
+            vimeo:       this.refs.vimeo.getValue(),
             author:      AuthStore.getUser().username
         };
 
@@ -114,6 +117,8 @@ var GameArticleForm = React.createClass({
         this.refs.central.setToggled(false);
         this.refs.imageHome.setImage(null);
         this.refs.imageAway.setImage(null);
+        this.refs.youtube.setValue('');
+        this.refs.vimeo.setValue('');
     },
 
     _onCentral: function (e, central) {
@@ -170,7 +175,25 @@ var GameArticleForm = React.createClass({
                     key={this.props.article._id}
                     ref="body" />
 
+                <div className="s_mb_24">
+                    <div className="s_width_half s_display_inline-block s_pr_12">
+                        <TextField
+                            defaultValue={this.props.article.youtube}
+                            hintText="Введите ID видео на youtube (ссылка: https://www.youtube.com/watch?v=KOc9Mky57UI, ID: KOc9Mky57UI"
+                            floatingLabelText="Youtube"
+                            ref="youtube" />
+                    </div>
+                    <div className="s_width_half s_display_inline-block s_pl_12">
+                        <TextField
+                            defaultValue={this.props.article.vimeo}
+                            hintText="Введите ссылку на видео на vimeo"
+                            floatingLabelText="Vimeo"
+                            ref="vimeo" />
+                    </div>
+                </div>
+
                 <div className="s_position_relative" key="article-state-radio">
+
                     <div className="s_float_l s_width_half s_mt_12">
                         <div className="s_width_quarter s_display_inline-block">
                             <Toggle

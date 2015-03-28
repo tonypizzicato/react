@@ -34,11 +34,9 @@ var ContactItem = React.createClass({
                             <Icon className={visibilityClass} />
                         </div>
 
-                        <div className="list-item__title s_display_inline-block s_valign_m">
-                            <h5>{this.props.contact.name}&nbsp;
-                                <span className="text_color_muted">{this.props.contact.title}</span>
-                            </h5>
-
+                        <div className="list-item__title list-item__title_type_contacts text_overflow_ellipsis s_display_inline-block s_valign_m">
+                            <span>{this.props.contact.name}&nbsp;</span>
+                            <span className="text_color_muted">{this.props.contact.title}</span>
                         </div>
 
                         <div className="s_float_r">
