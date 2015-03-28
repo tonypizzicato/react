@@ -107,7 +107,8 @@ AppDispatcher.register(function (action) {
             break;
 
         case NewsConstants.NEWS_SAVE:
-            var article = action.data;
+            var article = action.data,
+                options = assign({}, {validate: true, silent: false}, action.options);
 
             if (NewsStore._validate(article)) {
                 api.call('news:save', article).then(function () {
@@ -116,7 +117,9 @@ AppDispatcher.register(function (action) {
                     }).pop();
 
                     assign(changed, article);
-                    NewsStore.emitChange();
+                    if (!options.silent) {
+                        NewsStore.emitChange();
+                    }
                 });
             } else {
                 NewsStore.emitEvent(EventsConstants.EVENT_VALIDATION, NewsStore._getValidationError());
@@ -130,7 +133,7 @@ AppDispatcher.register(function (action) {
 
             if (NewsStore._validate(article)) {
                 api.call('news:create', article).then(function (res) {
-                    _news.push(res);
+                    _news.unshift(res);
                     NewsStore.emitChange();
                 });
             } else {

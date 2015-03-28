@@ -78,6 +78,8 @@ var NewsForm = React.createClass({
             leagueId: this.props.leagueId,
             country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
             image:    this.refs.image.getImage(),
+            youtube:  this.refs.youtube.getValue(),
+            vimeo:    this.refs.vimeo.getValue(),
             author:   AuthStore.getUser().username
         };
 
@@ -98,6 +100,8 @@ var NewsForm = React.createClass({
         this.refs.stick.setToggled(false);
         this.refs.tags.setTags([]);
         this.refs.image.setImage(null);
+        this.refs.youtube.setValue('');
+        this.refs.vimeo.setValue('');
     },
 
     _onCancel: function () {
@@ -120,7 +124,6 @@ var NewsForm = React.createClass({
         return (
             <div className="panel panel_type_news-create s_pt_0">
                 <TextField
-                    className="s_display_block"
                     defaultValue={this.props.article.title}
                     hintText="Введите название новсти"
                     floatingLabelText="Название"
@@ -128,7 +131,6 @@ var NewsForm = React.createClass({
                     ref="title" />
 
                 <TextField
-                    className="s_display_block"
                     defaultValue={this.props.article.teaser}
                     hintText="Введите короткое описание новости"
                     floatingLabelText="Описание"
@@ -136,13 +138,27 @@ var NewsForm = React.createClass({
                     ref="teaser" />
 
                 <MediumEditor
-                    className="s_mb_24"
                     hintText="Введите тело новости"
                     placehoder="Новость"
                     floatingLabelText="Тело новости"
                     defaultValue={this.props.article.body}
                     errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                     ref="body" />
+
+                <div className="s_width_half s_display_inline-block s_pr_12">
+                    <TextField
+                        defaultValue={this.props.article.youtube}
+                        hintText="Введите ID видео на youtube"
+                        floatingLabelText="Youtube"
+                        ref="youtube" />
+                </div>
+                <div className="s_width_half s_display_inline-block s_pl_12">
+                    <TextField
+                        defaultValue={this.props.article.vimeo}
+                        hintText="Введите ID видео на vimeo"
+                        floatingLabelText="Vimeo"
+                        ref="vimeo" />
+                </div>
 
                 <ImageUpload
                     label="Изображение превью (обязательно если новость закреплена)"
