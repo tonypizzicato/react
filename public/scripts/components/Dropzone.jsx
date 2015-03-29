@@ -9,7 +9,9 @@ var _            = require('underscore'),
 
     Button       = mui.FlatButton,
     Icon         = mui.FontIcon,
-    ActionButton = mui.FloatingActionButton;
+    ActionButton = mui.FloatingActionButton,
+
+    AuthStore    = require('../stores/AuthStore');
 
 var DropzoneComponent = React.createClass({
 
@@ -39,15 +41,14 @@ var DropzoneComponent = React.createClass({
 
     componentDidMount: function () {
         this._loader = new Dropzone(this.refs.dropzone.getDOMNode(), {
-            url:              this.props.url,
+            url:              this.props.url + '?user=' + AuthStore.getUser().username,
             autoProcessQueue: false,
             parallelUploads:  10,
             addRemoveLinks:   true,
             uploadMultiple:   this.props.uploadMultiple
         });
 
-        this._loader.on('completemultiple', function() {
-            console.log('completemultiple');
+        this._loader.on('completemultiple', function () {
             this._loader.processQueue();
         }.bind(this));
 
