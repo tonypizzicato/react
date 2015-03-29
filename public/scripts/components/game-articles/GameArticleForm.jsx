@@ -1,6 +1,7 @@
 "use strict";
 
-var React               = require('react'),
+var _                   = require('underscore'),
+    React               = require('react'),
     mui                 = require('material-ui'),
 
     Button              = mui.RaisedButton,
@@ -80,15 +81,22 @@ var GameArticleForm = React.createClass({
             type:        this.props.type,
             tournament:  this.props.game.tournamentId,
             gameId:      this.props.game._id,
-            centralGame: this.refs.central.isToggled(),
             youtube:     this.refs.youtube.getValue(),
             vimeo:       this.refs.vimeo.getValue(),
             author:      AuthStore.getUser().username
         };
 
+        if (this.props.type == 'preview') {
+            article = _.extend(article, {
+                centralGame: this.refs.central.isToggled()
+            });
+        }
+
         if (article.centralGame) {
-            article.imageHome = this.refs.imageHome.getImage();
-            article.imageAway = this.refs.imageAway.getImage();
+            article = _.extend(article, {
+                imageHome: this.refs.imageHome.getImage(),
+                imageAway: this.refs.imageAway.getImage()
+            });
         }
 
         this.setState({validation: this.getInitialState().validation});
