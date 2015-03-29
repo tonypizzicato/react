@@ -41,10 +41,15 @@ var DropzoneComponent = React.createClass({
         this._loader = new Dropzone(this.refs.dropzone.getDOMNode(), {
             url:              this.props.url,
             autoProcessQueue: false,
-            parallelUploads:  5,
+            parallelUploads:  10,
             addRemoveLinks:   true,
             uploadMultiple:   this.props.uploadMultiple
         });
+
+        this._loader.on('completemultiple', function() {
+            console.log('completemultiple');
+            this._loader.processQueue();
+        }.bind(this));
 
         if (this.props.onUpload) {
             this._loader.on('processingmultiple', this.props.onUpload);
