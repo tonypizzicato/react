@@ -134,7 +134,7 @@ module.exports = (grunt)->
         options:
           collapseBooleanAttributes: true
           collapseWhitespace:        true
-          removeAttributeQuotes:     true
+          removeAttributeQuotes:     false
           removeCommentsFromCDATA:   true
           removeEmptyAttributes:     true
           removeOptionalTags:        true
@@ -239,12 +239,12 @@ module.exports = (grunt)->
         dest: "<%= app.dist %>/views/index.hbs"
         replacements: [
           {
-            from: "href=/styles/"
-            to: "href=/admin/site/styles/"
+            from: "href=\"/styles/"
+            to: "href=\"/admin/site/styles/"
           },
           {
-            from: "src=/scripts/"
-            to: "src=/admin/site/scripts/"
+            from: "src=\"/scripts/"
+            to: "src=\"/admin/site/scripts/"
           }
         ]
 
@@ -322,6 +322,6 @@ module.exports = (grunt)->
 
     "rev"
     "usemin"
-    "htmlmin"
+    "htmlmin:dist"
     "replace:dist"
   ]

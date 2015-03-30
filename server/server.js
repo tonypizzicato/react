@@ -43,7 +43,7 @@ app.use(session({
     store:             new SessionMongoStore({mongooseConnection: mongoose.connection})
 }));
 
-//app.use(morgan('combined'));
+app.use(morgan('combined'));
 
 auth.init(app);
 routes.init(app);

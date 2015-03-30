@@ -1,6 +1,7 @@
 "use strict";
 
-var React         = require('react'),
+var _             = require('underscore'),
+    React         = require('react'),
     Dragon        = require('react-dragon'),
     mui           = require('material-ui'),
     cx            = React.addons.classSet,
@@ -118,10 +119,21 @@ var PhotoItem = React.createClass({
         var classes = cx({
             'photos__item': true
         });
+        var image;
+
+        if (this.props.image.thumb) {
+            if (typeof this.props.image.thumb == 'string') {
+                image = <Image src={this.props.image.thumb} width="150" height="150" />;
+            } else if (this.props.image.thumb.w) {
+                image = <Image src={this.props.image.thumb.src} width={this.props.image.thumb.w / 1.6} height={this.props.image.thumb.h / 1.6} />;
+            }
+        } else {
+            image = <Image width="150" height="150" alt="Ошибка загрузки" />
+        }
 
         return (
             <Dragon className={classes} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <Image src={this.props.image.thumb} width="150" height="150" />
+            {image}
                 <Button
                     className="photos__item_delete"
                     iconClassName="mdfi_action_highlight_remove"
