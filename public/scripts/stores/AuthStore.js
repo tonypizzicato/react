@@ -1,6 +1,7 @@
 "use strict";
 
-var _               = require('underscore'),
+var $               = require('jquery'),
+    _               = require('underscore'),
     assign          = require('object-assign'),
     EventEmitter    = require('events').EventEmitter,
 
@@ -13,11 +14,12 @@ var _               = require('underscore'),
     AuthConstants   = require('../constants/AuthConstants');
 
 var initUser = function () {
-    var el = document.getElementById('user'),
+    var el = $('#user'),
         user = null;
-    if (el.dataset.user !== undefined) {
-        if (el.dataset.user.length) {
-            user = JSON.parse(el.dataset.user);
+    var userString = el.data('user');
+    if (userString !== undefined) {
+        if (userString.length) {
+            user = JSON.parse(userString);
         }
         el.remove();
     }
