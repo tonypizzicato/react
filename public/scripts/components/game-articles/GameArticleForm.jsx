@@ -81,8 +81,8 @@ var GameArticleForm = React.createClass({
             type:        this.props.type,
             tournament:  this.props.game.tournamentId,
             gameId:      this.props.game._id,
-            youtube:     this.refs.youtube.getValue(),
-            vimeo:       this.refs.vimeo.getValue(),
+            youtube:     [this.refs.youtube1.getValue(),this.refs.youtube2.getValue()],
+            vimeo:       [this.refs.vimeo1.getValue(), this.refs.vimeo2.getValue()],
             author:      AuthStore.getUser().username
         };
 
@@ -125,8 +125,10 @@ var GameArticleForm = React.createClass({
         this.refs.central.setToggled(false);
         this.refs.imageHome.setImage(null);
         this.refs.imageAway.setImage(null);
-        this.refs.youtube.setValue('');
-        this.refs.vimeo.setValue('');
+        this.refs.youtube1.setValue('');
+        this.refs.vimeo1.setValue('');
+        this.refs.youtube2.setValue('');
+        this.refs.vimeo2.setValue('');
     },
 
     _onCentral: function (e, central) {
@@ -139,11 +141,11 @@ var GameArticleForm = React.createClass({
             preview = (
                 <div>
                     <div className="s_width_half s_display_inline-block">
-                        <div className="s_width_quarter">
+                        <div className="s_width_third">
                             <Toggle
                                 name="central"
                                 value="central"
-                                label="Central"
+                                label="Центральный"
                                 defaultToggled={this.props.article.centralGame}
                                 key={this.props.article._id + '-central'}
                                 onToggle={this._onCentral}
@@ -186,28 +188,38 @@ var GameArticleForm = React.createClass({
                 <div className="s_mb_24">
                     <div className="s_width_half s_display_inline-block s_pr_12">
                         <TextField
-                            defaultValue={this.props.article.youtube}
-                            hintText="Введите ID видео на youtube (ссылка: https://www.youtube.com/watch?v=KOc9Mky57UI, ID: KOc9Mky57UI"
+                            defaultValue={this.props.article.youtube && this.props.article.youtube.length ? this.props.article.youtube[0] : ''}
+                            hintText="Введите ID видео на youtube"
                             floatingLabelText="Youtube"
-                            ref="youtube" />
+                            ref="youtube1" />
+                        <TextField
+                            defaultValue={this.props.article.youtube && this.props.article.youtube.length == 2 ? this.props.article.youtube[1] : ''}
+                            hintText="Введите ID видео на youtube"
+                            floatingLabelText="Youtube"
+                            ref="youtube2" />
                     </div>
                     <div className="s_width_half s_display_inline-block s_pl_12">
                         <TextField
-                            defaultValue={this.props.article.vimeo}
+                            defaultValue={this.props.article.vimeo && this.props.article.vimeo.length ? this.props.article.vimeo[0] : ''}
                             hintText="Введите ссылку на видео на vimeo"
                             floatingLabelText="Vimeo"
-                            ref="vimeo" />
+                            ref="vimeo1" />
+                        <TextField
+                            defaultValue={this.props.article.vimeo && this.props.article.vimeo.length == 2 ? this.props.article.vimeo[1] : ''}
+                            hintText="Введите ссылку на видео на vimeo"
+                            floatingLabelText="Vimeo"
+                            ref="vimeo2" />
                     </div>
                 </div>
 
                 <div className="s_position_relative" key="article-state-radio">
 
                     <div className="s_float_l s_width_half s_mt_12">
-                        <div className="s_width_quarter s_display_inline-block">
+                        <div className="s_width_third s_display_inline-block">
                             <Toggle
                                 name="show"
                                 value="show"
-                                label="Show"
+                                label="Показывать"
                                 defaultToggled={this.props.article.show}
                                 key={this.props.article._id + '-show'}
                                 ref="show" />
@@ -215,8 +227,8 @@ var GameArticleForm = React.createClass({
                     </div>
 
                     <div className="buttons s_float_r s_width_quarter">
-                        <Button className="button_type_cancel s_mt_12" label="Cancel" secondary={true} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_12" label="Save" primary={true} onClick={this._onSave} />
+                        <Button className="button_type_cancel s_mt_12" label="Отменить" secondary={true} onClick={this._onCancel} />
+                        <Button className="button_type_save s_float_r s_mt_12" label="Сохранить" primary={true} onClick={this._onSave} />
                     </div>
 
                     {preview}

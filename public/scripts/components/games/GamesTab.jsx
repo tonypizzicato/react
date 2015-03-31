@@ -13,6 +13,8 @@ var _                   = require('underscore'),
     Dropzone            = require('../Dropzone.jsx'),
     Photos              = require('../Photos.jsx'),
 
+    AuthStore           = require('../../stores/AuthStore'),
+
     PhotosStore         = require('../../stores/PhotosStore'),
     PhotosActions       = require('../../actions/PhotosActions'),
 
@@ -97,7 +99,8 @@ var GamesTab = React.createClass({
 
         if (!!this.state.game._id) {
             var preview = GameArticlesStore.get(this.state.game._id, 'preview'),
-                review = GameArticlesStore.get(this.state.game._id, 'review');
+                review = GameArticlesStore.get(this.state.game._id, 'review'),
+                imagesUrl = PhotosStore.getImagesUrl('games', this.state.game._id) + '?user=' + AuthStore.getUser().username + '&tournament=' + this.state.game.tournamentId;
 
             tabsContent = (
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
@@ -119,13 +122,14 @@ var GamesTab = React.createClass({
                     </Tab>
                     <Tab label="Фото" key={this.state.game._id + '-media'}>
                         <Dropzone
-                            url={PhotosStore.getImagesUrl('games', this.state.game._id)}
+                            url={imagesUrl}
                             onUpload={this._onPhotosUpload}
                             key={this.state.game._id + '-dropzone'}/>
                         <Photos
                             className="s_display_inline-block s_mt_12 s_mr_6 s_position_relative"
                             size="150"
                             photos={this.state.photos}
+                            game={this.state.game}
                             key={this.state.game._id + '-photos'}/>
                     </Tab>
                 </Tabs>

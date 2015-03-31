@@ -9,9 +9,7 @@ var _            = require('underscore'),
 
     Button       = mui.FlatButton,
     Icon         = mui.FontIcon,
-    ActionButton = mui.FloatingActionButton,
-
-    AuthStore    = require('../stores/AuthStore');
+    ActionButton = mui.FloatingActionButton;
 
 var DropzoneComponent = React.createClass({
 
@@ -41,7 +39,7 @@ var DropzoneComponent = React.createClass({
 
     componentDidMount: function () {
         this._loader = new Dropzone(this.refs.dropzone.getDOMNode(), {
-            url:              this.props.url + '?user=' + AuthStore.getUser().username,
+            url:              this.props.url,
             autoProcessQueue: false,
             parallelUploads:  10,
             addRemoveLinks:   true,
