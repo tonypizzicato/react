@@ -20,7 +20,8 @@ var PhotosList = React.createClass({
             size:      React.PropTypes.number,
             photos:    React.PropTypes.array,
             type:      React.PropTypes.string.required,
-            className: React.PropTypes.string
+            className: React.PropTypes.string,
+            game:      React.PropTypes.object
         }
     },
 
@@ -56,9 +57,9 @@ var PhotosList = React.createClass({
 
         items.forEach(function (item, index) {
             if (item.sort !== index) {
-                PhotosActions.save(item.type, item.postId, item._id, {sort: index}, {silent: true})
+                PhotosActions.save(item.type, item.postId, item._id, {sort: index, tournament: this.props.game.tournamentId}, {silent: true})
             }
-        });
+        }.bind(this));
 
         this.setState({photos: items});
 
@@ -99,12 +100,13 @@ var PhotoItem = React.createClass({
 
     propTypes: function () {
         return {
-            size:      React.PropTypes.number,
-            image:     React.PropTypes.object.required,
-            index:     React.PropTypes.number.required,
-            onDrop:    React.PropTypes.string,
-            className: React.PropTypes.string,
-            onDelete:  React.PropTypes.func
+            size:         React.PropTypes.number,
+            image:        React.PropTypes.object.required,
+            index:        React.PropTypes.number.required,
+            onDrop:       React.PropTypes.string,
+            className:    React.PropTypes.string,
+            onDelete:     React.PropTypes.func,
+            tournamentId: React.PropTypes.string
         }
     },
 
