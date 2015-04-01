@@ -16,10 +16,10 @@ var $               = require('jquery'),
 var initUser = function () {
     var el = $('#user'),
         user = null;
-    var userString = el.data('user');
-    if (userString !== undefined) {
-        if (userString.length) {
-            user = JSON.parse(userString);
+    var userObj = el.data('user');
+    if (userObj !== undefined) {
+        if (userObj._id) {
+            user = userObj;
         }
         el.remove();
     }
