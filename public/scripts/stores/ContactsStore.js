@@ -123,7 +123,7 @@ AppDispatcher.register(function (action) {
             var contacts = _contacts.slice(0);
 
             if (Store._validate(action.data)) {
-                api.call('contacts:create', action.data).then(function (res) {
+                api.call('contacts:create', action.data, true).then(function (res) {
                     _contacts.push(res);
                     Store.emitChange();
                 });
@@ -136,7 +136,7 @@ AppDispatcher.register(function (action) {
             var contact = action.data;
 
             if (Store._validate(contact)) {
-                api.call('contacts:save', contact).then(function () {
+                api.call('contacts:save', contact, true).then(function () {
                     var changed = _.findWhere(_contacts, {_id: contact._id});
 
                     assign(changed, contact);

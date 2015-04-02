@@ -119,7 +119,7 @@ AppDispatcher.register(function (action) {
         case GameArticlesConstants.GAME_ARTICLES_SAVE:
 
             if (GameArticlesStore._validate(action.data)) {
-                api.call('game-articles:save', action.data).then(function (res) {
+                api.call('game-articles:save', action.data, true).then(function (res) {
 
                     var changed = _articles.filter(function (item) {
                         return item._id == action.data._id;
@@ -137,7 +137,7 @@ AppDispatcher.register(function (action) {
         case GameArticlesConstants.GAME_ARTICLES_ADD:
 
             if (GameArticlesStore._validate(action.data)) {
-                api.call('game-articles:create', action.data).then(function (res) {
+                api.call('game-articles:create', action.data, true).then(function (res) {
                     _articles.push(res);
                     GameArticlesStore.emitChange();
                 });

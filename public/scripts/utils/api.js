@@ -8,13 +8,15 @@ var Api = function (optRoutes, optBasePath) {
     this.basePath = optBasePath;
 };
 
-Api.prototype.call = function (routeName, data) {
+Api.prototype.call = function (routeName, data, isJson) {
     var route = this.get(routeName, data);
+    data = data || {};
 
     return $.ajax({
-        type: route.method,
-        url:  route.path,
-        data: data || {}
+        type:        route.method,
+        url:         route.path,
+        data:        isJson ? JSON.stringify(data) : data,
+        contentType: isJson ? "application/json; charset=utf-8" : undefined
     });
 };
 
