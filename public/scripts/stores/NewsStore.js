@@ -111,7 +111,7 @@ AppDispatcher.register(function (action) {
                 options = assign({}, {validate: true, silent: false}, action.options);
 
             if (NewsStore._validate(article)) {
-                api.call('news:save', article).then(function () {
+                api.call('news:save', article, true).then(function () {
                     var changed = _news.filter(function (item) {
                         return item._id == article._id;
                     }).pop();
@@ -132,7 +132,7 @@ AppDispatcher.register(function (action) {
             var article = action.data;
 
             if (NewsStore._validate(article)) {
-                api.call('news:create', article).then(function (res) {
+                api.call('news:create', article, true).then(function (res) {
                     _news.unshift(res);
                     NewsStore.emitChange();
                 });

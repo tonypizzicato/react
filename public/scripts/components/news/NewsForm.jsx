@@ -8,6 +8,7 @@ var React                = require('react'),
     Toggle               = mui.Toggle,
     DropDownMenu         = mui.DropDownMenu,
     Button               = mui.RaisedButton,
+    IconButton           = mui.IconButton,
     FloatingActionButton = mui.FloatingActionButton,
 
     EventsConstants      = require('../../constants/EventsConstants'),
@@ -19,7 +20,8 @@ var React                = require('react'),
 
     MediumEditor         = require('../MediumEditor.jsx'),
     TagsField            = require('../TagsField.jsx'),
-    ImageUpload          = require('../ImageUpload.jsx');
+    ImageUpload          = require('../ImageUpload.jsx'),
+    VideoUpload          = require('../VideoUpload.jsx');
 
 var NewsForm = React.createClass({
 
@@ -34,7 +36,8 @@ var NewsForm = React.createClass({
                 stick:   false,
                 image:   null,
                 country: {},
-                tags:    []
+                tags:    [],
+                video:   []
             },
             leagueId:  null
         }
@@ -42,9 +45,10 @@ var NewsForm = React.createClass({
 
     getInitialState: function () {
         return {
-            countries:  [],
-            article:    this.props.article,
-            validation: {}
+            countries:   [],
+            article:     this.props.article,
+            validation:  {},
+            videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
         }
     },
 
@@ -78,10 +82,19 @@ var NewsForm = React.createClass({
             leagueId: this.props.leagueId,
             country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
             image:    this.refs.image.getImage(),
-            youtube:  this.refs.youtube.getValue(),
-            vimeo:    this.refs.vimeo.getValue(),
             author:   AuthStore.getUser().username
         };
+
+        var videos = [],
+            video;
+        for (var i = 0; i < this.state.videosCount; i++) {
+            video = this.refs['video-' + i].getValue();
+            if (video.type && video.url.length) {
+                videos.push(video);
+            }
+        }
+
+        article.video = videos;
 
         this.setState({validation: this.getInitialState().validation});
         if (this.props.article._id) {
@@ -100,8 +113,13 @@ var NewsForm = React.createClass({
         this.refs.stick.setToggled(false);
         this.refs.tags.setTags([]);
         this.refs.image.setImage(null);
-        this.refs.youtube.setValue('');
-        this.refs.vimeo.setValue('');
+
+        this.refs['video-0'].clear();
+        this.setState({videosCount: 1});
+    },
+
+    _addVideo: function () {
+        this.setState({videosCount: this.state.videosCount + 1});
     },
 
     _onCancel: function () {
@@ -120,6 +138,17 @@ var NewsForm = React.createClass({
             }
             return {text: country.name, _id: country._id, name: country.name};
         }.bind(this));
+
+        var videos = [];
+        if (this.props.article.video && this.props.article.video.length) {
+            videos = this.props.article.video.map(function (item, index) {
+                return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index} />
+            });
+        }
+        var start = this.props.article.video ? this.props.article.video.length : 0;
+        for (var i = start; i < this.state.videosCount; i++) {
+            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i} />);
+        }
 
         return (
             <div className="panel panel_type_news-create s_pt_0">
@@ -145,20 +174,8 @@ var NewsForm = React.createClass({
                     errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                     ref="body" />
 
-                <div className="s_width_half s_display_inline-block s_pr_12">
-                    <TextField
-                        defaultValue={this.props.article.youtube}
-                        hintText="Введите ID видео на youtube"
-                        floatingLabelText="Youtube"
-                        ref="youtube" />
-                </div>
-                <div className="s_width_half s_display_inline-block s_pl_12">
-                    <TextField
-                        defaultValue={this.props.article.vimeo}
-                        hintText="Введите ID видео на vimeo"
-                        floatingLabelText="Vimeo"
-                        ref="vimeo" />
-                </div>
+
+                {videos}
 
                 <ImageUpload
                     label="Изображение превью (обязательно если новость закреплена)"

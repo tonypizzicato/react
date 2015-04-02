@@ -44,7 +44,7 @@ var GameArticleForm = React.createClass({
             article:     {},
             validation:  {},
             central:     this.props.article.centralGame,
-            videosCount: this.props.article.video ? this.props.article.video.length : 1
+            videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
         }
     },
 
