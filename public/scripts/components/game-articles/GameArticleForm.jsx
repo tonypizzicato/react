@@ -7,9 +7,11 @@ var _                   = require('underscore'),
     Button              = mui.RaisedButton,
     Toggle              = mui.Toggle,
     TextField           = mui.TextField,
+    IconButton          = mui.IconButton,
 
     MediumEditor        = require('../MediumEditor.jsx'),
     ImageUpload         = require('../ImageUpload.jsx'),
+    VideoUpload         = require('../VideoUpload.jsx'),
 
     EventsConstants     = require('../../constants/EventsConstants'),
 
@@ -39,9 +41,10 @@ var GameArticleForm = React.createClass({
 
     getInitialState: function () {
         return {
-            article:    {},
-            validation: {},
-            central:    this.props.article.centralGame
+            article:     {},
+            validation:  {},
+            central:     this.props.article.centralGame,
+            videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
         }
     },
 
@@ -76,15 +79,24 @@ var GameArticleForm = React.createClass({
 
     _onSave: function () {
         var article = {
-            body:        this.refs.body.getValue(),
-            show:        this.refs.show.isToggled(),
-            type:        this.props.type,
-            tournament:  this.props.game.tournamentId,
-            gameId:      this.props.game._id,
-            youtube:     [this.refs.youtube1.getValue(),this.refs.youtube2.getValue()],
-            vimeo:       [this.refs.vimeo1.getValue(), this.refs.vimeo2.getValue()],
-            author:      AuthStore.getUser().username
+            body:       this.refs.body.getValue(),
+            show:       this.refs.show.isToggled(),
+            type:       this.props.type,
+            tournament: this.props.game.tournamentId,
+            gameId:     this.props.game._id,
+            author:     AuthStore.getUser().username
         };
+
+        var videos = [],
+            video;
+        for (var i = 0; i < this.state.videosCount; i++) {
+            video = this.refs['video-' + i].getValue();
+            if (video.type && video.url.length) {
+                videos.push(video);
+            }
+        }
+
+        article.video = videos;
 
         if (this.props.type == 'preview') {
             article = _.extend(article, {
@@ -125,14 +137,17 @@ var GameArticleForm = React.createClass({
         this.refs.central.setToggled(false);
         this.refs.imageHome.setImage(null);
         this.refs.imageAway.setImage(null);
-        this.refs.youtube1.setValue('');
-        this.refs.vimeo1.setValue('');
-        this.refs.youtube2.setValue('');
-        this.refs.vimeo2.setValue('');
+
+        this.refs['video-0'].clear();
+        this.setState({videosCount: 1});
     },
 
     _onCentral: function (e, central) {
         this.setState({central: central});
+    },
+
+    _addVideo: function () {
+        this.setState({videosCount: this.state.videosCount + 1});
     },
 
     render: function () {
@@ -175,41 +190,33 @@ var GameArticleForm = React.createClass({
                 </div>
             )
         }
+
+        var videos = [];
+        if (this.props.article.video && this.props.article.video.length) {
+            videos = this.props.article.video.map(function (item, index) {
+                return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index} />
+            });
+        }
+        var start = this.props.article.video ? this.props.article.video.length : 0;
+        for (var i = start; i < this.state.videosCount; i++) {
+            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i} />);
+        }
         return (
             <div>
                 <MediumEditor
                     hintText="Введите текст"
                     placehoder="Статья"
                     defaultValue={this.props.article.body}
-                    errorText={this.state.validation.preview ? 'Поле не может быть пустым' : null}
+                    errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                     key={this.props.article._id}
                     ref="body" />
 
-                <div className="s_mb_24">
-                    <div className="s_width_half s_display_inline-block s_pr_12">
-                        <TextField
-                            defaultValue={this.props.article.youtube && this.props.article.youtube.length ? this.props.article.youtube[0] : ''}
-                            hintText="Введите ID видео на youtube"
-                            floatingLabelText="Youtube"
-                            ref="youtube1" />
-                        <TextField
-                            defaultValue={this.props.article.youtube && this.props.article.youtube.length == 2 ? this.props.article.youtube[1] : ''}
-                            hintText="Введите ID видео на youtube"
-                            floatingLabelText="Youtube"
-                            ref="youtube2" />
+                <div className="s_mb_24 s_position_relative block_videos">
+                    <div className="block_videos__button-add">
+                        <IconButton iconClassName="mdfi_content_add_circle_outline" onClick={this._addVideo} />
                     </div>
-                    <div className="s_width_half s_display_inline-block s_pl_12">
-                        <TextField
-                            defaultValue={this.props.article.vimeo && this.props.article.vimeo.length ? this.props.article.vimeo[0] : ''}
-                            hintText="Введите ссылку на видео на vimeo"
-                            floatingLabelText="Vimeo"
-                            ref="vimeo1" />
-                        <TextField
-                            defaultValue={this.props.article.vimeo && this.props.article.vimeo.length == 2 ? this.props.article.vimeo[1] : ''}
-                            hintText="Введите ссылку на видео на vimeo"
-                            floatingLabelText="Vimeo"
-                            ref="vimeo2" />
-                    </div>
+
+                    {videos}
                 </div>
 
                 <div className="s_position_relative" key="article-state-radio">
