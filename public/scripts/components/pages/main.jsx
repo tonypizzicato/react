@@ -28,7 +28,8 @@ var menuItems = [
     {route: 'tournaments', text: 'Туриниры'},
     {route: 'news', text: 'Новости'},
     {route: 'games', text: 'Игры'},
-    {route: 'contacts', text: 'Контакты'}
+    {route: 'contacts', text: 'Контакты'},
+    {route: 'orders', text: 'Заявки'}
 ];
 
 var MainApp = React.createClass({

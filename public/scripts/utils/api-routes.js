@@ -186,6 +186,13 @@ var routes = {
             path:   '/contacts/%(_id)s',
             method: 'DELETE'
         }
+    },
+
+    'orders': {
+        'list': {
+            path:   '/orders',
+            method: 'GET'
+        }
     }
 };
 
