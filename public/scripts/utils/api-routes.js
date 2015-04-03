@@ -1,6 +1,6 @@
 "use strict";
 
-var basePath = 'http://amateurs.io/api/site';
+var basePath = 'http://localhost:9000/api';
 
 var routes = {
     'auth': {
@@ -185,6 +185,13 @@ var routes = {
         'delete': {
             path:   '/contacts/%(_id)s',
             method: 'DELETE'
+        }
+    },
+
+    'orders': {
+        'list': {
+            path:   '/orders',
+            method: 'GET'
         }
     }
 };
