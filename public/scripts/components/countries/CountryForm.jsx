@@ -57,6 +57,7 @@ var CountryForm = React.createClass({
         var country = {
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
+            vk:       this.refs.vk.getValue(),
             state:    this.refs.state.getSelectedValue(),
             leagueId: this.props.leagueId,
             show:     this.refs.show.isToggled()
@@ -84,6 +85,7 @@ var CountryForm = React.createClass({
     _clearForm: function () {
         this.refs.name.setValue('');
         this.refs.slug.setValue('');
+        this.refs.vk.setValue('');
         this.refs.state.setSelectedValue('CREATED');
         this.refs.show.setToggled(false);
     },
@@ -96,15 +98,20 @@ var CountryForm = React.createClass({
                     hintText="Введите название страны"
                     floatingLabelText="Название"
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
-                    ref="name" />
+                    ref="name"/>
 
                 <TextField
                     defaultValue={this.props.country.slug}
                     hintText="Введите url страны (пример: en)"
-                    placehoder="URL"
                     floatingLabelText="URL"
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
-                    ref="slug" />
+                    ref="slug"/>
+
+                <TextField
+                    defaultValue={this.props.country.vk}
+                    hintText="Введите адрес страны Вконтакте"
+                    floatingLabelText="VK"
+                    ref="vk"/>
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24" key="country-state-radio">
                     <div className="s_float_l s_width_half">
@@ -112,16 +119,16 @@ var CountryForm = React.createClass({
                             <RadioButtonGroup
                                 name="state"
                                 defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
-                                ref="state" >
+                                ref="state">
                                 <RadioButton
                                     value="CREATED"
-                                    label="CREATED" />
+                                    label="CREATED"/>
                                 <RadioButton
                                     value="ACTIVE"
-                                    label="ACTIVE" />
+                                    label="ACTIVE"/>
                                 <RadioButton
                                     value="ARCHIVE"
-                                    label="ARCHIVE" />
+                                    label="ARCHIVE"/>
                             </RadioButtonGroup>
                         </div>
 
@@ -131,13 +138,13 @@ var CountryForm = React.createClass({
                                 value="show"
                                 ref="show"
                                 defaultToggled={this.props.country.show}
-                                label="Показывать" />
+                                label="Показывать"/>
                         </div>
                     </div>
 
                     <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave} />
+                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
+                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
                     </div>
                 </div>
             </div>
