@@ -19,7 +19,8 @@ var DropzoneComponent = React.createClass({
         return {
             url:            React.PropTypes.string.required,
             uploadMultiple: React.PropTypes.bool,
-            onUpload:       React.PropTypes.func
+            onUpload:       React.PropTypes.func,
+            onChunkUpload:  React.PropTypes.func
         }
     },
 
@@ -54,6 +55,9 @@ var DropzoneComponent = React.createClass({
             this._loader.on('processingmultiple', this.props.onUpload);
         }
 
+        if (this.props.onChunkUpload) {
+            this._loader.on('completemultiple', this.props.onChunkUpload);
+        }
     },
 
     render: function () {

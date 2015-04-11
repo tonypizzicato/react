@@ -27,8 +27,9 @@ var NewsForm = React.createClass({
 
     getDefaultProps: function () {
         return {
-            countries: [],
-            article:   {
+            categories: [],
+            countries:  [],
+            article:    {
                 title:   '',
                 body:    '',
                 teaser:  '',
@@ -39,8 +40,8 @@ var NewsForm = React.createClass({
                 tags:    [],
                 video:   []
             },
-            leagueId:  null
-        }
+            leagueId:   null
+        };
     },
 
     getInitialState: function () {
@@ -49,7 +50,7 @@ var NewsForm = React.createClass({
             article:     this.props.article,
             validation:  {},
             videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
-        }
+        };
     },
 
     _onValidationError: function (validation) {
@@ -62,7 +63,6 @@ var NewsForm = React.createClass({
 
     componentWillUnmount: function () {
         NewsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-
     },
 
     componentWillReceiveProps: function (nextProps) {
@@ -80,6 +80,7 @@ var NewsForm = React.createClass({
             stick:    this.refs.stick.isToggled(),
             tags:     this.refs.tags.getTags(),
             leagueId: this.props.leagueId,
+            category: this.props.categories[this.refs.category.state.selectedIndex]._id,
             country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
             image:    this.refs.image.getImage(),
             author:   AuthStore.getUser().username
@@ -132,23 +133,46 @@ var NewsForm = React.createClass({
 
     render: function () {
         var selectedCountryIndex = 0;
-        var countryItems = this.props.countries.map(function (country, index) {
+        var countryItems         = this.props.countries.map(function (country, index) {
             if (this.props.article.country == country._id) {
                 selectedCountryIndex = index;
             }
             return {text: country.name, _id: country._id, name: country.name};
         }.bind(this));
 
+        var selectedCategoryIndex = 0;
+        var categoryItems         = this.props.categories.map(function (category, index) {
+            if (this.props.article.category == category._id) {
+                selectedCategoryIndex = index;
+            }
+            return {text: category.name, _id: category._id, name: category.name};
+        }.bind(this));
+
         var videos = [];
         if (this.props.article.video && this.props.article.video.length) {
             videos = this.props.article.video.map(function (item, index) {
-                return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index} />
+                return (
+                    <VideoUpload
+                        type={item.type}
+                        label={item.label}
+                        url={item.url}
+                        ref={'video-' + index}
+                        key={'video-' + index}/>
+                );
             });
         }
         var start = this.props.article.video ? this.props.article.video.length : 0;
         for (var i = start; i < this.state.videosCount; i++) {
-            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i} />);
+            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i}/>);
         }
+
+        var categories = categoryItems.length ? (
+            <DropDownMenu
+                className="s_width_half"
+                menuItems={categoryItems}
+                selectedIndex={selectedCategoryIndex}
+                ref="category"/>
+        ) : (<span className="s_display_block s_line-height_62">Нет категории</span>);
 
         return (
             <div className="panel panel_type_news-create s_pt_0">
@@ -157,14 +181,14 @@ var NewsForm = React.createClass({
                     hintText="Введите название новсти"
                     floatingLabelText="Название"
                     errorText={this.state.validation.title ? 'Поле не может быть пустым' : null}
-                    ref="title" />
+                    ref="title"/>
 
                 <TextField
                     defaultValue={this.props.article.teaser}
                     hintText="Введите короткое описание новости"
                     floatingLabelText="Описание"
                     //errorText={this.state.validation.teaser ? 'Поле не может быть пустым' : null}
-                    ref="teaser" />
+                    ref="teaser"/>
 
                 <MediumEditor
                     hintText="Введите тело новости"
@@ -172,8 +196,16 @@ var NewsForm = React.createClass({
                     floatingLabelText="Тело новости"
                     defaultValue={this.props.article.body}
                     errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
-                    ref="body" />
+                    ref="body"/>
 
+                <div className="s_width_half">
+                    {categories}
+                    <DropDownMenu
+                        className="s_width_half"
+                        menuItems={countryItems}
+                        selectedIndex={selectedCountryIndex}
+                        ref="country"/>
+                </div>
 
                 {videos}
 
@@ -184,15 +216,9 @@ var NewsForm = React.createClass({
                     width="863px"
                     height="308px"
                     key={this.props.article._id + '-image-upload'}
-                    ref="image" />
+                    ref="image"/>
 
                 <div className="s_width_half">
-                    <DropDownMenu
-                        className="s_width_half"
-                        menuItems={countryItems}
-                        selectedIndex={selectedCountryIndex}
-                        ref="country" />
-
                     <div className="s_width_third s_mt_12 s_mb_12">
                         <Toggle
                             className="s_mb_12"
@@ -200,26 +226,26 @@ var NewsForm = React.createClass({
                             value="show"
                             ref="show"
                             defaultToggled={this.props.article.show}
-                            label="Показывать" />
+                            label="Показывать"/>
                         <Toggle
                             className="s_mb_12"
                             name="stick"
                             value="stick"
                             ref="stick"
                             defaultToggled={this.props.article.stick}
-                            label="Прикрепить" />
+                            label="Прикрепить"/>
                     </div>
                 </div>
 
                 <div className="">
                     <div className="s_position_relative s_overflow_hidden s_mt_24">
                         <div className="s_float_l s_width_half">
-                            <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.article.tags} />
+                            <TagsField ref="tags" floatingLabelText="Tags" tags={this.props.article.tags}/>
                         </div>
 
                         <div className="buttons s_float_r s_width_third">
-                            <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel} />
-                            <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave} />
+                            <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
+                            <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
                         </div>
                     </div>
                 </div>

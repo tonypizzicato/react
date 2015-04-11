@@ -7,11 +7,16 @@ var _                   = require('underscore'),
     Tabs                = mui.Tabs,
     Tab                 = mui.Tab,
 
+
     Toolbar             = require('./GamesToolbar.jsx'),
     GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
 
+    HelpButton          = require('../HelpButton.jsx'),
     Dropzone            = require('../Dropzone.jsx'),
     Photos              = require('../Photos.jsx'),
+
+    HelpPhotoDialog     = require('../help/HelpPhotoDialog.jsx'),
+    HelpReviewDialog    = require('../help/HelpReviewDialog.jsx'),
 
     AuthStore           = require('../../stores/AuthStore'),
 
@@ -89,7 +94,7 @@ var GamesTab = React.createClass({
         if (!!this.state.game._id) {
             _.delay(function () {
                 PhotosActions.load('games', this.state.game._id);
-            }.bind(this), 1000);
+            }.bind(this), 300);
         }
     },
 
@@ -98,13 +103,14 @@ var GamesTab = React.createClass({
         var tabsContent;
 
         if (!!this.state.game._id) {
-            var preview = GameArticlesStore.get(this.state.game._id, 'preview'),
-                review = GameArticlesStore.get(this.state.game._id, 'review'),
+            var preview   = GameArticlesStore.get(this.state.game._id, 'preview'),
+                review    = GameArticlesStore.get(this.state.game._id, 'review'),
                 imagesUrl = PhotosStore.getImagesUrl('games', this.state.game._id) + '?user=' + AuthStore.getUser().username + '&tournament=' + this.state.game.tournamentId;
 
             tabsContent = (
                 <Tabs className="s_mt_12" onChange={this._onGameTabChange}>
                     <Tab label="Превью">
+                        <HelpButton dialog={this.refs.dialogReview}/>
                         <GameArticleForm
                             type="preview"
                             game={this.state.game}
@@ -113,6 +119,7 @@ var GamesTab = React.createClass({
                             key={this.state.game._id + '-preview'}/>
                     </Tab>
                     <Tab label="Обзор">
+                        <HelpButton dialog={this.refs.dialogReview}/>
                         <GameArticleForm
                             type="review"
                             game={this.state.game}
@@ -121,9 +128,10 @@ var GamesTab = React.createClass({
                             key={this.state.game._id + '-review'}/>
                     </Tab>
                     <Tab label="Фото" key={this.state.game._id + '-media'}>
+                        <HelpButton dialog={this.refs.dialogPhoto}/>
                         <Dropzone
                             url={imagesUrl}
-                            onUpload={this._onPhotosUpload}
+                            onChunkUpload={this._onPhotosUpload}
                             key={this.state.game._id + '-dropzone'}/>
                         <Photos
                             className="s_display_inline-block s_mt_12 s_mr_6 s_position_relative"
@@ -144,6 +152,8 @@ var GamesTab = React.createClass({
             <div className="s_mt_12">
                 {toolbar}
                 {tabsContent}
+                <HelpPhotoDialog ref="dialogPhoto"/>
+                <HelpReviewDialog ref="dialogReview"/>
             </div>
         );
     }

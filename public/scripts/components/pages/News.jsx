@@ -8,6 +8,9 @@ var React                = require('react'),
     Tabs                 = mui.Tabs,
     Tab                  = mui.Tab,
 
+    CategoriesStore      = require('../../stores/CategoriesStore'),
+    CategoriesActions    = require('../../actions/CategoriesActions'),
+
     NewsStore            = require('../../stores/NewsStore'),
     NewsActions          = require('../../actions/NewsActions'),
 
@@ -31,19 +34,24 @@ var NewsApp = React.createClass({
     getInitialState: function () {
         return {
             news:            [],
+            categories:      [],
             countries:       [],
             selectedArticle: {}
         };
     },
 
     componentDidMount: function () {
+        CategoriesStore.addChangeListener(this._onChange);
         NewsStore.addChangeListener(this._onChange);
         CountriesStore.addChangeListener(this._onChange);
+
+        CategoriesActions.load();
         NewsActions.load();
         CountriesActions.load();
     },
 
     componentWillUnmount: function () {
+        CategoriesStore.removeChangeListener(this._onChange);
         NewsStore.removeChangeListener(this._onChange);
         CountriesStore.removeChangeListener(this._onChange);
     },
@@ -58,6 +66,7 @@ var NewsApp = React.createClass({
         this.setState({
             news:            NewsStore.getAll(),
             countries:       CountriesStore.getAll(),
+            categories:      CategoriesStore.getAll(),
             selectedArticle: this.getInitialState().selectedArticle
         });
     },
@@ -107,6 +116,7 @@ var NewsApp = React.createClass({
                         className="s_mb_24"
                         article={this.state.selectedArticle}
                         leagueId={league._id}
+                        categories={this.state.categories}
                         countries={countries}
                         onCancel={this._onCancel}
                         key={key} />
