@@ -1,6 +1,6 @@
 "use strict";
 
-var basePath = 'http://amateurs.io/admin/site';
+var basePath = 'http://localhost:3000';
 
 var routes = {
     'auth':  {

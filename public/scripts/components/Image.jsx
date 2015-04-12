@@ -3,6 +3,8 @@
 var React = require('react'),
     cx    = React.addons.classSet;
 
+var _img;
+
 var Image = React.createClass({
 
     propTypes: function () {
@@ -34,17 +36,24 @@ var Image = React.createClass({
     },
 
     componentDidMount: function () {
-        var img = document.createElement('img');
+        _img = document.createElement('img');
 
-        img.onload = function () {
-            this.setState({loaded: true});
+        _img.onload = function () {
+            if (this.isMounted()) {
+                this.setState({loaded: true});
+            }
         }.bind(this);
 
-        img.onerror = function () {
-            img.src = 'http://placehold.it/' + this.props.width + '&text=load%20error';
+        _img.onerror = function () {
+            _img.src = 'http://placehold.it/' + this.props.width + '&text=load%20error';
         }.bind(this);
 
-        img.src = this.props.src
+        _img.src = this.props.src
+    },
+
+    componentWillUnmount: function () {
+        _img.onload  = null;
+        _img.onerror = null;
     },
 
     render: function () {
@@ -75,7 +84,7 @@ var Image = React.createClass({
 
         return (
             <div className={cls} style={divStyles}>
-                <div style={imageStyles} />
+                <div style={imageStyles}/>
             </div>
         )
     }

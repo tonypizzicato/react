@@ -26,6 +26,7 @@ var menuItems = [
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
     {route: 'tournaments', text: 'Туриниры'},
+    {route: 'categories', text: 'Категории'},
     {route: 'news', text: 'Новости'},
     {route: 'games', text: 'Игры'},
     {route: 'contacts', text: 'Контакты'},
