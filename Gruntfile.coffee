@@ -234,7 +234,7 @@ module.exports = (grunt)->
           }
         ]
     replace:
-      dist:
+      styles:
         src: "<%= app.dist %>/views/index.hbs"
         dest: "<%= app.dist %>/views/index.hbs"
         replacements: [
@@ -245,6 +245,15 @@ module.exports = (grunt)->
           {
             from: "src=\"/scripts/"
             to: "src=\"/admin/site/scripts/"
+          }
+        ]
+      images:
+        src: "<%= app.dist %>/scripts/*build.js"
+        dest: "<%= app.dist %>/scripts/"
+        replacements: [
+          {
+            from: "src:\"/images/"
+            to: "src:\"/admin/site/images/"
           }
         ]
 
@@ -323,5 +332,5 @@ module.exports = (grunt)->
     "rev"
     "usemin"
     "htmlmin:dist"
-    "replace:dist"
+    "replace"
   ]
