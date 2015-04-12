@@ -120,7 +120,7 @@ var HelpPhoto = React.createClass({
                 <p>
                     Таким образом, для видео <a href="https://vk.com/video?z=video1572731_149462834" target="_blank">Swedish House Mafia - One (Your Name)</a>,
                     которая для браузера выглядит так: https://vk.com/video?z=video1572731_149462834, <strong>для сохранения в системе</strong> будет
-                    выглядеть так: <strong>//vk.com/video_ext.php?oid=1572731&id=149462834&hash=b61399023b11f89e&hd=2</strong>.
+                    выглядеть так: <strong>//vk.com/video_ext.php?oid=1572731&amp;id=149462834&amp;hash=b61399023b11f89e&amp;hd=2</strong>.
                 </p>
                 <p>
                     В случае возникновения затруднений прошу писать в <a href="https://vk.com/id1572731" target="_blank">ВК</a> либо
