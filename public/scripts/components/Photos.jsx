@@ -87,7 +87,7 @@ var PhotosList = React.createClass({
                 onDrop={this._onDrop}
                 onDelete={this._onDelete}
                 {...this.props}
-                key={item._id} />
+                key={item._id}/>
         }.bind(this));
 
         return (
@@ -125,24 +125,26 @@ var PhotoItem = React.createClass({
 
         if (this.props.image.thumb) {
             if (typeof this.props.image.thumb == 'string') {
-                image = <Image src={this.props.image.thumb} width="150" height="150" />;
+                image = <Image src={this.props.image.thumb} width="150" height="150"/>;
             } else if (this.props.image.thumb.w) {
-                image = <Image src={this.props.image.thumb.src} width={this.props.image.thumb.w / 1.6} height={this.props.image.thumb.h / 1.6} />;
+                image = <Image src={this.props.image.thumb.src} width={this.props.image.thumb.w / 1.6} height={this.props.image.thumb.h / 1.6}/>;
+            } else {
+                image = <Image width="150" height="150" alt="Ошибка загрузки"/>
             }
         } else {
-            image = <Image width="150" height="150" alt="Ошибка загрузки" />
+            image = <Image width="150" height="150" alt="Ошибка загрузки"/>
         }
 
         return (
             <Dragon className={classes} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-            {image}
+                {image}
                 <Button
                     className="photos__item_delete"
                     iconClassName="mdfi_action_highlight_remove"
                     data-id={this.props.image._id}
                     data-type={this.props.image.type}
                     data-postid={this.props.image.postId}
-                    onClick={this.props.onDelete} />
+                    onClick={this.props.onDelete}/>
             </Dragon>
         )
     }
