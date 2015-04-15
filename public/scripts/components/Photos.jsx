@@ -57,7 +57,8 @@ var PhotosList = React.createClass({
 
         items.forEach(function (item, index) {
             if (item.sort !== index) {
-                PhotosActions.save(item.type, item.postId, item._id, {sort: index, tournament: this.props.game.tournamentId}, {silent: true})
+                PhotosActions.save(item.type, item.postId, item._id, {sort: index, tournament: this.props.game.tournamentId},
+                    {silent: true})
             }
         }.bind(this));
 
@@ -127,7 +128,7 @@ var PhotoItem = React.createClass({
             if (typeof this.props.image.thumb == 'string') {
                 image = <Image src={this.props.image.thumb} width="150" height="150"/>;
             } else if (this.props.image.thumb.w) {
-                image = <Image src={this.props.image.thumb.src} width={this.props.image.thumb.w / 1.6} height={this.props.image.thumb.h / 1.6}/>;
+                image = <Image src={this.props.image.thumb.src} width="150" height="150"/>;
             } else {
                 image = <Image width="150" height="150" alt="Ошибка загрузки"/>
             }

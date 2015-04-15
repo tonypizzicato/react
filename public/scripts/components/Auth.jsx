@@ -51,7 +51,7 @@ var SignUp = React.createClass({
         }
 
         var validation = {},
-            isValid = true;
+            isValid    = true;
 
         function validateEmail(email) {
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -61,12 +61,12 @@ var SignUp = React.createClass({
         for (var field in user) {
             if (user[field].length == 0) {
                 validation[field] = true;
-                isValid = false;
+                isValid           = false;
             }
         }
 
         validation.email = !validateEmail(user.email);
-        isValid = isValid && !validation.email;
+        isValid          = isValid && !validation.email;
 
         this.setState({validation: validation});
         if (isValid) {
@@ -82,7 +82,7 @@ var SignUp = React.createClass({
                     hintText="Ваше имя"
                     floatingLabelText="Имя"
                     errorText={this.state.validation.username ? 'Поле не может быть пустым' : null}
-                    ref="username" />
+                    ref="username"/>
 
                 <TextField
                     className="s_display_block"
@@ -90,7 +90,7 @@ var SignUp = React.createClass({
                     floatingLabelText="Email"
                     errorText={this.state.validation.email ? 'Поле не заполнено или заполнено неверно' : null}
                     type="email"
-                    ref="email" />
+                    ref="email"/>
 
                 <TextField
                     className="s_display_block"
@@ -98,7 +98,7 @@ var SignUp = React.createClass({
                     floatingLabelText="Пароль"
                     errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
                     type="password"
-                    ref="password" />
+                    ref="password"/>
 
                 <TextField
                     className="s_display_block"
@@ -106,16 +106,16 @@ var SignUp = React.createClass({
                     floatingLabelText="Адрес страницы Вконтакте"
                     errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
                     type="text"
-                    ref="vk" />
+                    ref="vk"/>
 
-                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave} />
+                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave}/>
 
             </div>
 
         );
     }
 });
-var Login = React.createClass({
+var Login  = React.createClass({
     mixins: [Router.Navigation, Router.State],
 
     getInitialState: function () {
@@ -149,12 +149,12 @@ var Login = React.createClass({
         };
 
         var validation = {},
-            isValid = true;
+            isValid    = true;
 
         for (var field in user) {
             if (user[field].length == 0) {
                 validation[field] = true;
-                isValid = false;
+                isValid           = false;
             }
         }
 
@@ -171,6 +171,8 @@ var Login = React.createClass({
             this.replaceWith('/');
         }
 
+        this.refs.form.getDOMNode().submit();
+
         var nextPath = this.getQuery().nextPath;
 
         if (nextPath) {
@@ -180,34 +182,39 @@ var Login = React.createClass({
         }
     },
 
+    _onSubmit: function (e) {
+        e.preventDefault();
+    },
+
     render: function () {
         return (
             <div className="panel">
-                <TextField
-                    className="s_display_block"
-                    hintText="your@e.mail"
-                    floatingLabelText="Email"
-                    errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
-                    type="email"
-                    ref="email" />
+                <form ref="form" actions="login" onSubmit={this._onSubmit}>
+                    <TextField
+                        className="s_display_block"
+                        hintText="your@e.mail"
+                        floatingLabelText="Email"
+                        errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
+                        type="email"
+                        ref="email"/>
 
-                <TextField
-                    className="s_display_block"
-                    hintText="password"
-                    floatingLabelText="Пароль"
-                    errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
-                    type="password"
-                    ref="password" />
+                    <TextField
+                        className="s_display_block"
+                        hintText="password"
+                        floatingLabelText="Пароль"
+                        errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
+                        type="password"
+                        ref="password"/>
 
-                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave} />
-
+                    <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave}/>
+                </form>
                 <Snackbar
                     message="Неверный логин или пароль"
-                    ref="errCredentials" />
+                    ref="errCredentials"/>
 
                 <Snackbar
                     message="Уууупс! Произошла ошибка при выполнении запроса."
-                    ref="errConnection" />
+                    ref="errConnection"/>
             </div>
         );
     }
