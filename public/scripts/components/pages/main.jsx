@@ -66,7 +66,9 @@ var MainApp = React.createClass({
     _leaguesChange: function () {
         var leagues = LeaguesStore.getAll();
         this.setState({leagues: leagues});
-        GamesActions.load({leagueId: _.findWhere(leagues, {slug: 'moscow'})._id});
+        leagues.forEach(function (league) {
+            GamesActions.load({leagueId: league._id});
+        });
     },
 
     _gamesChange: function () {
@@ -81,7 +83,7 @@ var MainApp = React.createClass({
 
         var content = '';
         if (this.state.loggedIn) {
-            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} games={this.state.games} />)
+            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} games={this.state.games}/>)
         } else {
             content = <Auth />
         }
@@ -91,7 +93,7 @@ var MainApp = React.createClass({
                 <Canvas>
                     <AppBar className="mui-dark-theme" title="Панель управления Amateur" zDepth={0}>
                         <div className="login">
-                            <Icon className="mdfi_action_account_circle" />
+                            <Icon className="mdfi_action_account_circle"/>
                             {loginOrOut}
                         </div>
                     </AppBar>
