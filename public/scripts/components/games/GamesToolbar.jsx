@@ -18,8 +18,7 @@ var _                = require('underscore'),
     CountriesStore   = require('../../stores/CountriesStore'),
     CountriesActions = require('../../actions/CountriesActions'),
 
-    GamesStore       = require('../../stores/GamesStore'),
-    GamesActions     = require('../../actions/GamesActions');
+    GamesStore       = require('../../stores/GamesStore');
 
 var GamesToolbar = React.createClass({
 
