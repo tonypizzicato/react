@@ -94,6 +94,7 @@ var FieldForm = React.createClass({
         }.bind(this));
 
         var field = {
+            title:       this.refs.title.getValue(),
             howto:       this.refs.howto.getValue(),
             show:        this.refs.show.isToggled(),
             image:       this.refs.image.getImage(),
@@ -161,8 +162,14 @@ var FieldForm = React.createClass({
 
         }.bind(this));
 
+        var image = this.props.field.image;
+        if (image && image.thumb) {
+            image = image.thumb.src;
+        }
+
         return (
-            <div className="panel panel_type_field-create s_pt_0" key={this.props.field._id ? this.props.field._id : 'field-form'} ref="form">
+            <div className="panel panel_type_field-create s_pt_0" key={this.props.field._id ? this.props.field._id : 'field-form'}
+                 ref="form">
                 <TextField
                     defaultValue={this.props.field.title}
                     floatingLabelText="Название"
@@ -210,7 +217,7 @@ var FieldForm = React.createClass({
 
                 <ImageUpload
                     label="Выберите изображение поля"
-                    image={this.props.field.image}
+                    image={image}
                     width="250px"
                     height="250px"
                     errorText={this.state.validation.image ? 'Загрузите изображение для контакта' : null}
