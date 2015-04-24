@@ -76,7 +76,9 @@ var Store = assign({}, EventEmitter.prototype, {
 
         var rules = {
             title:   notEmpty,
-            address: notEmpty
+            address: notEmpty,
+            lat:     notEmpty,
+            long:    notEmpty
         };
 
         return this._isValid(field, rules);

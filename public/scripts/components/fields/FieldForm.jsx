@@ -59,7 +59,8 @@ var FieldForm = React.createClass({
     componentDidUpdate: function () {
         if (!!this.props.field.tournaments) {
             this.props.field.tournaments.forEach(function (item) {
-                this.refs['checkbox-' + item].setChecked(true);
+                var id = item._id ? item._id : item;
+                this.refs['checkbox-' + id].setChecked(true);
             }.bind(this));
         }
     },
@@ -71,8 +72,12 @@ var FieldForm = React.createClass({
     },
 
     _onTournaments: function () {
+        var tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
+            return !!item.country;
+        });
+
         this.setState({
-            tournaments: TournamentsStore.getByLeague(this.props.leagueId)
+            tournaments: tournaments
         });
     },
 
@@ -92,8 +97,8 @@ var FieldForm = React.createClass({
             howto:       this.refs.howto.getValue(),
             show:        this.refs.show.isToggled(),
             image:       this.refs.image.getImage(),
-            lat:         this.refs.lat.getValue(),
-            long:        this.refs.long.getValue(),
+            lat:         parseFloat(this.refs.lat.getValue()),
+            long:        parseFloat(this.refs.long.getValue()),
             leagueId:    this.props.leagueId,
             tournaments: tournaments
         };
@@ -134,11 +139,7 @@ var FieldForm = React.createClass({
             return (<h4>Необходимые данные загружаются</h4>);
         }
 
-        var tournaments = this.state.tournaments.filter(function (item) {
-            return !!item.country;
-        });
-
-        tournaments = _.groupBy(tournaments, function (item) {
+        var tournaments = _.groupBy(this.state.tournaments, function (item) {
             return item.country ? item.country.name : 'Остальные';
         });
 
@@ -149,7 +150,7 @@ var FieldForm = React.createClass({
                     label={item.name}
                     defaultChecked={index !== false}
                     ref={'checkbox-' + item._id}
-                    key={'checkbox-' + this.props.field._id + '-' + item._id}/>
+                    key={'checkbox-' + item._id + '-' + item._id}/>
             }.bind(this));
 
             return (
