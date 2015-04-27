@@ -36,6 +36,10 @@ var ContactsApp = React.createClass({
 
     componentDidMount: function () {
         ContactsStore.addChangeListener(this._onChange);
+
+        if (this.props.leagues.length > 0) {
+            ContactsActions.load();
+        }
     },
 
     componentWillUnmount: function () {
@@ -43,7 +47,7 @@ var ContactsApp = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.leagues.length) {
+        if (this.props.leagues.length != nextProps.leagues.length) {
             ContactsActions.load();
         }
     },

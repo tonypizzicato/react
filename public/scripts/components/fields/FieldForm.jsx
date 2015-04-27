@@ -97,7 +97,6 @@ var FieldForm = React.createClass({
             title:       this.refs.title.getValue(),
             howto:       this.refs.howto.getValue(),
             show:        this.refs.show.isToggled(),
-            image:       this.refs.image.getImage(),
             metro:       {
                 name:  this.refs.metro_name.getValue(),
                 color: this.refs.metro_color.getValue()
@@ -109,6 +108,10 @@ var FieldForm = React.createClass({
             leagueId:    this.props.leagueId,
             tournaments: tournaments
         };
+
+        if (this.refs.image.isNew()) {
+            field.image = this.refs.image.getImage();
+        }
 
         this.setState({validation: {}});
         if (this.props.field._id) {

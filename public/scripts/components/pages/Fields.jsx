@@ -36,6 +36,10 @@ var FieldsApp = React.createClass({
 
     componentDidMount: function () {
         FieldsStore.addChangeListener(this._onChange);
+
+        if (this.props.leagues.length > 0) {
+            FieldsActions.load();
+        }
     },
 
     componentWillUnmount: function () {
@@ -43,7 +47,7 @@ var FieldsApp = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.leagues.length) {
+        if (this.props.leagues.length != nextProps.leagues.length) {
             FieldsActions.load();
         }
     },
@@ -87,7 +91,8 @@ var FieldsApp = React.createClass({
 
             return (
                 <Tab label={league.name} key={league._id}>
-                    <FieldForm field={this.state.selectedField} leagueId={league._id} onCancel={this._onCancel} key={'field-form-' + league._id}/>
+                    <FieldForm field={this.state.selectedField} leagueId={league._id} onCancel={this._onCancel}
+                               key={'field-form-' + league._id}/>
                     <FieldsList fields={fieldsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
                 </Tab>
             );
