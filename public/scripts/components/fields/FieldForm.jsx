@@ -98,8 +98,14 @@ var FieldForm = React.createClass({
             howto:       this.refs.howto.getValue(),
             show:        this.refs.show.isToggled(),
             image:       this.refs.image.getImage(),
-            lat:         parseFloat(this.refs.lat.getValue()),
-            long:        parseFloat(this.refs.long.getValue()),
+            metro:       {
+                name:  this.refs.metro_name.getValue(),
+                color: this.refs.metro_color.getValue()
+            },
+            geo:         [
+                parseFloat(this.refs.lat.getValue()),
+                parseFloat(this.refs.long.getValue())
+            ],
             leagueId:    this.props.leagueId,
             tournaments: tournaments
         };
@@ -127,6 +133,8 @@ var FieldForm = React.createClass({
         this.refs.howto.setValue('');
         this.refs.lat.setValue('');
         this.refs.long.setValue('');
+        this.refs.metro_name.setValue('');
+        this.refs.metro_color.setValue('');
         this.refs.show.setToggled(false);
         this.refs.image.setImage(null);
 
@@ -182,6 +190,24 @@ var FieldForm = React.createClass({
                     disabled={true}
                     ref="address"/>
 
+                <div className="s_display_inline-block s_width_half">
+                    <TextField
+                        defaultValue={this.props.field.metro ? this.props.field.metro.name : ''}
+                        floatingLabelText="Станция метро"
+                        hintText="Название станции метро"
+                        disabled={!this.props.field._id}
+                        ref="metro_name"/>
+                </div>
+
+                <div className="s_display_inline-block s_width_half">
+                    <TextField
+                        defaultValue={this.props.field.metro ? this.props.field.metro.color : ''}
+                        hintText="red"
+                        floatingLabelText="Цвет ветки(на английском)"
+                        disabled={!this.props.field._id}
+                        ref="metro_color"/>
+                </div>
+
                 <MediumEditor
                     hintText="Как добраться"
                     floatingLabelText="Информация о пути"
@@ -191,7 +217,7 @@ var FieldForm = React.createClass({
 
                 <div className="s_display_inline-block s_width_half">
                     <TextField
-                        defaultValue={this.props.field.lat}
+                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[0] : ''}
                         floatingLabelText="Lat"
                         hintText="56,4554"
                         type="number"
@@ -202,7 +228,7 @@ var FieldForm = React.createClass({
 
                 <div className="s_display_inline-block s_width_half">
                     <TextField
-                        defaultValue={this.props.field.long}
+                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[1] : ''}
                         hintText="56,4554"
                         floatingLabelText="Long"
                         type="number"
