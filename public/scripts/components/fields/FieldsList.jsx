@@ -30,9 +30,7 @@ var FieldsList = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.state.fields.length != nextProps.fields.length) {
-            this.setState({fields: nextProps.fields});
-        }
+        this.setState({fields: nextProps.fields});
     },
 
     _onDrop: function (from, to) {

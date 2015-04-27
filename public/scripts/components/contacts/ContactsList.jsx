@@ -30,9 +30,7 @@ var ContactsList = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.state.contacts.length != nextProps.contacts.length) {
-            this.setState({contacts: nextProps.contacts});
-        }
+        this.setState({contacts: nextProps.contacts});
     },
 
     _onDrop: function (from, to) {
@@ -60,7 +58,7 @@ var ContactsList = React.createClass({
 
         var items = this.state.contacts.map(function (item, i) {
             return (
-                <ContactItem contact={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id} />
+                <ContactItem contact={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
             );
         }.bind(this));
 
