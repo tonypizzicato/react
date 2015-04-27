@@ -206,6 +206,25 @@ var routes = {
         }
     },
 
+    'fields': {
+        'list':   {
+            path:   '/fields',
+            method: 'GET'
+        },
+        'create': {
+            path:   '/fields',
+            method: 'POST'
+        },
+        'save':   {
+            path:   '/fields/%(_id)s',
+            method: 'PUT'
+        },
+        'delete': {
+            path:   '/fields/%(_id)s',
+            method: 'DELETE'
+        }
+    },
+
     'orders': {
         'list': {
             path:   '/orders',

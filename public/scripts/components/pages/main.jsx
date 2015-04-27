@@ -30,6 +30,7 @@ var menuItems = [
     {route: 'news', text: 'Новости'},
     {route: 'games', text: 'Игры'},
     {route: 'contacts', text: 'Контакты'},
+    {route: 'fields', text: 'Поля'},
     {route: 'orders', text: 'Заявки'}
 ];
 

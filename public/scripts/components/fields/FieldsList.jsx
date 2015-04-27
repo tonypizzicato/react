@@ -3,15 +3,15 @@
 var React                = require('react'),
     ReactTransitionGroup = React.addons.CSSTransitionGroup,
 
-    ContactItem          = require('../contacts/ContactItem.jsx'),
+    FieldItem            = require('../fields/FieldItem.jsx'),
 
-    ContactsActions      = require('../../actions/ContactsActions');
+    FieldsActions        = require('../../actions/FieldsActions');
 
-var ContactsList = React.createClass({
+var FieldsList = React.createClass({
 
     propTypes: function () {
         return {
-            contacts: React.PropTypes.array,
+            fields:   React.PropTypes.array,
             onEdit:   React.PropTypes.func.required,
             onDelete: React.PropTypes.func.required
         }
@@ -19,32 +19,32 @@ var ContactsList = React.createClass({
 
     getDefaultProps: function () {
         return {
-            contacts: []
+            fields: []
         }
     },
 
     getInitialState: function () {
         return {
-            contacts: this.props.contacts
+            fields: this.props.fields
         }
     },
 
     componentWillReceiveProps: function (nextProps) {
-        this.setState({contacts: nextProps.contacts});
+        this.setState({fields: nextProps.fields});
     },
 
     _onDrop: function (from, to) {
-        var items = this.state.contacts.slice();
+        var items = this.state.fields.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
-        this.setState({contacts: items});
+        this.setState({fields: items});
 
         if (this.props.onDrop) {
             this.props.onDrop(items);
         }
 
         items.forEach(function (item, index) {
-            ContactsActions.save({
+            FieldsActions.save({
                 _id:  item._id,
                 sort: index
             }, {silent: true});
@@ -52,13 +52,13 @@ var ContactsList = React.createClass({
     },
 
     render: function () {
-        if (!this.state.contacts.length) {
+        if (!this.state.fields.length) {
             return false;
         }
 
-        var items = this.state.contacts.map(function (item, i) {
+        var items = this.state.fields.map(function (item, i) {
             return (
-                <ContactItem contact={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
+                <FieldItem field={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
             );
         }.bind(this));
 
@@ -70,4 +70,4 @@ var ContactsList = React.createClass({
     }
 });
 
-module.exports = ContactsList;
+module.exports = FieldsList;

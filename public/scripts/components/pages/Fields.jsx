@@ -11,13 +11,13 @@ var $               = require('jquery'),
 
     EventsConstants = require('../../constants/EventsConstants'),
 
-    ContactsActions = require('../../actions/ContactsActions'),
-    ContactsStore   = require('../../stores/ContactsStore'),
+    FieldsActions   = require('../../actions/FieldsActions'),
+    FieldsStore     = require('../../stores/FieldsStore'),
 
-    ContactForm     = require('../contacts/ContactForm.jsx'),
-    ContactsList    = require('../contacts/ContactsList.jsx');
+    FieldsList      = require('../fields/FieldsList.jsx'),
+    FieldForm       = require('../fields/FieldForm.jsx');
 
-var ContactsApp = React.createClass({
+var FieldsApp = React.createClass({
 
     mixins: [Router.State],
 
@@ -29,70 +29,71 @@ var ContactsApp = React.createClass({
 
     getInitialState: function () {
         return {
-            contacts:        [],
-            selectedContact: {}
+            fields:        [],
+            selectedField: {}
         }
     },
 
     componentDidMount: function () {
-        ContactsStore.addChangeListener(this._onChange);
+        FieldsStore.addChangeListener(this._onChange);
 
         if (this.props.leagues.length > 0) {
-            ContactsActions.load();
+            FieldsActions.load();
         }
     },
 
     componentWillUnmount: function () {
-        ContactsStore.removeChangeListener(this._onChange);
+        FieldsStore.removeChangeListener(this._onChange);
     },
 
     componentWillReceiveProps: function (nextProps) {
         if (this.props.leagues.length != nextProps.leagues.length) {
-            ContactsActions.load();
+            FieldsActions.load();
         }
     },
 
     _onTabChange: function () {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            selectedField: this.getInitialState().selectedField
         });
     },
 
     _onChange: function () {
         this.setState({
-            contacts:        ContactsStore.getAll(),
-            selectedContact: this.getInitialState().selectedContact
+            fields:        FieldsStore.getAll(),
+            selectedField: this.getInitialState().selectedField
         });
     },
 
     _onDelete: function (e) {
-        ContactsActions.delete(e.currentTarget.dataset.id);
+        FieldsActions.delete(e.currentTarget.dataset.id);
     },
 
     _onEdit: function (e) {
         this.setState({
-            selectedContact: this.state.contacts.filter(function (contact) {
-                return contact._id == e.currentTarget.dataset.id;
+            selectedField: this.state.fields.filter(function (field) {
+                return field._id == e.currentTarget.dataset.id;
             }).pop()
         });
     },
 
     _onCancel: function () {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            selectedField: this.getInitialState().selectedField
         });
     },
 
     render: function () {
         var tabItems = this.props.leagues.map(function (league) {
-            var contactsItems = this.state.contacts.filter(function (item) {
+            var fieldsItems = this.state.fields.filter(function (item) {
                 return item.leagueId == league._id;
             }.bind(this));
 
             return (
-                <Tab label={league.name} key={league._id} >
-                    <ContactForm contact={this.state.selectedContact} leagueId={league._id} onCancel={this._onCancel} key={'contact-form-' + league._id} />
-                    <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit} />
+                <Tab label={league.name} key={league._id}>
+                    <FieldForm field={this.state.selectedField} leagueId={league._id} onCancel={this._onCancel}
+                               key={'field-form-' + league._id}/>
+                    <FieldsList fields={fieldsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
                 </Tab>
             );
         }.bind(this));
@@ -102,4 +103,4 @@ var ContactsApp = React.createClass({
     }
 });
 
-module.exports = ContactsApp;
+module.exports = FieldsApp;
