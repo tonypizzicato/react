@@ -113,6 +113,7 @@ var GamesTab = React.createClass({
                         <HelpButton dialog={this.refs.dialogReview}/>
                         <GameArticleForm
                             type="preview"
+                            leagueId={this.props.leagueId}
                             game={this.state.game}
                             article={preview}
                             onCancel={this._onArticleCancel}
@@ -122,6 +123,7 @@ var GamesTab = React.createClass({
                         <HelpButton dialog={this.refs.dialogReview}/>
                         <GameArticleForm
                             type="review"
+                            leagueId={this.props.leagueId}
                             game={this.state.game}
                             article={review}
                             onCancel={this._onArticleCancel}

@@ -24,24 +24,24 @@ var GameArticleForm = React.createClass({
 
     propTypes: function () {
         return {
-            article: React.PropTypes.object,
-            game:    React.PropTypes.object,
-            type:    React.PropTypes.string.required
+            leagueId: React.PropTypes.string.required,
+            type:     React.PropTypes.string.required,
+            article:  React.PropTypes.object,
+            game:     React.PropTypes.object
         }
     },
 
     getDefaultProps: function () {
         return {
-            article: {
-                body: ''
-            },
+            article: {},
             game:    {}
         }
     },
 
     getInitialState: function () {
         return {
-            article:     {},
+            saving:      false,
+            article:     this.props.article,
             validation:  {},
             central:     this.props.article.centralGame,
             videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
@@ -49,12 +49,10 @@ var GameArticleForm = React.createClass({
     },
 
     componentDidMount: function () {
-        GameArticlesStore.addChangeListener(this._onChange);
         GameArticlesStore.addValidationListener(this._onValidationError);
     },
 
     componentWillUnmount: function () {
-        GameArticlesStore.removeChangeListener(this._onChange);
         GameArticlesStore.removeValidationListener(this._onValidationError);
     },
 
@@ -62,19 +60,11 @@ var GameArticleForm = React.createClass({
         if (!nextProps.article.hasOwnProperty('_id')) {
             this._clearForm();
         }
+        this.setState({saving: false});
     },
 
     _onValidationError: function (validation) {
         this.setState({validation: validation});
-    },
-
-    _onChange: function () {
-        var article = GameArticlesStore.get(this.props.game._id, this.props.type);
-        if (!article) {
-            article = this.getInitialState().article;
-        }
-
-        this.setState({article: article});
     },
 
     _onSave: function () {
@@ -82,9 +72,9 @@ var GameArticleForm = React.createClass({
             body:       this.refs.body.getValue(),
             show:       this.refs.show.isToggled(),
             type:       this.props.type,
+            leagueId:   this.props.leagueId,
             tournament: this.props.game.tournamentId,
-            gameId:     this.props.game._id,
-            author:     AuthStore.getUser().username
+            gameId:     this.props.game._id
         };
 
         var videos = [],
@@ -111,12 +101,17 @@ var GameArticleForm = React.createClass({
             });
         }
 
-        this.setState({validation: this.getInitialState().validation});
+        this.setState({
+            validation: this.getInitialState().validation,
+            saving:     true
+        });
 
         if (this.props.article._id) {
-            article._id = this.props.article._id;
+            article.editor = AuthStore.getUser().username;
+            article._id    = this.props.article._id;
             GameArticlesActions.save(article);
         } else {
+            article.author = AuthStore.getUser().username;
             GameArticlesActions.add(article);
         }
     },
@@ -134,9 +129,12 @@ var GameArticleForm = React.createClass({
     _clearForm: function () {
         this.refs.body.setValue('');
         this.refs.show.setToggled(false);
-        this.refs.central.setToggled(false);
-        this.refs.imageHome.setImage(null);
-        this.refs.imageAway.setImage(null);
+
+        if (this.props.type == 'preview') {
+            this.refs.imageHome.setImage(null);
+            this.refs.imageAway.setImage(null);
+            this.refs.central.setToggled(false);
+        }
 
         this.refs['video-0'].clear();
         this.setState({videosCount: 1});
@@ -164,7 +162,7 @@ var GameArticleForm = React.createClass({
                                 defaultToggled={this.props.article.centralGame}
                                 key={this.props.article._id + '-central'}
                                 onToggle={this._onCentral}
-                                ref="central" />
+                                ref="central"/>
                         </div>
                     </div>
 
@@ -176,7 +174,7 @@ var GameArticleForm = React.createClass({
                         height="300px"
                         className={this.state.central ? '' : 's_display_none'}
                         key={this.props.article._id + '-image-home-upload'}
-                        ref="imageHome" />
+                        ref="imageHome"/>
 
                     <ImageUpload
                         label="Select away team image (required if match is central)"
@@ -186,7 +184,7 @@ var GameArticleForm = React.createClass({
                         height="300px"
                         className={this.state.central ? '' : 's_display_none'}
                         key={this.props.article._id + '-image-away-upload'}
-                        ref="imageAway" />
+                        ref="imageAway"/>
                 </div>
             )
         }
@@ -194,12 +192,12 @@ var GameArticleForm = React.createClass({
         var videos = [];
         if (this.props.article.video && this.props.article.video.length) {
             videos = this.props.article.video.map(function (item, index) {
-                return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index} />
+                return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index}/>
             });
         }
         var start = this.props.article.video ? this.props.article.video.length : 0;
         for (var i = start; i < this.state.videosCount; i++) {
-            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i} />);
+            videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i}/>);
         }
         return (
             <div>
@@ -209,11 +207,11 @@ var GameArticleForm = React.createClass({
                     defaultValue={this.props.article.body}
                     errorText={this.state.validation.body ? 'Поле не может быть пустым' : null}
                     key={this.props.article._id}
-                    ref="body" />
+                    ref="body"/>
 
                 <div className="s_mb_24 s_position_relative block_videos">
                     <div className="block_videos__button-add">
-                        <IconButton iconClassName="mdfi_content_add_circle_outline" onClick={this._addVideo} />
+                        <IconButton iconClassName="mdfi_content_add_circle_outline" onClick={this._addVideo}/>
                     </div>
 
                     {videos}
@@ -229,13 +227,14 @@ var GameArticleForm = React.createClass({
                                 label="Показывать"
                                 defaultToggled={this.props.article.show}
                                 key={this.props.article._id + '-show'}
-                                ref="show" />
+                                ref="show"/>
                         </div>
                     </div>
 
                     <div className="buttons s_float_r s_width_quarter">
-                        <Button className="button_type_cancel s_mt_12" label="Отменить" secondary={true} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_12" label="Сохранить" primary={true} onClick={this._onSave} />
+                        <Button className="button_type_cancel s_mt_12" label="Отменить" secondary={true} onClick={this._onCancel}/>
+                        <Button className="button_type_save s_float_r s_mt_12" label="Сохранить" disabled={this.state.saving} primary={true}
+                                onClick={this._onSave}/>
                     </div>
 
                     {preview}
