@@ -62,7 +62,7 @@ var GameArticlesStore = assign({}, EventEmitter.prototype, {
      * @private
      */
     _getValidationError: function () {
-        var err = _validationError;
+        var err          = _validationError;
         _validationError = null;
 
         return err;
@@ -94,9 +94,9 @@ var GameArticlesStore = assign({}, EventEmitter.prototype, {
             if (article.hasOwnProperty(rule)) {
                 ruleResult = rules[rule](article[rule], article);
                 if (!ruleResult) {
-                    _validationError = _validationError || {};
+                    _validationError       = _validationError || {};
                     _validationError[rule] = true;
-                    result = false;
+                    result                 = false;
                 }
             }
         }
