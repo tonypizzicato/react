@@ -62,7 +62,7 @@ var Store = assign({}, EventEmitter.prototype, {
      * @private
      */
     _getValidationError: function () {
-        var err = _validationError;
+        var err          = _validationError;
         _validationError = null;
 
         return err;
@@ -98,9 +98,9 @@ var Store = assign({}, EventEmitter.prototype, {
             if (entity.hasOwnProperty(rule)) {
                 ruleResult = rules[rule](entity[rule]);
                 if (!ruleResult) {
-                    _validationError = _validationError || {};
+                    _validationError       = _validationError || {};
                     _validationError[rule] = true;
-                    result = false;
+                    result                 = false;
                 }
             }
         }
@@ -134,13 +134,17 @@ AppDispatcher.register(function (action) {
 
         case ContactsConstants.CONTACTS_SAVE:
             var contact = action.data;
+            var options = assign({}, {silent: false}, action.options);
 
             if (Store._validate(contact)) {
                 api.call('contacts:save', contact, true).then(function () {
                     var changed = _.findWhere(_contacts, {_id: contact._id});
 
                     assign(changed, contact);
-                    Store.emitChange();
+
+                    if (!options.silent) {
+                        Store.emitChange();
+                    }
                 });
             } else {
                 Store.emitEvent(EventsConstants.EVENT_VALIDATION, Store._getValidationError());
