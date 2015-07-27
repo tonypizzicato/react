@@ -151,13 +151,27 @@ var ContactForm = React.createClass({
         if (!this.props.leagueId || !this.state.tournaments.length) {
             return (<h4>Required data is loading or not available</h4>);
         }
-        var tournaments = this.state.tournaments.map(function (item) {
-            var index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : false;
-            return <Checkbox
-                label={item.name}
-                defaultChecked={index !== false}
-                ref={'checkbox-' + item._id}
-                key={'checkbox-' + this.props.contact._id + '-' + item._id} />
+        var tournaments = _.groupBy(this.state.tournaments, function (item) {
+            return item.country ? item.country.name : 'Остальные';
+        });
+
+        var tournamentsBlock = _.mapObject(tournaments, function (tournaments, country) {
+            var tournamentsEl = tournaments.map(function (item) {
+                var index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : false;
+                return <Checkbox
+                    label={item.name}
+                    className={item.show ? '' : 'text_color_muted'}
+                    defaultChecked={index !== false}
+                    ref={'checkbox-' + item._id}
+                    key={'checkbox-' + item._id + '-' + item._id}/>
+            }.bind(this));
+
+            return (
+                <div className="s_display_inline-block s_mr_24 s_mb_24">
+                    <h5>{country}</h5>
+                    {tournamentsEl}
+                </div>);
+
         }.bind(this));
 
         return (
@@ -207,7 +221,7 @@ var ContactForm = React.createClass({
                     ref="vk_name" />
 
                 <div className="s_mt_24">
-                    {tournaments}
+                    {tournamentsBlock}
                 </div>
 
                 <ImageUpload

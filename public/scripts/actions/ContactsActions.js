@@ -17,10 +17,11 @@ var ContactsActions = {
         })
     },
 
-    save: function (data) {
+    save: function (data, options) {
         AppDispatcher.dispatch({
             type: ContactsConstants.CONTACTS_SAVE,
-            data: data
+            data: data,
+            options: options
         })
     },
 

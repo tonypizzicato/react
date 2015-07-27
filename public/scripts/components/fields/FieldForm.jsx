@@ -160,6 +160,7 @@ var FieldForm = React.createClass({
                 var index = this.props.field.tournaments ? this.props.field.tournaments.indexOf(item._id) : false;
                 return <Checkbox
                     label={item.name}
+                    className={item.show ? '' : 'text_color_muted'}
                     defaultChecked={index !== false}
                     ref={'checkbox-' + item._id}
                     key={'checkbox-' + item._id + '-' + item._id}/>
