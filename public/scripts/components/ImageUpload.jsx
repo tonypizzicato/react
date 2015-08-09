@@ -22,6 +22,10 @@ var ImageUpload = React.createClass({
         return {
             label:     React.PropTypes.string,
             image:     React.PropTypes.string,
+            pos:       React.PropTypes.shape({
+                x: React.PropTypes.string,
+                y: React.PropTypes.string
+            }),
             errorText: React.PropTypes.string,
             width:     React.PropTypes.string,
             height:    React.PropTypes.string
@@ -32,6 +36,7 @@ var ImageUpload = React.createClass({
         return {
             label:     "Выберите изображение",
             image:     null,
+            pos:       {x: '50%', y: '50%'},
             errorText: null,
             width:     'auto',
             height:    'auto'
@@ -68,6 +73,10 @@ var ImageUpload = React.createClass({
 
     getImage: function () {
         return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
+    },
+
+    setImagePos: function (x, y) {
+        this.refs.preview.setImagePos(x, y);
     },
 
     isNew: function () {
@@ -110,7 +119,14 @@ var ImageUpload = React.createClass({
 
         var error = this.props.errorText ? (<span className="mui-file-input-error">{this.props.errorText}</span>) : '';
         var image = this.state.image ?
-            <Image src={this.state.image} className={previewClass} width={this.props.width} height={this.props.height} ref="preview"/> : '';
+            <Image
+                src={this.state.image}
+                className={previewClass}
+                width={this.props.width}
+                height={this.props.height}
+                pos={this.props.pos}
+                ref="preview"/>
+            : '';
 
         return (
             <div className={clx}>
