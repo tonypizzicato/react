@@ -37,6 +37,7 @@ var ContactForm = React.createClass({
                 phone:       '',
                 email:       '',
                 image:       '',
+                toCall:      false,
                 vk:          {
                     name: '',
                     url:  ''
@@ -98,12 +99,13 @@ var ContactForm = React.createClass({
                 tournaments.push(item._id);
             }
         }.bind(this));
-        var contact = {
+        var contact     = {
             name:        this.refs.name.getValue(),
             title:       this.refs.title.getValue(),
             phone:       this.refs.phone.getValue(),
             email:       this.refs.email.getValue(),
             show:        this.refs.show.isToggled(),
+            toCall:      this.refs.toCall.isToggled(),
             vk:          {
                 name: this.refs.vk_name.getValue(),
                 url:  this.refs.vk_url.getValue()
@@ -140,6 +142,7 @@ var ContactForm = React.createClass({
         this.refs.vk_url.setValue('');
         this.refs.vk_name.setValue('');
         this.refs.show.setToggled(false);
+        this.refs.toCall.setToggled(false);
         this.refs.image.setImage(null);
 
         this.state.tournaments.forEach(function (item) {
@@ -181,14 +184,14 @@ var ContactForm = React.createClass({
                     hintText="Введите имя"
                     floatingLabelText="Имя"
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
-                    ref="name" />
+                    ref="name"/>
 
                 <TextField
                     defaultValue={this.props.contact.title}
                     hintText="Введите должность"
                     floatingLabelText="Должность"
                     errorText={this.state.validation.title ? 'Поле не может быть пустым' : null}
-                    ref="title" />
+                    ref="title"/>
 
                 <TextField
                     defaultValue={this.props.contact.email}
@@ -196,7 +199,7 @@ var ContactForm = React.createClass({
                     hintText="contacts.email@amateurs.io"
                     type="email"
                     errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
-                    ref="email" />
+                    ref="email"/>
 
                 <TextField
                     defaultValue={this.props.contact.phone}
@@ -204,21 +207,21 @@ var ContactForm = React.createClass({
                     hintText="+7 (999) 999 99 99"
                     type="phone"
                     errorText={this.state.validation.phone ? 'Поле не может быть пустым' : null}
-                    ref="phone" />
+                    ref="phone"/>
 
                 <TextField
                     defaultValue={this.props.contact.vk ? this.props.contact.vk.url : ''}
                     hintText="https://vk.com/id111111"
                     floatingLabelText="Вкотнакте URL"
                     errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
-                    ref="vk_url" />
+                    ref="vk_url"/>
 
                 <TextField
                     defaultValue={this.props.contact.vk ? this.props.contact.vk.name : ''}
                     hintText="Имя Прозвище Фамилия"
                     floatingLabelText="Имя Вконтакте"
                     errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
-                    ref="vk_name" />
+                    ref="vk_name"/>
 
                 <div className="s_mt_24">
                     {tournamentsBlock}
@@ -231,7 +234,7 @@ var ContactForm = React.createClass({
                     height="250px"
                     errorText={this.state.validation.image ? 'Загрузите изображение для контакта' : null}
                     key={this.props._id + '-image-upload'}
-                    ref="image" />
+                    ref="image"/>
 
                 <div className="s_position_relative s_overflow_hidden s_mt_24" key="contact-state-radio">
                     <div className="s_float_l s_width_half">
@@ -241,13 +244,21 @@ var ContactForm = React.createClass({
                                 value="show"
                                 ref="show"
                                 defaultToggled={this.props.contact.show}
-                                label="Показывать" />
+                                label="Показывать"/>
+                        </div>
+                        <div className="s_width_third s_display_inline-block s_mt_24">
+                            <Toggle
+                                name="show"
+                                value="show"
+                                ref="toCall"
+                                defaultToggled={this.props.contact.toCall}
+                                label="Для связи"/>
                         </div>
                     </div>
 
                     <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave} />
+                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
+                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
                     </div>
                 </div>
             </div>
