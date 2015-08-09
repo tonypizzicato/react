@@ -85,7 +85,7 @@ AppDispatcher.register(function (action) {
             }).fail(function (res) {
                 Store.emitUnauthorized(res);
             });
-            Store.emitChange();
+            //Store.emitChange();
 
             break;
         case AuthConstants.AUTH_LOGOUT:

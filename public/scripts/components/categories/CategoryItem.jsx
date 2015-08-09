@@ -2,7 +2,8 @@
 
 var React      = require('react'),
     mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+
+    Dragon     = require('../Dragon.jsx'),
 
     Paper      = mui.Paper,
     Icon       = mui.FontIcon,

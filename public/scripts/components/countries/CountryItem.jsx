@@ -3,7 +3,8 @@
 var React      = require('react'),
     cx         = React.addons.classSet,
     mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+
+    Dragon     = require('../Dragon.jsx'),
 
     Paper      = mui.Paper,
     Icon       = mui.FontIcon,

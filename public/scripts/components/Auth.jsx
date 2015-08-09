@@ -10,7 +10,7 @@ var React       = require('react'),
     Snackbar    = mui.Snackbar,
 
     TextField   = mui.TextField,
-    Button      = mui.RaisedButton,
+    Button      = mui.FlatButton,
 
     AuthActions = require('../actions/AuthActions'),
     AuthStore   = require('../stores/AuthStore');
@@ -48,7 +48,7 @@ var SignUp = React.createClass({
             email:    this.refs.email.getValue(),
             password: this.refs.password.getValue(),
             vk:       this.refs.vk.getValue()
-        }
+        };
 
         var validation = {},
             isValid    = true;
@@ -82,6 +82,7 @@ var SignUp = React.createClass({
                     hintText="Ваше имя"
                     floatingLabelText="Имя"
                     errorText={this.state.validation.username ? 'Поле не может быть пустым' : null}
+                    fullWidth={true}
                     ref="username"/>
 
                 <TextField
@@ -90,6 +91,7 @@ var SignUp = React.createClass({
                     floatingLabelText="Email"
                     errorText={this.state.validation.email ? 'Поле не заполнено или заполнено неверно' : null}
                     type="email"
+                    fullWidth={true}
                     ref="email"/>
 
                 <TextField
@@ -98,6 +100,7 @@ var SignUp = React.createClass({
                     floatingLabelText="Пароль"
                     errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
                     type="password"
+                    fullWidth={true}
                     ref="password"/>
 
                 <TextField
@@ -106,9 +109,10 @@ var SignUp = React.createClass({
                     floatingLabelText="Адрес страницы Вконтакте"
                     errorText={this.state.validation.vk ? 'Поле не может быть пустым' : null}
                     type="text"
+                    fullWidth={true}
                     ref="vk"/>
 
-                <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave}/>
+                <Button style={{width: '100%', marginTop: '24px'}} label="Продолжить" secondary={true} onClick={this._onSave}/>
 
             </div>
 
@@ -196,6 +200,7 @@ var Login  = React.createClass({
                         floatingLabelText="Email"
                         errorText={this.state.validation.email ? 'Поле не может быть пустым' : null}
                         type="email"
+                        fullWidth={true}
                         ref="email"/>
 
                     <TextField
@@ -204,6 +209,7 @@ var Login  = React.createClass({
                         floatingLabelText="Пароль"
                         errorText={this.state.validation.password ? 'Поле не может быть пустым' : null}
                         type="password"
+                        fullWidth={true}
                         ref="password"/>
 
                     <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave}/>

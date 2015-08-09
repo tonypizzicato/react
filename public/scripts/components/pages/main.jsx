@@ -34,6 +34,8 @@ var menuItems = [
     {route: 'orders', text: 'Заявки'}
 ];
 
+var ThemeManager = new mui.Styles.ThemeManager();
+
 var MainApp = React.createClass({
 
     mixins: [Router.State],
@@ -44,6 +46,16 @@ var MainApp = React.createClass({
             leagues:  [],
             games:    []
         }
+    },
+
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
+    getChildContext: function () {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
     },
 
     componentDidMount: function () {

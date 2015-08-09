@@ -2,13 +2,13 @@
 
 var _             = require('underscore'),
     React         = require('react'),
-    Dragon        = require('react-dragon'),
     mui           = require('material-ui'),
     cx            = React.addons.classSet,
 
     Button        = mui.IconButton,
 
     Image         = require('./Image.jsx'),
+    Dragon        = require('./Dragon.jsx'),
 
     PhotosActions = require('../actions/PhotosActions'),
     PhotosStore   = require('../stores/PhotosStore');

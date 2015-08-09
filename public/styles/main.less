@@ -1,5 +1,3 @@
-@import "../../node_modules/material-ui/src/less/scaffolding";
-@import "../../node_modules/material-ui/src/less/components";
 @import "_text";
 @import "_input";
 
@@ -15,6 +13,10 @@
   font-weight: normal;
   font-style:  normal;
 }
+
+@grey-300: #e0e0e0;
+@desktop-keyline-increment: 64px;
+@desktop-gutter: 24px;
 
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset;
@@ -220,8 +222,6 @@ input:-webkit-autofill {
 }
 
 .page-with-nav {
-  @grey-300: #e0e0e0;
-  @desktop-keyline-increment: 64px;
 
   .page-with-nav-secondary-nav {
     border-top: solid 1px @grey-300;
