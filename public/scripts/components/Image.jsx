@@ -14,7 +14,12 @@ var Image = React.createClass({
             aspectRatio: React.PropTypes.number,
             width:       React.PropTypes.number.required,
             height:      React.PropTypes.number.required,
-            style:       React.PropTypes.shape({
+            pos:         React.PropTypes.shape({
+                x: React.PropTypes.string,
+                y: React.PropTypes.string
+            }),
+
+            style: React.PropTypes.shape({
                 size: React.PropTypes.string
             })
         }
@@ -25,7 +30,8 @@ var Image = React.createClass({
             aspectRatio: 1,
             style:       {
                 size: 'cover'
-            }
+            },
+            pos: {x: '50%', y: '50%'}
         }
     },
 
@@ -56,6 +62,15 @@ var Image = React.createClass({
         _img.onerror = null;
     },
 
+    setImagePos: function (x, y) {
+        if (x) {
+            this.refs.image.getDOMNode().style.backgroundPositionX = x;
+        }
+        if (y) {
+            this.refs.image.getDOMNode().style.backgroundPositionY = y;
+        }
+    },
+
     render: function () {
         var divStyles = {
             position: 'relative',
@@ -71,7 +86,7 @@ var Image = React.createClass({
             left:               0,
             borderRadius:       '6px',
             backgroundSize:     this.props.style.size,
-            backgroundPosition: 'center center',
+            backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
             backgroundImage:    'url(' + this.props.src + ')',
             opacity:            this.state.loaded ? 100 : 0,
             transition:         this.props.transition || 'opacity 0.6s ease'
@@ -84,7 +99,7 @@ var Image = React.createClass({
 
         return (
             <div className={cls} style={divStyles}>
-                <div style={imageStyles}/>
+                <div style={imageStyles} ref="image"/>
             </div>
         )
     }

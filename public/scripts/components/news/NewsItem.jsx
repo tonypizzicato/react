@@ -3,15 +3,13 @@
 var React      = require('react'),
     cx         = React.addons.classSet,
     mui        = require('material-ui'),
-    moment     = require('moment'),
     date       = require('../../utils/date'),
 
     Dragon     = require('react-dragon'),
 
     Paper      = mui.Paper,
     Icon       = mui.FontIcon,
-    IconButton = mui.IconButton,
-    Toggle     = mui.Toggle;
+    IconButton = mui.IconButton;
 
 
 var NewsItem = React.createClass({
