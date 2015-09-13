@@ -9,32 +9,35 @@ const React        = require('react'),
 
       UsersList    = require('../users/UsersList.jsx');
 
-var UsersApp = React.createClass({
+class UsersApp extends React.Component {
 
-    mixins: [Router.State],
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
+        this.state = {
             users: []
         }
-    },
 
-    componentDidMount: function () {
+        this._onChange = this._onChange.bind(this);
+    }
+
+    componentDidMount() {
         UsersStore.addChangeListener(this._onChange);
+
         UsersActions.load();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         UsersStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({users: UsersStore.getAll()});
-    },
+    }
 
-    render: function () {
+    render() {
         return <UsersList users={this.state.users}/>;
     }
-});
+}
 
 module.exports = UsersApp;

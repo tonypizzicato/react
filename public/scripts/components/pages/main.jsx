@@ -1,34 +1,36 @@
 "use strict";
 
-const _              = require('lodash'),
-      React          = require('react'),
-      Router         = require('react-router'),
-      mui            = require('material-ui'),
+const _                = require('lodash'),
+      $                = require('jquery'),
+      React            = require('react'),
+      Router           = require('react-router'),
+      mui              = require('material-ui'),
 
-      RouteHandler   = Router.RouteHandler,
+      RouteHandler     = Router.RouteHandler,
 
-      Link           = Router.Link,
+      Link             = Router.Link,
 
-      Colors         = mui.Styles.Colors,
-      Canvas         = mui.AppCanvas,
-      AppBar         = mui.AppBar,
-      Icon           = mui.FontIcon,
+      Colors           = mui.Styles.Colors,
+      Spacing          = mui.Styles.Spacing,
 
-      FullWidth      = require('../FullWidth.jsx'),
-      LeftNav        = require('../LeftNav.jsx'),
-      Auth           = require('../Auth.jsx').Auth,
+      Canvas           = mui.AppCanvas,
+      AppBar           = mui.AppBar,
+      Icon             = mui.FontIcon,
+      RefreshIndicator = mui.RefreshIndicator,
+      Snackbar         = mui.Snackbar,
 
-      AuthStore      = require('../../stores/AuthStore'),
+      FullWidth        = require('../FullWidth.jsx'),
+      LeftNav          = require('../LeftNav.jsx'),
+      Auth             = require('../Auth.jsx').Auth,
 
-      LeaguesActions = require('../../actions/LeaguesActions'),
-      LeaguesStore   = require('../../stores/LeaguesStore'),
-      GamesActions   = require('../../actions/GamesActions'),
-      GamesStore     = require('../../stores/GamesStore');
+      AuthStore        = require('../../stores/AuthStore'),
 
+      LeaguesActions   = require('../../actions/LeaguesActions'),
+      LeaguesStore     = require('../../stores/LeaguesStore'),
+      GamesActions     = require('../../actions/GamesActions'),
+      GamesStore       = require('../../stores/GamesStore');
 
-const { Spacing } = mui.Styles;
-
-var menuItems = [
+const menuItems = [
     {route: 'users', text: 'Пользователи'},
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
@@ -41,14 +43,15 @@ var menuItems = [
     {route: 'orders', text: 'Заявки'}
 ];
 
-var ThemeManager = new mui.Styles.ThemeManager();
+const ThemeManager = new mui.Styles.ThemeManager();
 
-var MainApp = React.createClass({
+const MainApp = React.createClass({
 
     mixins: [Router.State],
 
     getInitialState: function () {
         return {
+            loading:  true,
             loggedIn: AuthStore.loggedIn(),
             leagues:  [],
             games:    []
@@ -66,7 +69,10 @@ var MainApp = React.createClass({
     },
 
     componentDidMount: function () {
-        //this._updatePageHeight();
+        this._showLoader();
+
+        $(document).ajaxError(this._handleAjaxError);
+        $(document).ajaxComplete(this._handleAjaxComplete);
 
         AuthStore.addChangeListener(this._authChange);
         LeaguesStore.addChangeListener(this._leaguesChange);
@@ -81,26 +87,26 @@ var MainApp = React.createClass({
         GamesStore.removeChangeListener(this._gamesChange);
     },
 
-    componentDidUpdate: function () {
-        //this._updatePageHeight();
+    _showLoader: function () {
+        this.setState({loading: true});
+
+        _.delay(this.setState.bind(this, {loading: false}), 1000);
     },
 
-    _updatePageHeight: function () {
-        const w = window,
-              d = document,
-              e = d.documentElement,
-              g = d.getElementsByTagName('body')[0];
+    _hideLoader: function () {
+        _.delay(this.setState.bind(this, {loading: false}), 400);
+    },
 
-        const content = React.findDOMNode(this.refs.content);
-        const appBar  = React.findDOMNode(this.refs.appBar);
-        const footer  = React.findDOMNode(this.refs.footer);
+    _handleAjaxError: function () {
+        this._hideLoader();
+        this.refs.snack.show();
+        _.delay(this.refs.snack.dismiss, 2000);
+    },
 
-        const pageHeight    = w.innerHeight || e.clientHeight || g.clientHeight;
-        const appBarHeight  = appBar.clientHeight;
-        const contentHeight = content.clientHeight;
-        const footerHeight  = footer.clientHeight;
-
-        content.style.height = pageHeight - appBarHeight - footerHeight > contentHeight ? pageHeight - appBarHeight - footerHeight + 'px' : contentHeight;
+    _handleAjaxComplete: function () {
+        if (this.state.loading) {
+            this._hideLoader();
+        }
     },
 
     _authChange: function () {
@@ -108,7 +114,7 @@ var MainApp = React.createClass({
     },
 
     _leaguesChange: function () {
-        var leagues = LeaguesStore.getAll();
+        const leagues = LeaguesStore.getAll();
         this.setState({leagues: leagues});
         leagues.forEach(function (league) {
             GamesActions.load({leagueId: league._id});
@@ -123,10 +129,22 @@ var MainApp = React.createClass({
         this.refs.leftNav.toggle();
     },
 
-    render: function () {
-        var styles = this.getStyles();
+    _getContentComponent() {
+        let content;
 
-        var loginOrOut = this.state.loggedIn ?
+        if (this.state.loggedIn) {
+            content = <RouteHandler leagues={this.state.leagues} games={this.state.games}/>
+        } else {
+            content = <Auth />
+        }
+
+        return content;
+    },
+
+    render: function () {
+        const styles = this.getStyles();
+
+        const loginOrOut = this.state.loggedIn ?
             <Link to="logout">Выход</Link> :
             <Link to="login">Вход</Link>;
 
@@ -134,16 +152,17 @@ var MainApp = React.createClass({
             return this.context.router.isActive(item.route);
         }), 'text');
 
-        var content = '';
-        if (this.state.loggedIn) {
-            content = <RouteHandler leagues={this.state.leagues} games={this.state.games}/>
-        } else {
-            content = <Auth />
-        }
-
         return (
             <div>
                 <Canvas>
+                    <div style={styles.loader}>
+                        <RefreshIndicator
+                            left={Spacing.desktopGutterLess}
+                            top={Spacing.desktopGutterMini}
+                            size={Spacing.desktopGutter * 2}
+                            status={this.state.loading ? "loading" : "hide"}
+                            ref="loader"/>
+                    </div>
                     <AppBar
                         onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
                         title={appBarTitle}
@@ -158,7 +177,7 @@ var MainApp = React.createClass({
                     </AppBar>
 
                     <div style={styles.content} ref="content">
-                        {content}
+                        {this._getContentComponent()}
                     </div>
 
                     <LeftNav menuItems={menuItems} ref="leftNav"/>
@@ -168,6 +187,7 @@ var MainApp = React.createClass({
                             Hand crafted with love by tony.pizzicato.
                         </p>
                     </FullWidth>
+                    <Snackbar message="Ошибка загрузки данных. Попробуйте повторить запрос." ref="snack"/>
                 </Canvas>
             </div>
         )
@@ -184,8 +204,8 @@ var MainApp = React.createClass({
                 backgroundColor: Colors.grey900,
                 textAlign:       'center',
                 position:        'absolute',
-                left:            '0',
-                bottom:          '0',
+                left:            0,
+                bottom:          0,
                 height:          '5em',
                 width:           '100%'
             },
@@ -194,6 +214,15 @@ var MainApp = React.createClass({
                 padding:  0,
                 color:    Colors.lightWhite,
                 maxWidth: 335
+            },
+            loader:  {
+                height:     Spacing.desktopGutterMore * 2,
+                width:      Spacing.desktopGutterMore * 2 + Spacing.desktopGutterMore,
+                position:   'absolute',
+                margin:     '0 auto',
+                left:       '50%',
+                marginLeft: '-' + Spacing.desktopGutterMore,
+                zIndex:     6
             }
         };
     }

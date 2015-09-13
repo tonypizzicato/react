@@ -1,52 +1,56 @@
 "use strict";
 
-var React      = require('react'),
-    mui        = require('material-ui'),
+const React      = require('react'),
+      mui        = require('material-ui'),
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
-    IconButton = mui.IconButton;
+      Colors     = mui.Styles.Colors,
+      Spacing    = mui.Styles.Spacing,
 
-var UserItem = React.createClass({
+      ListItem   = mui.ListItem,
+      Avatar     = mui.Avatar,
+      Icon       = mui.FontIcon,
+      IconButton = mui.IconButton;
 
-    propTypes: function () {
-        return {
-            user: React.PropTypes.object
-        };
-    },
+class UserItem extends React.Component {
+    render() {
+        const styles = this.getStyles();
 
-    getDefaultProps: function () {
-        return {
-            user: {}
-        }
-    },
-
-    render: function () {
         return (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__icon s_display_inline-block s_valign_m">
-                        <Icon className="mdfi_action_account_circle" />
-                    </div>
-                    <span className="s_valign_m text_font-size_16 s_mr_24">{this.props.user.username}</span>
-
-                    <div className="list-item__icon s_display_inline-block s_valign_m">
-                        <Icon className="mdfi_content_mail text_font-size_18" />
-                    </div>
-                    <span className="s_valign_m text_font-size_14">{this.props.user.email}</span>
-
-                    <IconButton
-                        href={this.props.user.vk}
-                        target="_blank"
-                        className="s_float_r"
-                        iconClassName="mdfi_social_people"
-                        tooltip="Vk"
-                        linkButton={true} />
-
-                </div>
-            </Paper>
+            <ListItem
+                href={this.props.user.vk}
+                target="_blank"
+                leftAvatar={<Avatar style={{top: Spacing.desktopGutter}}>{this.props.user.username[0]}</Avatar>}
+                primaryText={this.props.user.username}
+                secondaryText={
+                  <p>
+                    <span style={styles.secondary.primary}>{this.props.user.email}</span>
+                    <br/>
+                    <span style={styles.secondary.secondary}>{this.props.user.vk}</span>
+                  </p>
+                }
+                secondaryTextLines={2}/>
         );
     }
-});
+
+    getStyles() {
+        return {
+            secondary: {
+                primary:   {
+                    color: Colors.darkBlack
+                },
+                secondary: {
+                    color: Colors.lightBlack
+                }
+            }
+        }
+    }
+}
+
+UserItem.propTypes    = {
+    users: React.PropTypes.array
+};
+UserItem.defaultProps = {
+    users: []
+};
 
 module.exports = UserItem;

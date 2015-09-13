@@ -1,42 +1,53 @@
 "use strict";
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+var React       = require('react'),
+    mui         = require('material-ui'),
 
-    UserItem             = require('../users/UserItem.jsx');
+    Colors      = mui.Styles.Colors,
+    List        = mui.List,
+    ListDivider = mui.ListDivider,
 
-var UsersList = React.createClass({
+    UserItem    = require('../users/UserItem.jsx');
 
-    propTypes: function () {
-        return {
-            users: React.PropTypes.array
-        }
-    },
+class UsersList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            users: []
-        }
-    },
-
-    render: function () {
+    render() {
         if (!this.props.users.length) {
             return false;
         }
 
-        var items = this.props.users.map(function (item) {
+        const items = this.props.users.map((item, index) => {
+            const divider = index != this.props.users.length - 1 ? <ListDivider inset={true}/> : undefined;
+
             return (
-                <UserItem user={item} key={item._id} />
-            );
-        }.bind(this));
+                <div key={item._id}>
+                    <UserItem user={item}/>
+                    {divider}
+                </div>
+            )
+        });
 
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
+            <List style={this.getStyles().root}>
                 {items}
-            </ReactTransitionGroup>
-
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                border: 'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
+
+UsersList.propTypes    = {
+    users: React.PropTypes.array
+};
+UsersList.defaultProps = {
+    users: []
+};
 
 module.exports = UsersList;
