@@ -15,6 +15,5 @@ Router.create({
     routes:         AppRoutes,
     scrollBehavior: Router.ScrollToTopBehavior
 }).run(function (Handler) {
-    //a11y(); // TODO: check env and off on prod
     React.render(<Handler />, document.getElementById('app-content'));
 });

@@ -1,13 +1,13 @@
 "use strict";
 
-var React        = require('react'),
-    Router       = require('react-router'),
-    mui          = require('material-ui'),
+const React        = require('react'),
+      Router       = require('react-router'),
+      mui          = require('material-ui'),
 
-    UsersActions = require('../../actions/UsersActions'),
-    UsersStore   = require('../../stores/UsersStore'),
+      UsersActions = require('../../actions/UsersActions'),
+      UsersStore   = require('../../stores/UsersStore'),
 
-    UsersList    = require('../users/UsersList.jsx');
+      UsersList    = require('../users/UsersList.jsx');
 
 var UsersApp = React.createClass({
 
@@ -33,11 +33,7 @@ var UsersApp = React.createClass({
     },
 
     render: function () {
-        return (
-            <div>
-                <UsersList users={this.state.users} />
-            </div>
-        )
+        return <UsersList users={this.state.users}/>;
     }
 });
 
