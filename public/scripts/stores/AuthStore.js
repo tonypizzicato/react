@@ -1,7 +1,7 @@
 "use strict";
 
 var $               = require('jquery'),
-    _               = require('underscore'),
+    _               = require('lodash'),
     assign          = require('object-assign'),
     EventEmitter    = require('events').EventEmitter,
 

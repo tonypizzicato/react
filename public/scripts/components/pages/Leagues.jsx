@@ -1,67 +1,67 @@
 "use strict";
 
-var _               = require('underscore'),
+const _               = require('lodash'),
     React           = require('react'),
-    Router          = require('react-router'),
     mui             = require('material-ui'),
 
-    EventsConstants = require('../../constants/EventsConstants'),
-    LeaguesActions  = require('../../actions/LeaguesActions'),
     LeaguesStore    = require('../../stores/LeaguesStore'),
 
     LeagueForm      = require('../leagues/LeagueForm.jsx'),
     LeaguesList     = require('../leagues/LeaguesList.jsx');
 
-var LeaguesApp = React.createClass({
+class LeaguesApp extends React.Component {
 
-    mixins: [Router.State],
+    propTypes = {
+        leagues: React.PropTypes.array.required
+    }
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    state = {
+        selectedLeague: {}
+    }
 
-    getInitialState: function () {
-        return {
-            selectedLeague: {}
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    componentDidMount: function () {
+        this._onEdit   = this._onEdit.bind(this);
+        this._onChange = this._onChange.bind(this);
+        this._onCancel = this._onCancel.bind(this);
+    }
+
+    componentDidMount() {
         LeaguesStore.addChangeListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         LeaguesStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
-            selectedLeague: this.getInitialState().selectedLeague
+            selectedLeague: {}
         });
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
         this.setState({
             selectedLeague: _.findWhere(this.props.leagues, {_id: e.currentTarget.dataset.id})
         });
-    },
+    }
 
-    _onCancel: function () {
+    _onCancel() {
         this.setState({
-            selectedLeague: this.getInitialState().selectedLeague
+            selectedLeague: {}
         });
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <div>
-                <LeagueForm league={this.state.selectedLeague} onCancel={this._onCancel} key={this.state.selectedLeague._id + '-league-form'}/>
-                <LeaguesList leagues={this.props.leagues} onEdit={this._onEdit} key="leagues-list" />
+                <LeagueForm league={this.state.selectedLeague} onCancel={this._onCancel}
+                            key={this.state.selectedLeague._id + '-league-form'}/>
+                <LeaguesList leagues={this.props.leagues} onEdit={this._onEdit} key="leagues-list"/>
             </div>
         );
     }
-});
+}
 
 module.exports = LeaguesApp;

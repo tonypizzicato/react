@@ -14,59 +14,58 @@ var React           = require('react'),
 
     OrdersList      = require('../orders/OrdersList.jsx');
 
-var OrdersApp = React.createClass({
+class OrdersApp extends React.Component {
 
-    mixins: [Router.State],
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    }
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
+        this.state = {
             orders:          [],
             selectedContact: {}
         }
-    },
 
-    componentDidMount: function () {
+        this._onChange = this._onChange.bind(this);
+    }
+
+    componentDidMount() {
         OrdersStore.addChangeListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         OrdersStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.leagues.length) {
             OrdersActions.load();
         }
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             order: OrdersStore.getAll()
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var ordersItems = OrdersStore.getByLeague(league._id).filter(function (item) {
-                return item.leagueId == league._id;
-            }.bind(this));
+    render() {
+        const tabItems = this.props.leagues.map(league => {
+            const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
 
             return (
-                <Tab label={league.name} key={league._id} >
-                    <OrdersList orders={ordersItems} />
+                <Tab label={league.name} key={league._id}>
+                    <OrdersList orders={ordersItems}/>
                 </Tab>
             );
-        }.bind(this));
+        });
+
         return (
             <Tabs>{tabItems}</Tabs>
         );
     }
-});
+}
 
 module.exports = OrdersApp;

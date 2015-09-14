@@ -86,7 +86,7 @@ gulp.task('js', function () {
 
     var bundler = browserify({
         entries:      [src],
-        transform:    [babelify],
+        transform:    [[babelify, {optional: ["es7.classProperties"]}]],
         debug:        true,
         cache:        {},
         packageCache: {},

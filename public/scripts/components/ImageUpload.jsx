@@ -1,6 +1,6 @@
 "use strict";
 
-var _            = require('underscore'),
+var _            = require('lodash'),
     React        = require('react'),
     cx           = React.addons.classSet,
     mui          = require('material-ui'),

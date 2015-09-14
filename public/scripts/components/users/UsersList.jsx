@@ -11,6 +11,14 @@ var React       = require('react'),
 
 class UsersList extends React.Component {
 
+    static propTypes = {
+        users: React.PropTypes.array
+    }
+
+    static defaultProps = {
+        users: []
+    }
+
     render() {
         if (!this.props.users.length) {
             return false;
@@ -42,12 +50,5 @@ class UsersList extends React.Component {
         }
     }
 }
-
-UsersList.propTypes    = {
-    users: React.PropTypes.array
-};
-UsersList.defaultProps = {
-    users: []
-};
 
 module.exports = UsersList;

@@ -1,71 +1,66 @@
 "use strict";
 
-var React  = require('react'),
-    cx     = React.addons.classSet,
-    mui    = require('material-ui'),
+var React      = require('react'),
+    cx         = React.addons.classSet,
+    mui        = require('material-ui'),
+
+    Colors     = mui.Styles.Colors,
+    Spacing    = mui.Styles.Spacing,
+
+    ListItem   = mui.ListItem,
+    Avatar     = mui.Avatar,
 
     Dragon     = require('../Dragon.jsx'),
 
-    Paper  = mui.Paper,
-    Icon   = mui.FontIcon,
+    Paper      = mui.Paper,
+    Icon       = mui.FontIcon,
     IconButton = mui.IconButton;
 
-var LeagueItem = React.createClass({
+class LeagueItem extends React.Component {
 
-    propTypes: function () {
-        return {
-            league: React.PropTypes.shape({
-                name: React.PropTypes.string,
-                slug: React.PropTypes.string
-            }).required,
-            onEdit: React.PropTypes.func.required,
-            onDrop: React.PropTypes.func.required
-        };
-    },
+    static propTypes = {
+        league: React.PropTypes.shape({
+            name: React.PropTypes.string,
+            slug: React.PropTypes.string
+        }).required,
+        index:  React.PropTypes.number.required,
+        onEdit: React.PropTypes.func.required,
+        onDrop: React.PropTypes.func.required
+    }
 
-    getDefaultProps: function () {
-        return {
-            league: {}
-        }
-    },
+    static defaultProps = {
+        league: {}
+    }
 
-    render: function () {
-        var visibilityClass = cx({
-            'list-item__visibility':  true,
-            'mdfi_action_visibility': true,
-            'mdfi_action_visibility_off': !this.props.league.show
-        });
-        var item = (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <Icon className="list-item__sort mdfi_action_swap_vert" />
-                            <Icon className={visibilityClass} />
-                        </div>
+    render() {
+        const styles = this.getStyles();
 
-                        <div className="list-item__title s_display_inline-block s_valign_m">
-                            <h5>{this.props.league.name}&nbsp;
-                                <span className="text_color_muted">{this.props.league.slug}</span>
-                            </h5>
+        const editButton = <IconButton
+            iconClassName="mdfi_editor_mode_edit"
+            onClick={this.props.onEdit}
+            data-id={this.props.league._id}/>
 
-                        </div>
-
-                        <div className="s_float_r">
-                            <div className="s_display_inline-block s_valign_m s_float_r">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.league._id} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Paper>
-        );
         return (
-            <Dragon key={this.props.league._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                {item}
+            <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
+                <ListItem
+                    style={styles.root}
+                    onClick={this.props.onEdit}
+                    data-id={this.props.league._id}
+                    leftAvatar={<Avatar>{this.props.league.name[0]}</Avatar>}
+                    primaryText={this.props.league.name}
+                    secondaryText={this.props.league.slug}
+                    />
             </Dragon>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                margin: Spacing.desktopGutter + ' 0'
+            }
+        }
+    }
+}
 
 module.exports = LeagueItem;
