@@ -1,23 +1,22 @@
-"use strict";
+const React       = require('react'),
+      mui         = require('material-ui'),
 
-var React       = require('react'),
-    mui         = require('material-ui'),
+      Colors      = mui.Styles.Colors,
 
-    Colors      = mui.Styles.Colors,
-    List        = mui.List,
-    ListDivider = mui.ListDivider,
+      List        = mui.List,
+      ListDivider = mui.ListDivider,
 
-    UserItem    = require('../users/UserItem.jsx');
+      UserItem    = require('../users/UserItem.jsx');
 
 class UsersList extends React.Component {
 
     static propTypes = {
         users: React.PropTypes.array
-    }
+    };
 
     static defaultProps = {
         users: []
-    }
+    };
 
     render() {
         if (!this.props.users.length) {

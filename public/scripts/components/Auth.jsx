@@ -1,25 +1,24 @@
-"use strict";
+const React       = require('react'),
+      Router      = require('react-router'),
+      mui         = require('material-ui'),
 
-var React       = require('react'),
-    Router      = require('react-router'),
-    mui         = require('material-ui'),
+      Spacing     = mui.Styles.Spacing,
 
-    Paper       = mui.Paper,
-    Tabs        = mui.Tabs,
-    Tab         = mui.Tab,
-    Snackbar    = mui.Snackbar,
+      Paper       = mui.Paper,
+      Tabs        = mui.Tabs,
+      Tab         = mui.Tab,
+      Snackbar    = mui.Snackbar,
 
-    TextField   = mui.TextField,
-    Button      = mui.FlatButton,
+      TextField   = mui.TextField,
+      Button      = mui.FlatButton,
 
-    AuthActions = require('../actions/AuthActions'),
-    AuthStore   = require('../stores/AuthStore');
+      AuthActions = require('../actions/AuthActions'),
+      AuthStore   = require('../stores/AuthStore');
 
-var Auth = React.createClass({
-
-    render: function () {
+class Auth extends React.Component {
+    render() {
         return (
-            <Paper className="login-form">
+            <Paper style={this.getStyles().root}>
                 <Tabs>
                     <Tab label="Вход">
                         <Login />
@@ -31,30 +30,46 @@ var Auth = React.createClass({
             </Paper>
         )
     }
-});
 
-
-var SignUp = React.createClass({
-
-    getInitialState: function () {
+    getStyles() {
         return {
-            validation: {}
+            root: {
+                width:    520,
+                margin:   '50px auto',
+                top:      50,
+                position: 'relative'
+            }
         }
-    },
+    }
+}
 
-    _onSave: function () {
-        var user = {
+
+class SignUp extends React.Component {
+
+    state = {
+        validation: {}
+    };
+
+    constructor(props) {
+        super(props);
+
+        this._onSave = this._onSave.bind(this);
+    }
+
+    _onSave() {
+        const user = {
             username: this.refs.username.getValue(),
             email:    this.refs.email.getValue(),
             password: this.refs.password.getValue(),
             vk:       this.refs.vk.getValue()
         };
 
-        var validation = {},
+        let validation = {},
             isValid    = true;
 
         function validateEmail(email) {
-            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
             return re.test(email);
         }
 
@@ -72,11 +87,11 @@ var SignUp = React.createClass({
         if (isValid) {
             AuthActions.signup(user);
         }
-    },
+    }
 
-    render: function () {
+    render() {
         return (
-            <div className="panel">
+            <div style={this.getStyles().root}>
                 <TextField
                     className="s_display_block"
                     hintText="Ваше имя"
@@ -112,33 +127,46 @@ var SignUp = React.createClass({
                     fullWidth={true}
                     ref="vk"/>
 
-                <Button style={{width: '100%', marginTop: '24px'}} label="Продолжить" secondary={true} onClick={this._onSave}/>
+                <Button style={this.getStyles().button} label="Продолжить" secondary={true} onClick={this._onSave}/>
 
             </div>
 
         );
     }
-});
-var Login  = React.createClass({
+
+    getStyles() {
+        return {
+            root:   {
+                padding: '0 24px 24px'
+            },
+            button: {
+                width:     '100%',
+                marginTop: Spacing.desktopGutter
+            }
+        }
+    }
+}
+
+var Login = React.createClass({
     mixins: [Router.Navigation, Router.State],
 
-    getInitialState: function () {
+    getInitialState() {
         return {
             validation: {}
         }
     },
 
-    componentDidMount: function () {
+    componentDidMount() {
         AuthStore.addChangeListener(this._onLogin);
         AuthStore.addUnauthorizedListener(this._onError);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         AuthStore.removeChangeListener(this._onLogin);
         AuthStore.removeUnauthorizedListener(this._onError);
     },
 
-    _onError: function (e) {
+    _onError(e) {
         if (e.status == 401) {
             this.refs.errCredentials.show();
         } else {
@@ -146,13 +174,13 @@ var Login  = React.createClass({
         }
     },
 
-    _onSave: function () {
-        var user = {
+    _onSave() {
+        const user = {
             email:    this.refs.email.getValue(),
             password: this.refs.password.getValue()
         };
 
-        var validation = {},
+        let validation = {},
             isValid    = true;
 
         for (var field in user) {
@@ -170,14 +198,14 @@ var Login  = React.createClass({
         }
     },
 
-    _onLogin: function () {
+    _onLogin() {
         if (!AuthStore.loggedIn()) {
             this.replaceWith('/');
         }
 
         this.refs.form.getDOMNode().submit();
 
-        var nextPath = this.getQuery().nextPath;
+        const nextPath = this.getQuery().nextPath;
 
         if (nextPath) {
             this.transitionTo(nextPath);
@@ -186,13 +214,13 @@ var Login  = React.createClass({
         }
     },
 
-    _onSubmit: function (e) {
+    _onSubmit(e) {
         e.preventDefault();
     },
 
-    render: function () {
+    render() {
         return (
-            <div className="panel">
+            <div style={this.getStyles().root}>
                 <form ref="form" actions="login" onSubmit={this._onSubmit}>
                     <TextField
                         className="s_display_block"
@@ -212,7 +240,7 @@ var Login  = React.createClass({
                         fullWidth={true}
                         ref="password"/>
 
-                    <Button className="button_type_save s_width_full s_mt_24" label="Продолжить" secondary={true} onClick={this._onSave}/>
+                    <Button style={this.getStyles().button} label="Продолжить" secondary={true} onClick={this._onSave}/>
                 </form>
                 <Snackbar
                     message="Неверный логин или пароль"
@@ -223,6 +251,18 @@ var Login  = React.createClass({
                     ref="errConnection"/>
             </div>
         );
+    },
+
+    getStyles() {
+        return {
+            root: {
+                padding: '0 24px 24px'
+            },
+            button: {
+                width:     '100%',
+                marginTop: Spacing.desktopGutter
+            }
+        }
     }
 });
 
@@ -230,22 +270,22 @@ var Logout = React.createClass({
 
     mixins: [Router.Navigation, Router.State],
 
-    componentDidMount: function () {
+    componentDidMount() {
         AuthStore.addChangeListener(this._onLogout);
         AuthActions.logout();
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         AuthStore.removeChangeListener(this._onLogout);
     },
 
-    _onLogout: function () {
+    _onLogout() {
         if (!AuthStore.loggedIn()) {
             this.replaceWith('/');
         }
     },
 
-    render: function () {
+    render() {
         return (<div />);
     }
 });
@@ -253,7 +293,7 @@ var Logout = React.createClass({
 
 var Authentication = {
     statics: {
-        willTransitionTo: function (transition) {
+        willTransitionTo(transition) {
             var nextPath = transition.path;
             if (!AuthStore.loggedIn()) {
                 transition.redirect('/login', {},

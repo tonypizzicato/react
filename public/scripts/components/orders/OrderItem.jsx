@@ -21,7 +21,7 @@ class OrderItem extends React.Component {
             <Card style={this.getStyles().root}>
                 <CardHeader
                     title={this.props.order.name}
-                    subtitle={this.props.order.email}
+                    subtitle={this.props.order.email ? this.props.order.email : this.props.order.phone}
                     avatar={<Avatar>{this.props.order.name[0]}</Avatar>}
                     showExpandableButton={true}>
                 </CardHeader>

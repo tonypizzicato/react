@@ -12,8 +12,6 @@ var React      = require('react'),
 
     Dragon     = require('../Dragon.jsx'),
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
     IconButton = mui.IconButton;
 
 class LeagueItem extends React.Component {
@@ -26,19 +24,15 @@ class LeagueItem extends React.Component {
         index:  React.PropTypes.number.required,
         onEdit: React.PropTypes.func.required,
         onDrop: React.PropTypes.func.required
-    }
+    };
 
     static defaultProps = {
         league: {}
-    }
+    };
 
     render() {
         const styles = this.getStyles();
-
-        const editButton = <IconButton
-            iconClassName="mdfi_editor_mode_edit"
-            onClick={this.props.onEdit}
-            data-id={this.props.league._id}/>
+        const avatar = this.props.league.slug ? this.props.league.slug : this.props.league.name;
 
         return (
             <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
@@ -46,7 +40,7 @@ class LeagueItem extends React.Component {
                     style={styles.root}
                     onClick={this.props.onEdit}
                     data-id={this.props.league._id}
-                    leftAvatar={<Avatar>{this.props.league.name[0]}</Avatar>}
+                    leftAvatar={<Avatar>{avatar[0]}</Avatar>}
                     primaryText={this.props.league.name}
                     secondaryText={this.props.league.slug}
                     />

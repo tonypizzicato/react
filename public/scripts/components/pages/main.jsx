@@ -145,8 +145,8 @@ const MainApp = React.createClass({
         const styles = this.getStyles();
 
         const loginOrOut = this.state.loggedIn ?
-            <Link to="logout">Выход</Link> :
-            <Link to="login">Вход</Link>;
+            <Link style={styles.login.label} to="logout">Выход</Link> :
+            <Link style={styles.login.label} to="login">Вход</Link>;
 
         const appBarTitle = _.result(_(menuItems).find(item => {
             return this.context.router.isActive(item.route);
@@ -170,8 +170,8 @@ const MainApp = React.createClass({
                         showMenuIconButton={this.state.loggedIn}
                         style={{position: 'absolute', top: 0}}
                         ref="appBar">
-                        <div className="login">
-                            <Icon className="mdfi_action_account_circle"/>
+                        <div>
+                            <Icon style={styles.login.icon} className="mdfi_action_account_circle"/>
                             {loginOrOut}
                         </div>
                     </AppBar>
@@ -223,6 +223,23 @@ const MainApp = React.createClass({
                 left:       '50%',
                 marginLeft: '-' + Spacing.desktopGutterMore,
                 zIndex:     6
+            },
+            login:   {
+                icon:  {
+                    position:    'relative',
+                    fontSize:    Spacing.desktopGutterMore,
+                    top:         Spacing.desktopGutterLess,
+                    marginRight: Spacing.desktopGutterMini,
+                    color:       'white',
+                    zIndex:      5
+                },
+                label: {
+                    position:      'relative',
+                    textTransform: 'uppercase',
+                    fontSize:      16,
+                    color:         '#fff',
+                    top:           Spacing.desktopGutterMini
+                }
             }
         };
     }

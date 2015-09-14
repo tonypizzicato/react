@@ -18,15 +18,19 @@ class OrdersApp extends React.Component {
 
     static propTypes = {
         leagues: React.PropTypes.array.required
-    }
+    };
+
+    static defaultProps = {
+        leagues: []
+    };
+
+    state = {
+        orders:          [],
+        selectedContact: {}
+    };
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            orders:          [],
-            selectedContact: {}
-        }
 
         this._onChange = this._onChange.bind(this);
     }
@@ -52,18 +56,18 @@ class OrdersApp extends React.Component {
     }
 
     render() {
-        const tabItems = this.props.leagues.map(league => {
-            const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
-
-            return (
-                <Tab label={league.name} key={league._id}>
-                    <OrdersList orders={ordersItems}/>
-                </Tab>
-            );
-        });
-
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map(league => {
+                    const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
+
+                    return (
+                        <Tab label={league.name} key={league._id}>
+                            <OrdersList orders={ordersItems}/>
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
     }
 }

@@ -1,5 +1,3 @@
-"use strict";
-
 const React      = require('react'),
       mui        = require('material-ui'),
 
@@ -8,10 +6,17 @@ const React      = require('react'),
 
       ListItem   = mui.ListItem,
       Avatar     = mui.Avatar,
-      Icon       = mui.FontIcon,
       IconButton = mui.IconButton;
 
 class UserItem extends React.Component {
+    static propTypes    = {
+        users: React.PropTypes.array
+    };
+
+    static defaultProps = {
+        users: []
+    };
+
     render() {
         const styles = this.getStyles();
 
@@ -45,12 +50,5 @@ class UserItem extends React.Component {
         }
     }
 }
-
-UserItem.propTypes    = {
-    users: React.PropTypes.array
-};
-UserItem.defaultProps = {
-    users: []
-};
 
 module.exports = UserItem;

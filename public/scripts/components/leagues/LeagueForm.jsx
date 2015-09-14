@@ -4,6 +4,7 @@ const React           = require('react'),
       mui             = require('material-ui'),
 
       Spacing         = mui.Styles.Spacing,
+
       Paper           = mui.Paper,
       TextField       = mui.TextField,
       Toggle          = mui.Toggle,
@@ -77,7 +78,7 @@ class LeagueForm extends React.Component {
         const styles   = this.getStyles();
 
         return (
-            <div>
+            <div style={styles.root}>
                 <TextField
                     style={styles.input}
                     defaultValue={this.props.league.name}
@@ -123,7 +124,9 @@ class LeagueForm extends React.Component {
 
     getStyles() {
         return {
-            root:   {},
+            root:   {
+                marginBottom: Spacing.desktopGutter
+            },
             input:  {
                 width: '100%',
             },

@@ -11,7 +11,7 @@ const _               = require('lodash'),
 
 class LeaguesApp extends React.Component {
 
-    propTypes = {
+    static propTypes = {
         leagues: React.PropTypes.array.required
     }
 
