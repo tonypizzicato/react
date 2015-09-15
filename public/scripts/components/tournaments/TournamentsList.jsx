@@ -1,43 +1,30 @@
-"use strict";
+const React              = require('react'),
+      mui                = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing            = mui.Styles.Spacing,
+      Colors             = mui.Styles.Colors,
 
-    TournamentItem       = require('../tournaments/TournamentItem.jsx'),
+      List               = mui.List,
+      ListDivider        = mui.ListDivider,
 
-    TournamentsActions   = require('../../actions/TournamentsActions');
+      TournamentItem     = require('../tournaments/TournamentItem.jsx'),
 
-var TournamentsList = React.createClass({
+      TournamentsActions = require('../../actions/TournamentsActions');
 
-    propTypes: function () {
-        return {
-            tournaments: React.PropTypes.array
-        }
-    },
+class TournamentsList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            tournaments: []
-        }
-    },
+    static propTypes = {
+        tournaments: React.PropTypes.array
+    };
 
-    getInitialState: function () {
-        return {
-            tournaments: this.props.tournaments
-        }
-    },
+    static defaultProps = {
+        tournaments: []
+    };
 
-    componentWillReceiveProps: function (nextProps) {
-        if (this.state.tournaments.length != nextProps.tournaments.length) {
-            this.setState({tournaments: nextProps.tournaments});
-        }
-    },
 
-    _onDrop: function (from, to) {
-        var items = this.state.tournaments.slice();
+    _onDrop(from, to) {
+        let items = this.props.tournaments.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
-
-        this.setState({tournaments: items});
 
         if (this.props.onDrop) {
             this.props.onDrop(items);
@@ -49,26 +36,38 @@ var TournamentsList = React.createClass({
                 sort: index
             }, {silent: true})
         })
-    },
+    }
 
-    render: function () {
-        if (!this.state.tournaments.length) {
+    render() {
+        if (!this.props.tournaments.length) {
             return false;
         }
 
-        var items = this.state.tournaments.map(function (item, i) {
-            return (
-                <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id} />
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.props.tournaments.map((item, i) => {
+                    const divider = i != this.props.tournaments.length - 1 ? <ListDivider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id}/>
+                            {divider}
+                        </div>
+                    );
+                })}
+            </List>
 
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop: Spacing.desktopGutterLess,
+                border:     'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = TournamentsList;
