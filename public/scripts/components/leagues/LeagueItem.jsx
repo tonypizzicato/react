@@ -1,7 +1,4 @@
-"use strict";
-
 var React      = require('react'),
-    cx         = React.addons.classSet,
     mui        = require('material-ui'),
 
     Colors     = mui.Styles.Colors,
@@ -10,9 +7,7 @@ var React      = require('react'),
     ListItem   = mui.ListItem,
     Avatar     = mui.Avatar,
 
-    Dragon     = require('../Dragon.jsx'),
-
-    IconButton = mui.IconButton;
+    Dragon     = require('../Dragon.jsx');
 
 class LeagueItem extends React.Component {
 

@@ -1,97 +1,95 @@
-"use strict";
+const _                = require('lodash'),
+      React            = require('react'),
+      mui              = require('material-ui'),
 
-var $                = require('jquery'),
-    React            = require('react'),
-    Router           = require('react-router'),
-    mui              = require('material-ui'),
+      Tabs             = mui.Tabs,
+      Tab              = mui.Tab,
 
-    Tabs             = mui.Tabs,
-    Tab              = mui.Tab,
-    DropDownMenu     = mui.DropDownMenu,
+      CountriesActions = require('../../actions/CountriesActions'),
+      CountriesStore   = require('../../stores/CountriesStore'),
 
-    EventsConstants  = require('../../constants/EventsConstants'),
-    CountriesActions = require('../../actions/CountriesActions'),
-    CountriesStore   = require('../../stores/CountriesStore'),
+      CountryForm      = require('../countries/CountryForm.jsx'),
+      CountriesList    = require('../countries/CountriesList.jsx');
 
-    CountryForm       = require('../countries/CountryForm.jsx'),
-    CountriesList    = require('../countries/CountriesList.jsx');
+class CountriesApp extends React.Component {
 
-var CountriesApp = React.createClass({
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-    mixins: [Router.State],
+    state = {
+        countries:       [],
+        selectedCountry: {}
+    };
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
-            countries:       [],
-            selectedCountry: {}
-        }
-    },
+        this._onTabChange = this._onTabChange.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onDelete    = this._onDelete.bind(this);
+        this._onEdit      = this._onEdit.bind(this);
+        this._onCancel    = this._onCancel.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         CountriesStore.addChangeListener(this._onChange);
 
         // Load entities
         CountriesActions.load();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         CountriesStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    _onTabChange: function() {
+    _onTabChange() {
         this.setState({
-            selectedCountry: this.getInitialState().selectedCountry
+            selectedCountry: {}
         });
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             countries:       CountriesStore.getAll(),
-            selectedCountry: this.getInitialState().selectedCountry
+            selectedCountry: {}
         });
-    },
+    }
 
-    _onDelete: function (e) {
+    _onDelete(e) {
         CountriesActions.delete(e.currentTarget.dataset.id);
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
+        const id = e.currentTarget.dataset.id;
+
         this.setState({
-            selectedCountry: this.state.countries.filter(function (country) {
-                return country._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedCountry: _.findWhere(this.state.countries, {_id: id})
         });
-    },
+    }
 
-    _onCancel: function () {
+    _onCancel() {
         this.setState({
-            selectedCountry: this.getInitialState().selectedCountry
+            selectedCountry: {}
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var countriesItems = this.state.countries.filter(function (country) {
-                return country.leagueId == league._id
-            }.bind(this));
+    render() {
+        const tabItems = this.props.leagues.map(league => {
+            const countriesItems = this.state.countries.filter(country => country.leagueId == league._id);
 
             return (
-                <Tab label={league.name} key={league._id} >
-                    <CountryForm country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel} />
-                    <CountriesList countries={countriesItems} leagueId={league._id} onDelete={this._onDelete} onEdit={this._onEdit} />
+                <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
+                    <CountryForm country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel}/>
+                    <CountriesList countries={countriesItems} leagueId={league._id} onDelete={this._onDelete} onEdit={this._onEdit}/>
                 </Tab>
             );
-        }.bind(this));
+        });
+
         return (
-            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+            <Tabs>{tabItems}</Tabs>
         );
     }
-});
+}
 
 module.exports = CountriesApp;

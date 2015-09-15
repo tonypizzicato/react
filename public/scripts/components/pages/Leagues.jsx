@@ -1,13 +1,11 @@
-"use strict";
+const _            = require('lodash'),
+      React        = require('react'),
+      mui          = require('material-ui'),
 
-const _               = require('lodash'),
-    React           = require('react'),
-    mui             = require('material-ui'),
+      LeaguesStore = require('../../stores/LeaguesStore'),
 
-    LeaguesStore    = require('../../stores/LeaguesStore'),
-
-    LeagueForm      = require('../leagues/LeagueForm.jsx'),
-    LeaguesList     = require('../leagues/LeaguesList.jsx');
+      LeagueForm   = require('../leagues/LeagueForm.jsx'),
+      LeaguesList  = require('../leagues/LeaguesList.jsx');
 
 class LeaguesApp extends React.Component {
 
