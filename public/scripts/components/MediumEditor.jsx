@@ -1,16 +1,13 @@
 "use strict";
 
 var $            = require('jquery'),
+    cn           = require('react-classset'),
     React        = require('react'),
     mui          = require('material-ui'),
-    MediumEditor = require('medium-editor'),
-
-    Classable    = mui.Mixins.Classable;
+    MediumEditor = require('medium-editor');
 
 
 var Editor = React.createClass({
-
-    mixins: [Classable],
 
     propTypes: {
         id:                React.PropTypes.string,
@@ -108,7 +105,7 @@ var Editor = React.createClass({
     },
 
     render: function () {
-        var className = this.getClasses('mui-edit-field', {
+        var className = cn('mui-edit-field', {
             'mui-is-focused':          this.state.activated,
             'mui-has-value':           this.state.hasValue,
             'mui-has-error':           this.props.errorText,

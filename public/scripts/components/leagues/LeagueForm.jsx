@@ -5,7 +5,6 @@ const React           = require('react'),
 
       Spacing         = mui.Styles.Spacing,
 
-      Paper           = mui.Paper,
       TextField       = mui.TextField,
       Toggle          = mui.Toggle,
       Button          = mui.RaisedButton,
@@ -19,7 +18,7 @@ class LeagueForm extends React.Component {
 
     static propTypes() {
         league: React.PropTypes.object
-    }
+    };
 
     static defaultProps = {
         league: {
@@ -28,11 +27,11 @@ class LeagueForm extends React.Component {
             slug: '',
             show: false
         }
-    }
+    };
 
     state = {
         validation: {}
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -128,7 +127,7 @@ class LeagueForm extends React.Component {
                 marginBottom: Spacing.desktopGutter
             },
             input:  {
-                width: '100%',
+                width: '100%'
             },
             toggle: {
                 height:       Spacing.desktopGutter,

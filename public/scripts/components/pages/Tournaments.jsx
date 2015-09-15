@@ -1,4 +1,6 @@
 var $                  = require('jquery'),
+    _                  = require('lodash'),
+    scroll             = require('../../utils/scrollTo'),
     React              = require('react'),
     mui                = require('material-ui'),
 
@@ -19,7 +21,7 @@ var _calls = [],
 
 class TournamentApp extends React.Component {
 
-    propTypes = {
+    static propTypes = {
         leagues: React.PropTypes.array.required
     };
 
@@ -108,9 +110,11 @@ class TournamentApp extends React.Component {
 
     _onEdit(e) {
         this.setState({
-            selectedTournament: this.state.tournaments.filter(function (tournament) {
-                return tournament._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedTournament: _.findWhere(this.state.tournaments, {_id: e.currentTarget.dataset.id})
+        });
+
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
         });
     }
 

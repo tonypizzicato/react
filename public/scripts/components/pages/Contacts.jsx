@@ -1,105 +1,99 @@
-"use strict";
+const _               = require('lodash'),
+      React           = require('react'),
+      mui             = require('material-ui'),
 
-var $               = require('jquery'),
-    React           = require('react'),
-    Router          = require('react-router'),
-    mui             = require('material-ui'),
+      Tabs            = mui.Tabs,
+      Tab             = mui.Tab,
 
-    Tabs            = mui.Tabs,
-    Tab             = mui.Tab,
-    DropDownMenu    = mui.DropDownMenu,
+      ContactsActions = require('../../actions/ContactsActions'),
+      ContactsStore   = require('../../stores/ContactsStore'),
 
-    EventsConstants = require('../../constants/EventsConstants'),
+      ContactForm     = require('../contacts/ContactForm.jsx'),
+      ContactsList    = require('../contacts/ContactsList.jsx');
 
-    ContactsActions = require('../../actions/ContactsActions'),
-    ContactsStore   = require('../../stores/ContactsStore'),
+class ContactsApp extends React.Component {
 
-    ContactForm     = require('../contacts/ContactForm.jsx'),
-    ContactsList    = require('../contacts/ContactsList.jsx');
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-var ContactsApp = React.createClass({
+    state = {
+        contacts:        [],
+        selectedContact: {}
+    };
 
-    mixins: [Router.State],
+    constructor(props) {
+        super(props);
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+        this._onEdit      = this._onEdit.bind(this);
+        this._onCancel    = this._onCancel.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onDelete    = this._onDelete.bind(this);
+        this._onTabChange = this._onTabChange.bind(this);
+    }
 
-    getInitialState: function () {
-        return {
-            contacts:        [],
-            selectedContact: {}
-        }
-    },
-
-    componentDidMount: function () {
+    componentDidMount() {
         ContactsStore.addChangeListener(this._onChange);
 
         if (this.props.leagues.length > 0) {
             ContactsActions.load();
         }
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         ContactsStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.leagues.length != nextProps.leagues.length) {
             ContactsActions.load();
         }
-    },
+    }
 
-    _onTabChange: function () {
+    _onTabChange() {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            selectedContact: {}
         });
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             contacts:        ContactsStore.getAll(),
-            selectedContact: this.getInitialState().selectedContact
+            selectedContact: {}
         });
-    },
+    }
 
-    _onDelete: function (e) {
+    _onDelete(e) {
         ContactsActions.delete(e.currentTarget.dataset.id);
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
         this.setState({
-            selectedContact: this.state.contacts.filter(function (contact) {
-                return contact._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedContact: _.findWhere(this.props.contacts, {_id: e.target.dataset.id})
         });
-    },
+    }
 
-    _onCancel: function () {
+    _onCancel() {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            selectedContact: {}
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var contactsItems = this.state.contacts.filter(function (item) {
-                return item.leagueId == league._id;
-            }.bind(this));
+    render() {
+        const tabItems = this.props.leagues.map(league => {
+            const contactsItems = this.state.contacts.filter(item => item.leagueId == league._id);
 
             return (
-                <Tab label={league.name} key={league._id} >
-                    <ContactForm contact={this.state.selectedContact} leagueId={league._id} onCancel={this._onCancel} key={'contact-form-' + league._id} />
-                    <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit} />
+                <Tab label={league.name} key={league._id}>
+                    <ContactForm contact={this.state.selectedContact} leagueId={league._id} onCancel={this._onCancel}/>
+                    <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
                 </Tab>
             );
-        }.bind(this));
+        });
         return (
             <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
         );
     }
-});
+}
 
 module.exports = ContactsApp;

@@ -2,7 +2,7 @@
 
 var _            = require('lodash'),
     React        = require('react'),
-    cx           = React.addons.classSet,
+    cx           = require('react-classset'),
     mui          = require('material-ui'),
     Classable    = mui.Mixins.Classable,
 
@@ -94,7 +94,7 @@ var ImageUpload = React.createClass({
     },
 
     render: function () {
-        var clx = this.getClasses(this.props.className, {
+        var clx = cx(this.props.className, {
             'mui-file-input-container': true,
             's_mt_36':                  true
         });

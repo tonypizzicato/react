@@ -2,7 +2,7 @@
 
 var _            = require('lodash'),
     React        = require('react'),
-    cx           = React.addons.classSet,
+    cx           = require('react-classset'),
     mui          = require('material-ui'),
     Classable    = mui.Mixins.Classable,
 
@@ -59,7 +59,7 @@ var VideoUpload = React.createClass({
     },
 
     render: function () {
-        var clx = this.getClasses({
+        var clx = cx({
             'mui-video-input-container': true,
             'clearfix':                  true
         });

@@ -1,75 +1,85 @@
-"use strict";
+const React             = require('react'),
+      mui               = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing           = mui.Styles.Spacing,
+      Colors            = mui.Styles.Colors,
 
-    CategoryItem         = require('../categories/CategoryItem.jsx'),
+      List              = mui.List,
+      ListDivider       = mui.ListDivider,
 
-    CategoriesActions    = require('../../actions/CategoriesActions');
+      CategoryItem      = require('../categories/CategoryItem.jsx'),
 
-var CategoriesList = React.createClass({
+      CategoriesActions = require('../../actions/CategoriesActions');
 
-    propTypes: function () {
-        return {
-            categories: React.PropTypes.array,
-            onEdit:     React.PropTypes.func.required,
-            onDelete:   React.PropTypes.func.required
-        }
-    },
+class CategoriesList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            categories: []
-        }
-    },
+    static propTypes = {
+        categories: React.PropTypes.array,
+        onEdit:     React.PropTypes.func.required,
+        onDelete:   React.PropTypes.func.required
+    };
 
-    getInitialState: function () {
-        return {
-            categories: this.props.categories
-        }
-    },
+    static defaultProps = {
+        categories: []
+    };
 
-    componentWillReceiveProps: function (nextProps) {
-        if (this.state.categories.length != nextProps.categories.length) {
-            this.setState({categories: nextProps.categories});
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    _onDrop: function (from, to) {
+        this._onDrop = this._onDrop.bind(this);
+    }
+
+    _onDrop(from, to) {
         var items = this.state.categories.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
-
-        this.setState({categories: items});
 
         if (this.props.onDrop) {
             this.props.onDrop(items);
         }
 
-        items.forEach(function (item, index) {
+        items.forEach((item, index) => {
             CategoriesActions.save({
                 _id:  item._id,
                 sort: index
             }, {silent: true});
-        })
-    },
+        });
+    }
 
-    render: function () {
-        if (!this.state.categories.length) {
+    render() {
+        if (!this.props.categories.length) {
             return false;
         }
 
-        var items = this.state.categories.map(function (item, i) {
-            return (
-                <CategoryItem category={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.props.categories.map((item, index) => {
+                    const divider = index != this.props.categories.length - 1 ? <ListDivider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <CategoryItem
+                                category={item}
+                                onEdit={this.props.onEdit}
+                                onDelete={this.props.onDelete}
+                                onDrop={this._onDrop}
+                                index={index}
+                                key={item._id}/>
+                            {divider}
+                        </div>
+                    )
+                })}
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop: Spacing.desktopGutterLess,
+                border:     'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = CategoriesList;

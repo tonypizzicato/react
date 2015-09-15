@@ -168,7 +168,7 @@ const MainApp = React.createClass({
                         title={appBarTitle}
                         zDepth={0}
                         showMenuIconButton={this.state.loggedIn}
-                        style={{position: 'absolute', top: 0}}
+                        style={{position: 'fixed', top: 0}}
                         ref="appBar">
                         <div>
                             <Icon style={styles.login.icon} className="mdfi_action_account_circle"/>

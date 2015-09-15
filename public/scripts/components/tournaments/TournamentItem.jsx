@@ -62,7 +62,7 @@ class TournamentItem extends React.Component {
             },
             label: {
                 name: {
-                    marginRight: Spacing.desktopGutterLess
+                    marginRight: Spacing.desktopGutterMini
                 }
             }
         }

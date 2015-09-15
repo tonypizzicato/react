@@ -47,14 +47,13 @@ class CountryItem extends React.Component {
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.country._id}
                     leftAvatar={<Avatar>{this.props.country.name[0]}</Avatar>}
-                    primaryText={this.props.country.name}
-                    secondaryText={
+                    primaryText={
                         <p>
-                            <span style={{color: Colors.darkBlack}}>{this.props.country.slug}</span><br/>
-                            <span style={{color: Colors.minBlack}}>{this.props.country.state}</span><br/>
+                            <span style={{color: Colors.darkBlack, marginRight: Spacing.desktopGutterMini}}>{this.props.country.name}</span>
+                            <span style={{color: Colors.minBlack}}>{this.props.country.slug}</span>
                         </p>
-                      }
-                    secondaryTextLines={2}
+                        }
+                    secondaryText={this.props.country.state}
                     rightIconButton={rightIconMenu}
                     />
             </Dragon>
