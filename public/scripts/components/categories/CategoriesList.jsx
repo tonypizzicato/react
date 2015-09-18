@@ -54,24 +54,22 @@ class CategoriesList extends React.Component {
 
         return (
             <List style={this.getStyles().root}>
-                <Sortable>
-                    {this.props.categories.map((item, index) => {
-                        const divider = index != this.props.categories.length - 1 ? <ListDivider inset={true}/> : undefined;
+                {this.props.categories.map((item, index) => {
+                    const divider = index != this.props.categories.length - 1 ? <ListDivider inset={true}/> : undefined;
 
-                        return (
-                            <div key={item._id}>
-                                <CategoryItem
-                                    category={item}
-                                    onEdit={this.props.onEdit}
-                                    onDelete={this.props.onDelete}
-                                    onDrop={this._onDrop}
-                                    index={index}
-                                    key={item._id}/>
-                                {divider}
-                            </div>
-                        )
-                    })}
-                </Sortable>
+                    return (
+                        <div key={item._id}>
+                            <CategoryItem
+                                category={item}
+                                onEdit={this.props.onEdit}
+                                onDelete={this.props.onDelete}
+                                onDrop={this._onDrop}
+                                index={index}
+                                key={item._id}/>
+                            {divider}
+                        </div>
+                    )
+                })}
             </List>
         );
     }

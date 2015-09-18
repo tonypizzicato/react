@@ -1,4 +1,5 @@
-const React        = require('react'),
+const cx           = require('classnames'),
+      React        = require('react'),
       mui          = require('material-ui'),
 
       Colors       = mui.Styles.Colors,
@@ -8,6 +9,7 @@ const React        = require('react'),
       Avatar       = mui.Avatar,
       IconMenu     = mui.IconMenu,
       IconButton   = mui.IconButton,
+      Icon         = mui.FontIcon,
 
       MenuItem     = require('material-ui/lib/menus/menu-item'),
       MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
@@ -26,6 +28,11 @@ class ContactItem extends React.Component {
 
     render() {
         const styles = this.getStyles();
+
+        const visibilityClass = cx({
+            'mdfi_action_visibility':     true,
+            'mdfi_action_visibility_off': !this.props.contact.show
+        });
 
         const iconButtonMenu = (
             <IconButton touch={true}>
@@ -50,7 +57,12 @@ class ContactItem extends React.Component {
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.contact._id}
                     leftAvatar={<Avatar size={Spacing.desktopGutter * 2} src={this.props.contact.image}></Avatar>}
-                    primaryText={this.props.contact.name}
+                    primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span>{this.props.contact.name}</span>
+                        </p>
+                    }
                     secondaryText={this.props.contact.title}
                     rightIconButton={rightIconMenu}
                     />
@@ -60,8 +72,13 @@ class ContactItem extends React.Component {
 
     getStyles() {
         return {
-            root: {
+            root:           {
                 margin: Spacing.desktopGutter + ' 0'
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.contact.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }
     }

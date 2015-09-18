@@ -1,52 +1,49 @@
-"use strict";
+const _            = require('lodash'),
+      React        = require('react'),
+      cx           = require('classnames'),
+      mui          = require('material-ui'),
 
-var _            = require('lodash'),
-    React        = require('react'),
-    cx           = require('react-classset'),
-    mui          = require('material-ui'),
-    Classable    = mui.Mixins.Classable,
+      Spacing      = mui.Styles.Spacing,
+      Colors       = mui.Styles.Colors,
 
-    Button       = mui.FlatButton,
-    Icon         = mui.FontIcon,
-    ActionButton = mui.FloatingActionButton,
+      Button       = mui.FlatButton,
+      Icon         = mui.FontIcon,
+      ActionButton = mui.FloatingActionButton,
 
-    Image        = require('./Image.jsx');
+      Image        = require('./Image.jsx');
 
-var ImageUpload = React.createClass({
+class ImageUpload extends React.Component {
 
-    mixins: [Classable],
+    static propTypes = {
+        label:     React.PropTypes.string,
+        image:     React.PropTypes.string,
+        errorText: React.PropTypes.string,
+        width:     React.PropTypes.string,
+        height:    React.PropTypes.string
+    };
 
-    _reader: null,
+    static getDefaultProps = {
+        label:     "Выберите изображение",
+        image:     null,
+        errorText: null,
+        width:     'auto',
+        height:    'auto'
+    };
 
-    propTypes: function () {
-        return {
-            label:     React.PropTypes.string,
-            image:     React.PropTypes.string,
-            errorText: React.PropTypes.string,
-            width:     React.PropTypes.string,
-            height:    React.PropTypes.string
-        }
-    },
+    state = {
+        uploaded: !!this.props.image,
+        image:    this.props.image,
+        isNew:    false
+    };
 
-    getDefaultProps: function () {
-        return {
-            label:     "Выберите изображение",
-            image:     null,
-            errorText: null,
-            width:     'auto',
-            height:    'auto'
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
-            uploaded: !!this.props.image,
-            image:    this.props.image,
-            isNew:    false
-        }
-    },
+        this._onImage = this._onImage.bind(this);
+        this._onClick = this._onClick.bind(this);
+    }
 
-    _onImage: function () {
+    _onImage() {
         this._reader = new FileReader();
         this._reader.readAsDataURL(this.refs.upload.getDOMNode().files[0]);
 
@@ -58,65 +55,53 @@ var ImageUpload = React.createClass({
                 isNew:    true
             });
         }.bind(this);
-    },
+    }
 
-    _onClick: function () {
+    _onClick() {
         _.delay(function () {
             this.refs.upload.getDOMNode().click();
         }.bind(this), 300);
-    },
+    }
 
-    getImage: function () {
+    getImage() {
         return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
-    },
+    }
 
-    isNew: function () {
+    isNew() {
         return this.state.isNew;
-    },
+    }
 
-    getFile: function () {
+    getFile() {
         return this.refs.upload.getDOMNode().files[0];
-    },
+    }
 
-    setImage: function (image) {
+    setImage(image) {
         this.setState({
             image:    image,
             uploaded: !!image
         })
-    },
+    }
 
-    _onDelete: function () {
+    _onDelete() {
         this.setState({
             image:    null,
             uploaded: false,
             isNew:    true
         });
-    },
+    }
 
-    render: function () {
-        var clx = cx(this.props.className, {
-            'mui-file-input-container': true,
-            's_mt_36':                  true
-        });
+    render() {
+        const styles = this.getStyles();
 
-        var previewClass = cx({
-            'mui-file-input-image':         true,
-            'mui-file-input-image-visible': this.state.uploaded
-        });
-        var closeClass   = cx({
-            'mui-file-input-image-close': true,
-            's_display_none':             !this.state.uploaded
-        });
-
-        var error = this.props.errorText ? (<span className="mui-file-input-error">{this.props.errorText}</span>) : '';
+        var error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
         var image = this.state.image ?
-            <Image src={this.state.image} className={previewClass} width={this.props.width} height={this.props.height} ref="preview"/> : '';
+            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} ref="preview"/> : '';
 
         return (
-            <div className={clx}>
+            <div style={styles.root}>
                 {image}
-                <ActionButton className={closeClass} iconClassName="mdfi_navigation_close" onClick={this._onDelete}/>
-                <input className="file-input" type="file" onChange={this._onImage} ref="upload"/>
+                <ActionButton style={styles.buttonClose} backgroundColor={'rgba(255, 64, 129, .5)'} iconClassName="mdfi_navigation_close" onClick={this._onDelete}/>
+                <input style={styles.input} type="file" onChange={this._onImage} ref="upload"/>
 
                 <div className="mui-file-input">
                     <Button onClick={this._onClick}>
@@ -128,6 +113,47 @@ var ImageUpload = React.createClass({
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:        {
+                position:  'relative',
+                marginTop: Spacing.desktopGutter
+            },
+            buttonClose: {
+                position: 'absolute',
+                top:      0,
+                right:    0,
+                display:  this.state.uploaded ? 'block' : 'none'
+            },
+            input:       {
+                position: 'relative',
+                left:     -2000
+            },
+            preview:     {
+                width:  '100%',
+                height: this.state.uploaded ? '100%' : 0,
+                margin: this.state.uploaded ? `0 auto ${Spacing.desktopGutter}px` : 0
+            },
+            button:      {
+                position: 'absolute',
+                width:    '100%',
+                bottom:   0,
+                left:     0,
+                zIndex:   1
+            },
+            error:       {
+                display:         'block',
+                position:        'absolute',
+                bottom:          -14,
+                width:           '100%',
+                textAlign:       'center',
+                fontSize:        Spacing.desktopGutterLess,
+                lineHeight:      Spacing.desktopGutterLess,
+                transition:      'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+            }
+        }
+    }
+}
 
 module.exports = ImageUpload;

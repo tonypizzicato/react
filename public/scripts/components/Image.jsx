@@ -1,7 +1,7 @@
 "use strict";
 
 var React = require('react'),
-    cx    = React.addons.classSet;
+    cx    = require('classnames');
 
 var _img;
 
@@ -77,10 +77,10 @@ var Image = React.createClass({
             transition:         this.props.transition || 'opacity 0.6s ease'
         };
 
-        var cls = cx({
-                'image':             true,
-                'image_loading_yes': !this.state.loaded
-            }) + ' ' + this.props.className;
+        var cls = cx(this.props.className, {
+            'image':             true,
+            'image_loading_yes': !this.state.loaded
+        });
 
         return (
             <div className={cls} style={divStyles}>

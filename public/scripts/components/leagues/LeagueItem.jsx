@@ -1,13 +1,15 @@
-var React      = require('react'),
-    mui        = require('material-ui'),
+var cx       = require('classnames'),
+    React    = require('react'),
+    mui      = require('material-ui'),
 
-    Colors     = mui.Styles.Colors,
-    Spacing    = mui.Styles.Spacing,
+    Colors   = mui.Styles.Colors,
+    Spacing  = mui.Styles.Spacing,
 
-    ListItem   = mui.ListItem,
-    Avatar     = mui.Avatar,
+    ListItem = mui.ListItem,
+    Avatar   = mui.Avatar,
+    Icon     = mui.FontIcon,
 
-    Dragon     = require('../Dragon.jsx');
+    Dragon   = require('../Dragon.jsx');
 
 class LeagueItem extends React.Component {
 
@@ -29,15 +31,24 @@ class LeagueItem extends React.Component {
         const styles = this.getStyles();
         const avatar = this.props.league.slug ? this.props.league.slug : this.props.league.name;
 
+        const visibilityClass = cx({
+            'mdfi_action_visibility':     true,
+            'mdfi_action_visibility_off': !this.props.league.show
+        });
+
         return (
             <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
                     style={styles.root}
-                    disabled={true}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.league._id}
                     leftAvatar={<Avatar>{avatar[0]}</Avatar>}
-                    primaryText={this.props.league.name}
+                    primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span>{this.props.league.name}</span>
+                        </p>
+                    }
                     secondaryText={this.props.league.slug}
                     />
             </Dragon>
@@ -46,8 +57,13 @@ class LeagueItem extends React.Component {
 
     getStyles() {
         return {
-            root: {
+            root:           {
                 margin: Spacing.desktopGutter + ' 0'
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.league.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }
     }

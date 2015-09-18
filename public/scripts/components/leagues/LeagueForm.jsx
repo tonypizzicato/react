@@ -124,7 +124,8 @@ class LeagueForm extends React.Component {
     getStyles() {
         return {
             root:   {
-                marginBottom: Spacing.desktopGutter
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
             },
             input:  {
                 width: '100%'

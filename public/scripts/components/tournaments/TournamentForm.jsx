@@ -36,9 +36,10 @@ class TournamentForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onCountryChange = this._onCountryChange.bind(this);
-        this._onSave          = this._onSave.bind(this);
-        this._onCancel        = this._onCancel.bind(this);
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._onCountryChange   = this._onCountryChange.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
     }
 
     componentDidMount() {
@@ -187,7 +188,8 @@ class TournamentForm extends React.Component {
     getStyles() {
         return {
             root:       {
-                marginBottom: Spacing.desktopGutter
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
             },
             input:      {
                 width: '100%',
@@ -205,10 +207,10 @@ class TournamentForm extends React.Component {
                 marginRight: Spacing.desktopGutter
             },
             dropdown:   {
-                root: {
+                root:      {
                     width: 200
                 },
-                label: {
+                label:     {
                     paddingLeft: 0
                 },
                 underline: {

@@ -1,4 +1,5 @@
-const React    = require('react'),
+const cx       = require('classnames'),
+      React    = require('react'),
       mui      = require('material-ui'),
 
       Colors   = mui.Styles.Colors,
@@ -6,8 +7,10 @@ const React    = require('react'),
 
       Dragon   = require('../Dragon.jsx'),
 
+
       ListItem = mui.ListItem,
-      Avatar   = mui.Avatar;
+      Avatar   = mui.Avatar,
+      Icon     = mui.FontIcon;
 
 class TournamentItem extends React.Component {
 
@@ -30,6 +33,11 @@ class TournamentItem extends React.Component {
         const styles = this.getStyles();
         const avatar = this.props.tournament.name ? this.props.tournament.name : this.props.tournament.slug;
 
+        const visibilityClass = cx({
+            'mdfi_action_visibility':     true,
+            'mdfi_action_visibility_off': !this.props.tournament.show
+        });
+
         return (
             <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
@@ -39,14 +47,15 @@ class TournamentItem extends React.Component {
                     leftAvatar={<Avatar>{avatar[0]}</Avatar>}
                     primaryText={
                         <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
                             <span style={styles.label.name}>{this.props.tournament.name}</span>
                             <span style={{color: Colors.minBlack}}>{this.props.tournament.slug}</span>
                         </p>
                     }
                     secondaryText={
                         <p>
-                            <span style={{color: Colors.darkBlack}}>{this.props.tournament.country ? this.props.tournament.country.name : ''}</span><br/>
-                            <span style={{color: Colors.minBlack}}>{this.props.tournament.state}</span>
+                            <span style={{color: Colors.minBlack}}>{this.props.tournament.state}</span><br/>
+                            <span style={{color: Colors.lightBlack}}>{this.props.tournament.country ? this.props.tournament.country.name : '—'}</span>
                         </p>
                     }
                     secondaryTextLines={2}
@@ -57,13 +66,18 @@ class TournamentItem extends React.Component {
 
     getStyles() {
         return {
-            root:  {
+            root:           {
                 margin: Spacing.desktopGutter + ' 0'
             },
-            label: {
+            label:          {
                 name: {
                     marginRight: Spacing.desktopGutterMini
                 }
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.tournament.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }
     }

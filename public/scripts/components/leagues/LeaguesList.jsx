@@ -52,19 +52,16 @@ class LeaguesList extends React.Component {
 
         return (
             <List style={this.getStyles().root}>
-                <Sortable>
-                    {this.props.leagues.map((item, index) => {
-                        const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
+                {this.props.leagues.map((item, index) => {
+                    const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
 
-                        return (
-                            <div key={item._id}>
-                                {item.name}
-
-                                {divider}
-                            </div>
-                        )
-                    })}
-                </Sortable>
+                    return (
+                        <div key={item._id}>
+                            <LeagueItem league={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={index} key={item._id}/>
+                            {divider}
+                        </div>
+                    )
+                })}
             </List>
         );
     }
@@ -75,9 +72,9 @@ class LeaguesList extends React.Component {
                 paddingTop:    0,
                 paddingBottom: 0,
                 border:        'solid 1px ' + Colors.faintBlack,
-                position:      'relative',
-                height: '1000px',
-                overflow:      'hidden'
+                //position:      'relative',
+                //height:        '1000px',
+                //overflow:      'hidden'
             }
         }
     }
