@@ -7,6 +7,8 @@ const React             = require('react'),
       List              = mui.List,
       ListDivider       = mui.ListDivider,
 
+      Sortable          = require('../Sortable.jsx'),
+
       CategoryItem      = require('../categories/CategoryItem.jsx'),
 
       CategoriesActions = require('../../actions/CategoriesActions');
@@ -52,22 +54,24 @@ class CategoriesList extends React.Component {
 
         return (
             <List style={this.getStyles().root}>
-                {this.props.categories.map((item, index) => {
-                    const divider = index != this.props.categories.length - 1 ? <ListDivider inset={true}/> : undefined;
+                <Sortable>
+                    {this.props.categories.map((item, index) => {
+                        const divider = index != this.props.categories.length - 1 ? <ListDivider inset={true}/> : undefined;
 
-                    return (
-                        <div key={item._id}>
-                            <CategoryItem
-                                category={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}
-                                onDrop={this._onDrop}
-                                index={index}
-                                key={item._id}/>
-                            {divider}
-                        </div>
-                    )
-                })}
+                        return (
+                            <div key={item._id}>
+                                <CategoryItem
+                                    category={item}
+                                    onEdit={this.props.onEdit}
+                                    onDelete={this.props.onDelete}
+                                    onDrop={this._onDrop}
+                                    index={index}
+                                    key={item._id}/>
+                                {divider}
+                            </div>
+                        )
+                    })}
+                </Sortable>
             </List>
         );
     }
@@ -75,8 +79,9 @@ class CategoriesList extends React.Component {
     getStyles() {
         return {
             root: {
-                paddingTop: Spacing.desktopGutterLess,
-                border:     'solid 1px ' + Colors.faintBlack
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
             }
         }
     }

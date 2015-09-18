@@ -1,4 +1,5 @@
 const _               = require('lodash'),
+      scroll             = require('../../utils/scrollTo'),
       React           = require('react'),
       mui             = require('material-ui'),
 
@@ -70,6 +71,10 @@ class ContactsApp extends React.Component {
     _onEdit(e) {
         this.setState({
             selectedContact: _.findWhere(this.props.contacts, {_id: e.target.dataset.id})
+        });
+
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
         });
     }
 

@@ -1,4 +1,5 @@
 const _            = require('lodash'),
+      scroll       = require('../../utils/scrollTo'),
       React        = require('react'),
       mui          = require('material-ui'),
 
@@ -42,6 +43,10 @@ class LeaguesApp extends React.Component {
     _onEdit(e) {
         this.setState({
             selectedLeague: _.findWhere(this.props.leagues, {_id: e.currentTarget.dataset.id})
+        });
+
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
         });
     }
 

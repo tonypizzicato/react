@@ -1,4 +1,5 @@
 const _                = require('lodash'),
+      scroll           = require('../../utils/scrollTo'),
       React            = require('react'),
       mui              = require('material-ui'),
 
@@ -65,6 +66,10 @@ class CountriesApp extends React.Component {
 
         this.setState({
             selectedCountry: _.findWhere(this.state.countries, {_id: id})
+        });
+
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
         });
     }
 

@@ -44,7 +44,9 @@ class UsersList extends React.Component {
     getStyles() {
         return {
             root: {
-                border: 'solid 1px ' + Colors.faintBlack
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
             }
         }
     }

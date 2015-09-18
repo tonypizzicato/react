@@ -45,6 +45,7 @@ class CategoryItem extends React.Component {
             <Dragon key={this.props.category._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
                     style={styles.root}
+                    disabled={true}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.category._id}
                     leftAvatar={<Avatar>{this.props.category.name[0]}</Avatar>}

@@ -2,6 +2,7 @@ const React     = require('react'),
       mui       = require('material-ui'),
 
       Spacing   = mui.Styles.Spacing,
+      Colors    = mui.Styles.Colors,
 
       OrderItem = require('../orders/OrderItem.jsx');
 
@@ -28,7 +29,9 @@ class OrdersList extends React.Component {
     getStyles() {
         return {
             root: {
-                paddingTop: Spacing.desktopGutterLess
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
             }
         }
     }

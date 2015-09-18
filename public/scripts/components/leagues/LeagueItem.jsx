@@ -33,6 +33,7 @@ class LeagueItem extends React.Component {
             <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
                     style={styles.root}
+                    disabled={true}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.league._id}
                     leftAvatar={<Avatar>{avatar[0]}</Avatar>}

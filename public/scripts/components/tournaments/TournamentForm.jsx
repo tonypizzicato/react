@@ -82,6 +82,8 @@ class TournamentForm extends React.Component {
     }
 
     render() {
+        const styles = this.getStyles();
+
         let selectedCountryIndex = 0;
         const countryItems       = this.props.countries.map((country, index) => {
             if (this.state.country) {
@@ -99,7 +101,9 @@ class TournamentForm extends React.Component {
         if (countryItems.length) {
             countriesDropDown = (
                 <DropDownMenu
-                    className="s_width_half"
+                    style={styles.dropdown.root}
+                    labelStyle={styles.dropdown.label}
+                    underlineStyle={styles.dropdown.underline}
                     menuItems={countryItems}
                     selectedIndex={selectedCountryIndex}
                     autoWidth={false}
@@ -109,7 +113,6 @@ class TournamentForm extends React.Component {
         }
 
         const disabled = !this.props.tournament._id;
-        const styles   = this.getStyles();
 
         return (
             <div style={styles.root} key={`${this.props.tournament._id}-tournament-form`}>
@@ -167,6 +170,7 @@ class TournamentForm extends React.Component {
                     name="show"
                     value="show"
                     ref="show"
+                    labelPosition="right"
                     disabled={disabled}
                     defaultToggled={this.props.tournament.show}
                     label="Показывать"/>
@@ -199,6 +203,17 @@ class TournamentForm extends React.Component {
             },
             button:     {
                 marginRight: Spacing.desktopGutter
+            },
+            dropdown:   {
+                root: {
+                    width: 200
+                },
+                label: {
+                    paddingLeft: 0
+                },
+                underline: {
+                    margin: '-1px 12px 0 0'
+                }
             }
         }
     }

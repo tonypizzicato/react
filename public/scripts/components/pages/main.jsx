@@ -187,7 +187,10 @@ const MainApp = React.createClass({
                             Hand crafted with love by tony.pizzicato.
                         </p>
                     </FullWidth>
-                    <Snackbar message="Ошибка загрузки данных. Попробуйте повторить запрос." ref="snack"/>
+                    <Snackbar
+                        style={styles.snackbar}
+                        message="Ошибка загрузки данных. Попробуйте повторить запрос."
+                        ref="snack"/>
                 </Canvas>
             </div>
         )
@@ -195,12 +198,12 @@ const MainApp = React.createClass({
 
     getStyles: function () {
         return {
-            content: {
+            content:  {
                 padding:       Spacing.desktopGutter,
                 paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
                 paddingBottom: Spacing.desktopKeylineIncrement + Spacing.desktopGutter
             },
-            footer:  {
+            footer:   {
                 backgroundColor: Colors.grey900,
                 textAlign:       'center',
                 position:        'absolute',
@@ -209,13 +212,13 @@ const MainApp = React.createClass({
                 height:          '5em',
                 width:           '100%'
             },
-            p:       {
+            p:        {
                 margin:   '0 auto',
                 padding:  0,
                 color:    Colors.lightWhite,
                 maxWidth: 335
             },
-            loader:  {
+            loader:   {
                 height:     Spacing.desktopGutterMore * 2,
                 width:      Spacing.desktopGutterMore * 2 + Spacing.desktopGutterMore,
                 position:   'absolute',
@@ -224,7 +227,7 @@ const MainApp = React.createClass({
                 marginLeft: '-' + Spacing.desktopGutterMore,
                 zIndex:     6
             },
-            login:   {
+            login:    {
                 icon:  {
                     position:    'relative',
                     fontSize:    Spacing.desktopGutterMore,
@@ -240,6 +243,13 @@ const MainApp = React.createClass({
                     color:         '#fff',
                     top:           Spacing.desktopGutterMini
                 }
+            },
+            snackbar: {
+                top:         0,
+                right:       0,
+                left:        'auto',
+                marginTop:   Spacing.desktopGutterMini,
+                marginRight: Spacing.desktopGutter
             }
         };
     }

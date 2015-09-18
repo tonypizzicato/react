@@ -7,6 +7,8 @@ const React          = require('react'),
       List           = mui.List,
       ListDivider    = mui.ListDivider,
 
+      Sortable       = require('../Sortable.jsx'),
+
       LeagueItem     = require('../leagues/LeagueItem.jsx'),
 
       LeaguesActions = require('../../actions/LeaguesActions');
@@ -50,26 +52,32 @@ class LeaguesList extends React.Component {
 
         return (
             <List style={this.getStyles().root}>
-                {this.props.leagues.map((item, index) => {
-                    const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
+                <Sortable>
+                    {this.props.leagues.map((item, index) => {
+                        const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
 
-                    return (
-                        <div key={item._id}>
-                            <LeagueItem league={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={index} key={item._id}/>
-                            {divider}
-                        </div>
-                    )
-                })}
+                        return (
+                            <div key={item._id}>
+                                {item.name}
+
+                                {divider}
+                            </div>
+                        )
+                    })}
+                </Sortable>
             </List>
-
         );
     }
 
     getStyles() {
         return {
             root: {
-                paddingTop: Spacing.desktopGutterLess,
-                border:     'solid 1px ' + Colors.faintBlack
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack,
+                position:      'relative',
+                height: '1000px',
+                overflow:      'hidden'
             }
         }
     }
