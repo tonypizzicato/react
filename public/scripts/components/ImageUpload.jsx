@@ -39,8 +39,9 @@ class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onImage = this._onImage.bind(this);
-        this._onClick = this._onClick.bind(this);
+        this._onImage  = this._onImage.bind(this);
+        this._onClick  = this._onClick.bind(this);
+        this._onDelete = this._onDelete.bind(this);
     }
 
     _onImage() {
@@ -93,14 +94,15 @@ class ImageUpload extends React.Component {
     render() {
         const styles = this.getStyles();
 
-        var error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
-        var image = this.state.image ?
+        const error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
+        const image = this.state.image ?
             <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} ref="preview"/> : '';
 
         return (
             <div style={styles.root}>
                 {image}
-                <ActionButton style={styles.buttonClose} backgroundColor={'rgba(255, 64, 129, .5)'} iconClassName="mdfi_navigation_close" onClick={this._onDelete}/>
+                <ActionButton style={styles.buttonClose} backgroundColor={'rgba(255, 64, 129, .5)'} iconClassName="mdfi_navigation_close"
+                              onClick={this._onDelete}/>
                 <input style={styles.input} type="file" onChange={this._onImage} ref="upload"/>
 
                 <div className="mui-file-input">
@@ -131,9 +133,10 @@ class ImageUpload extends React.Component {
                 left:     -2000
             },
             preview:     {
-                width:  '100%',
-                height: this.state.uploaded ? '100%' : 0,
-                margin: this.state.uploaded ? `0 auto ${Spacing.desktopGutter}px` : 0
+                width:          '100%',
+                height:         this.state.uploaded ? '100%' : 0,
+                margin:         this.state.uploaded ? `0 auto ${Spacing.desktopGutter}px` : 0,
+                backgroundSize: 'cover'
             },
             button:      {
                 position: 'absolute',
@@ -143,14 +146,14 @@ class ImageUpload extends React.Component {
                 zIndex:   1
             },
             error:       {
-                display:         'block',
-                position:        'absolute',
-                bottom:          -14,
-                width:           '100%',
-                textAlign:       'center',
-                fontSize:        Spacing.desktopGutterLess,
-                lineHeight:      Spacing.desktopGutterLess,
-                transition:      'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+                display:    'block',
+                position:   'absolute',
+                bottom:     -14,
+                width:      '100%',
+                textAlign:  'center',
+                fontSize:   Spacing.desktopGutterLess,
+                lineHeight: Spacing.desktopGutterLess,
+                transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
             }
         }
     }
