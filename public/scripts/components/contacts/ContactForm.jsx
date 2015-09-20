@@ -33,6 +33,7 @@ class ContactForm extends React.Component {
             phone:       '',
             email:       '',
             image:       '',
+            toCall:      false,
             vk:          {
                 name: '',
                 url:  ''
@@ -109,6 +110,7 @@ class ContactForm extends React.Component {
             phone:       this.refs.phone.getValue(),
             email:       this.refs.email.getValue(),
             show:        this.refs.show.isToggled(),
+            toCall:      this.refs.toCall.isToggled(),
             vk:          {
                 name: this.refs.vk_name.getValue(),
                 url:  this.refs.vk_url.getValue()
@@ -146,6 +148,7 @@ class ContactForm extends React.Component {
         this.refs.vk_url.setValue('');
         this.refs.vk_name.setValue('');
         this.refs.show.setToggled(false);
+        this.refs.toCall.setToggled(false);
         this.refs.image.setImage(null);
 
         this.state.tournaments.forEach(item => {
@@ -255,6 +258,13 @@ class ContactForm extends React.Component {
                     ref="show"
                     defaultToggled={this.props.contact.show}
                     label="Показывать"/>
+                <Toggle
+                    style={styles.toggle}
+                    name="toCall"
+                    value="toCall"
+                    ref="toCall"
+                    defaultToggled={this.props.contact.toCall}
+                    label="Для связи"/>
 
                 <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
                 <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>

@@ -14,6 +14,10 @@ class Image extends React.Component {
         aspectRatio: React.PropTypes.number,
         width:       React.PropTypes.number.required,
         height:      React.PropTypes.number.required,
+        pos:         React.PropTypes.shape({
+            x: React.PropTypes.string,
+            y: React.PropTypes.string
+        }),
         style:       React.PropTypes.shape({
             size: React.PropTypes.string
         })
@@ -23,7 +27,8 @@ class Image extends React.Component {
         aspectRatio: 1,
         style:       {
             size: 'cover'
-        }
+        },
+        pos:         {x: '50%', y: '50%'}
     };
 
     componentDidMount() {
@@ -44,8 +49,17 @@ class Image extends React.Component {
         _img.onerror = null;
     }
 
+    setImagePos(x, y) {
+        if (x) {
+            this.refs.image.getDOMNode().style.backgroundPositionX = x;
+        }
+        if (y) {
+            this.refs.image.getDOMNode().style.backgroundPositionY = y;
+        }
+    }
+
     render() {
-        const divStyles = {
+        var divStyles = {
             position: 'relative',
             width:    this.props.width,
             height:   this.props.height,
@@ -59,14 +73,15 @@ class Image extends React.Component {
             bottom:             0,
             left:               0,
             borderRadius:       '6px',
-            backgroundPosition: 'center center',
+            backgroundSize:     this.props.style.size,
+            backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
             backgroundImage:    'url(' + this.props.src + ')',
             transition:         this.props.transition || 'opacity 0.6s ease'
         });
 
         return (
             <div style={divStyles}>
-                <div style={imageStyles}/>
+                <div style={imageStyles} ref="image"/>
             </div>
         )
     }

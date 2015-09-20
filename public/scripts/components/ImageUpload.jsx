@@ -17,6 +17,10 @@ class ImageUpload extends React.Component {
     static propTypes = {
         label:     React.PropTypes.string,
         image:     React.PropTypes.string,
+        pos:       React.PropTypes.shape({
+            x: React.PropTypes.string,
+            y: React.PropTypes.string
+        }),
         errorText: React.PropTypes.string,
         width:     React.PropTypes.string,
         height:    React.PropTypes.string
@@ -25,9 +29,11 @@ class ImageUpload extends React.Component {
     static getDefaultProps = {
         label:     "Выберите изображение",
         image:     null,
+        pos:       {x: '50%', y: '50%'},
         errorText: null,
-        width:     'auto',
-        height:    'auto'
+
+        width:  'auto',
+        height: 'auto'
     };
 
     state = {
@@ -68,6 +74,10 @@ class ImageUpload extends React.Component {
         return this.state.uploaded ? (this._reader ? this._reader.result : this.state.image) : null;
     }
 
+    setImagePos(x, y) {
+        this.refs.preview.setImagePos(x, y);
+    }
+
     isNew() {
         return this.state.isNew;
     }
@@ -96,7 +106,7 @@ class ImageUpload extends React.Component {
 
         const error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
         const image = this.state.image ?
-            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} ref="preview"/> : '';
+            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} pos={this.props.pos} ref="preview"/> : '';
 
         return (
             <div style={styles.root}>

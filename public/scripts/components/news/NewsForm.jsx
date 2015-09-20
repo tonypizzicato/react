@@ -10,6 +10,8 @@ var React                = require('react'),
     Button               = mui.RaisedButton,
     IconButton           = mui.IconButton,
     FloatingActionButton = mui.FloatingActionButton,
+    RadioButtonGroup     = mui.RadioButtonGroup,
+    RadioButton          = mui.RadioButton,
 
     EventsConstants      = require('../../constants/EventsConstants'),
 
@@ -73,17 +75,18 @@ var NewsForm = React.createClass({
 
     _onSave: function () {
         var article = {
-            title:    this.refs.title.getValue(),
-            body:     this.refs.body.getValue(),
-            teaser:   this.refs.teaser.getValue(),
-            show:     this.refs.show.isToggled(),
-            stick:    this.refs.stick.isToggled(),
-            tags:     this.refs.tags.getTags(),
-            leagueId: this.props.leagueId,
-            category: this.props.categories[this.refs.category.state.selectedIndex]._id,
-            country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
-            image:    this.refs.image.getImage(),
-            author:   AuthStore.getUser().username
+            title:         this.refs.title.getValue(),
+            body:          this.refs.body.getValue(),
+            teaser:        this.refs.teaser.getValue(),
+            show:          this.refs.show.isToggled(),
+            stick:         this.refs.stick.isToggled(),
+            tags:          this.refs.tags.getTags(),
+            leagueId:      this.props.leagueId,
+            category:      this.props.categories[this.refs.category.state.selectedIndex]._id,
+            country:       this.props.countries[this.refs.country.state.selectedIndex]._id,
+            image:         this.refs.image.getImage(),
+            imagePosition: this.refs.imagePositionText.getValue(),
+            author:        AuthStore.getUser().username
         };
 
         var videos = [],
@@ -114,6 +117,7 @@ var NewsForm = React.createClass({
         this.refs.stick.setToggled(false);
         this.refs.tags.setTags([]);
         this.refs.image.setImage(null);
+        this.refs.imagePositionText.setValue('50%');
 
         this.refs['video-0'].clear();
         this.setState({videosCount: 1});
@@ -129,6 +133,13 @@ var NewsForm = React.createClass({
         if (this.props.onCancel) {
             this.props.onCancel();
         }
+    },
+
+    _changeImagePosition: function (e) {
+        var value = e.target.value;
+        this.refs.image.setImagePos(false, value);
+        this.refs.imagePositionText.setValue(value);
+        this.refs.imagePosition.setSelectedValue(value);
     },
 
     render: function () {
@@ -212,28 +223,58 @@ var NewsForm = React.createClass({
                 <ImageUpload
                     label="Изображение превью (обязательно если новость закреплена)"
                     image={this.props.article.image}
+                    pos={{x: '50%', y: this.props.article.imagePosition ? this.props.article.imagePosition : '50%'}}
                     errorText={this.state.validation.image ? 'Загрузите изображение для новости' : null}
                     width="863px"
                     height="308px"
                     key={this.props.article._id + '-image-upload'}
                     ref="image"/>
 
-                <div className="s_width_half">
-                    <div className="s_width_third s_mt_12 s_mb_12">
-                        <Toggle
-                            className="s_mb_12"
-                            name="show"
-                            value="show"
-                            ref="show"
-                            defaultToggled={this.props.article.show}
-                            label="Показывать"/>
-                        <Toggle
-                            className="s_mb_12"
-                            name="stick"
-                            value="stick"
-                            ref="stick"
-                            defaultToggled={this.props.article.stick}
-                            label="Прикрепить"/>
+                <div className="s_mt_24 s_overflow_hidden">
+                    <div className="s_float_l" style={{width: '120px;'}}>
+                        <RadioButtonGroup name="imagePosition" ref="imagePosition" defaultSelected="center"
+                                          valueSelected={this.props.article.imagePosition ? this.props.article.imagePosition : '50%'}
+                                          onChange={this._changeImagePosition}>
+                            <RadioButton
+                                value="50%"
+                                label="Центр"
+                                defaultChecked={true}
+                                />
+                            <RadioButton
+                                value="0"
+                                label="Верх"
+                                />
+                            <RadioButton
+                                value="100%"
+                                label="Низ"
+                                />
+                        </RadioButtonGroup>
+                    </div>
+
+                    <div className="s_float_l s_mr_24" style={{width: '120px;'}}>
+                        <TextField
+                            defaultValue={this.props.article.imagePosition ? this.props.article.imagePosition : '50%'}
+                            onChange={this._changeImagePosition}
+                            ref="imagePositionText"/>
+                    </div>
+
+                    <div className="s_width_half s_float_l">
+                        <div className="s_width_third s_mt_12 s_mb_12">
+                            <Toggle
+                                className="s_mb_12"
+                                name="show"
+                                value="show"
+                                ref="show"
+                                defaultToggled={this.props.article.show}
+                                label="Показывать"/>
+                            <Toggle
+                                className="s_mb_12"
+                                name="stick"
+                                value="stick"
+                                ref="stick"
+                                defaultToggled={this.props.article.stick}
+                                label="Прикрепить"/>
+                        </div>
                     </div>
                 </div>
 
