@@ -73,7 +73,6 @@ class Image extends React.Component {
             bottom:             0,
             left:               0,
             borderRadius:       '6px',
-            backgroundSize:     this.props.style.size,
             backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
             backgroundImage:    'url(' + this.props.src + ')',
             transition:         this.props.transition || 'opacity 0.6s ease'

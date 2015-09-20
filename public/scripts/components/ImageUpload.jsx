@@ -31,7 +31,6 @@ class ImageUpload extends React.Component {
         image:     null,
         pos:       {x: '50%', y: '50%'},
         errorText: null,
-
         width:  'auto',
         height: 'auto'
     };
@@ -115,10 +114,10 @@ class ImageUpload extends React.Component {
                               onClick={this._onDelete}/>
                 <input style={styles.input} type="file" onChange={this._onImage} ref="upload"/>
 
-                <div className="mui-file-input">
-                    <Button onClick={this._onClick}>
-                        <Icon className="mdfi_image_photo s_mr_6 s_t_4"/>
-                        <span className="mui-flat-button-label">{this.props.label}</span>
+                <div style={styles.button.root}>
+                    <Button style={styles.button.button} onClick={this._onClick}>
+                        <Icon style={styles.button.icon} className="mdfi_image_photo"/>
+                        <span style={styles.button.label}>{this.props.label}</span>
                     </Button>
                     {error}
                 </div>
@@ -149,11 +148,23 @@ class ImageUpload extends React.Component {
                 backgroundSize: 'cover'
             },
             button:      {
-                position: 'absolute',
-                width:    '100%',
-                bottom:   0,
-                left:     0,
-                zIndex:   1
+                root:   {
+                    position: 'absolute',
+                    width:    '100%',
+                    bottom:   0,
+                    left:     0,
+                    zIndex:   1
+                },
+                button: {
+                    width: '100%'
+                },
+                icon:   {
+                    top: 6
+                },
+                label:  {
+                    position: 'relative',
+                    padding:  '0 16px'
+                }
             },
             error:       {
                 display:    'block',

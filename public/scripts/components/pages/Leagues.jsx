@@ -12,11 +12,11 @@ class LeaguesApp extends React.Component {
 
     static propTypes = {
         leagues: React.PropTypes.array.required
-    }
+    };
 
     state = {
         selectedLeague: {}
-    }
+    };
 
     constructor(props) {
         super(props);

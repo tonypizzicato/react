@@ -1,104 +1,124 @@
-"use strict";
+const _            = require('lodash'),
+      React        = require('react'),
+      mui          = require('material-ui'),
 
-var _            = require('lodash'),
-    React        = require('react'),
-    cx           = require('react-classset'),
-    mui          = require('material-ui'),
-    Classable    = mui.Mixins.Classable,
+      Spacing      = mui.Styles.Spacing,
 
-    DropDownMenu = mui.DropDownMenu,
-    TextField    = mui.TextField,
+      DropDownMenu = mui.DropDownMenu,
+      TextField    = mui.TextField,
 
-    Image        = require('./Image.jsx');
+      Image        = require('./Image.jsx');
 
-var VideoUpload = React.createClass({
+class VideoUpload extends React.Component {
 
-    mixins: [Classable],
+    static propTypes = {
+        types:     React.PropTypes.array,
+        type:      React.PropTypes.string,
+        label:     React.PropTypes.string,
+        url:       React.PropTypes.string,
+        errorText: React.PropTypes.string
+    };
 
-    _reader: null,
+    static defaultProps = {
+        types: ['youtube', 'vimeo', 'vk'],
+        type:  'youtube'
+    };
 
-    propTypes: function () {
-        return {
-            types:     React.PropTypes.array,
-            type:      React.PropTypes.string,
-            label:     React.PropTypes.string,
-            url:       React.PropTypes.string,
-            errorText: React.PropTypes.string
-        }
-    },
+    state = {
+        typeIndex: this.props.types.indexOf(this.props.type)
+    };
 
-    getDefaultProps: function () {
-        return {
-            types: ['youtube', 'vimeo', 'vk'],
-            type:  'youtube'
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
-            typeIndex: this.props.types.indexOf(this.props.type)
-        }
-    },
+        this._onTypeChange = this._onTypeChange.bind(this);
+    }
 
-    getValue: function () {
+    getValue() {
         return {
             url:   this.refs.url.getValue(),
             label: this.refs.label.getValue(),
             type:  this.props.types[this.state.typeIndex]
         }
-    },
+    }
 
-    clear: function () {
-        this.setState({typeIndex: this.getInitialState().typeIndex});
+    clear() {
+        this.setState({typeIndex: this.props.types.indexOf(this.props.type)});
         this.refs.url.setValue('');
         this.refs.label.setValue('');
-    },
+    }
 
-    _onTypeChange: function (e, index) {
+    _onTypeChange(e, index) {
         this.setState({typeIndex: index});
-    },
+    }
 
-    render: function () {
-        var clx = cx({
-            'mui-video-input-container': true,
-            'clearfix':                  true
+    render() {
+        const styles = this.getStyles();
+
+        const items = this.props.types.map(type => {
+            return {text: type, type: type}
         });
 
-        var items = this.props.types.map(function (type) {
-            return {text: type, type: type};
-        }.bind(this));
-
         return (
-            <div className={clx}>
-                <div className="s_float_l s_position_relative s_mr_12" style={{
-                    width: '10%'
-                }}>
-                    <DropDownMenu
-                        menuItems={items}
-                        selectedIndex={this.state.typeIndex}
-                        autoWidth={false}
-                        onChange={this._onTypeChange}
-                        ref="type" />
-                </div>
-                <div className="clearfix s_position_relative" style={{
-                    width:      '88%',
-                    marginLeft: '12%'
-                }}>
+            <div style={styles.root}>
+                <DropDownMenu
+                    style={styles.dropdown.root}
+                    labelStyle={styles.dropdown.label}
+                    underlineStyle={styles.dropdown.underline}
+                    menuItems={items}
+                    selectedIndex={this.state.typeIndex}
+                    autoWidth={false}
+                    onChange={this._onTypeChange}
+                    ref="type"/>
+
+                <div style={styles.inputContainer}>
                     <TextField
-                        className="mui-video-input-url"
+                        style={styles.inputFirst}
                         defaultValue={this.props.url}
                         hintText="Введите embed ссылку"
-                        ref="url" />
+                        ref="url"/>
                     <TextField
-                        className="mui-video-input-label"
+                        style={styles.input}
                         defaultValue={this.props.label}
                         hintText="Введите название видео"
                         floatingLabelText="Заголовок"
-                        ref="label" />
+                        ref="label"/>
                 </div>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:           {
+                marginBottom: Spacing.desktopGutter
+            },
+            inputContainer: {
+                width:      '88%',
+                marginLeft: '12%'
+            },
+            input:          {
+                width: '48%'
+            },
+            inputFirst:     {
+                width:       '48%',
+                marginRight: '4%'
+            },
+            dropdown:       {
+                root:      {
+                    float: 'left',
+                    width: '10%',
+                    top:   Spacing.desktopGutterLess
+                },
+                label:     {
+                    paddingLeft: 0
+                },
+                underline: {
+                    margin: '-1px 12px 0 0'
+                }
+            }
+        }
+    }
+}
 
 module.exports = VideoUpload;

@@ -63,7 +63,8 @@ gulp.task('copy.styles', function () {
         paths.VENDOR + '/dropzone/dist/dropzone.css',
         paths.VENDOR + '/dropzone/dist/basic.css',
         paths.VENDOR + '/medium-editor/dist/css/medium-editor.css',
-        paths.VENDOR + '/medium-editor/dist/css/themes/flat.css'
+        paths.VENDOR + '/medium-editor/dist/css/themes/flat.css',
+        paths.VENDOR + '/normalize.css/normalize.css'
     ])
         .pipe(gulp.dest(paths.TMP + '/styles/vendor'));
 });

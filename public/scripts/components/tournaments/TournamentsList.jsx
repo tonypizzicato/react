@@ -56,7 +56,6 @@ class TournamentsList extends React.Component {
                     );
                 })}
             </List>
-
         );
     }
 

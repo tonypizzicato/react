@@ -192,7 +192,7 @@ class TournamentForm extends React.Component {
                 padding:      `0 ${Spacing.desktopGutter}px`
             },
             input:      {
-                width: '100%',
+                width: '100%'
             },
             radioGroup: {
                 margin: `${Spacing.desktopGutter}px 0 0`
