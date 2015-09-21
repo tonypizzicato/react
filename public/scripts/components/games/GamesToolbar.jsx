@@ -3,6 +3,8 @@ const _                = require('lodash'),
       cx               = require('classnames'),
       mui              = require('material-ui'),
 
+      Spacing          = mui.Styles.Spacing,
+
       Toolbar          = mui.Toolbar,
       ToolbarGroup     = mui.ToolbarGroup,
 
@@ -101,7 +103,7 @@ class GamesToolbar extends React.Component {
     }
 
     _onTournamentSelect(e, index) {
-        this.setState(this._updatedTournamentState(index));
+        this.setState(this._updatedTournamentState(state.tournaments[index], index));
     }
 
     _updatedCountryState(index) {
@@ -120,7 +122,7 @@ class GamesToolbar extends React.Component {
         const tournamentIndex = 0;
 
         if (state.tournaments.length && !!state.tournaments[tournamentIndex]) {
-            state = _.extend(state, this._updatedTournamentState(tournamentIndex));
+            state = _.extend(state, this._updatedTournamentState(state.tournaments[tournamentIndex], tournamentIndex));
         } else {
             state = _.extend(state, {hasTournament: false});
         }
@@ -129,8 +131,20 @@ class GamesToolbar extends React.Component {
     }
 
     _updatedTournamentState(tournament, index) {
-        var games = GamesStore.getByTournament(this.props.leagueId, tournament._id);
+        const games = GamesStore.getByTournament(this.props.leagueId, tournament._id)
+            .filter(function (item) {
+                return item.teams.length == 2 && item.teams[0] && item.teams[1];
+            })
+            .map(function (item) {
+                let text = `${item.teams[0].name} - ${item.teams[1].name} (${item.tourText})`;
+                if (item.score) {
+                    text += ` ${item.score.ft[0]}:${item.score.ft[1]}`;
+                }
+                item.display = text;
+                item.filter  = `${item.teams[0].name} ${item.teams[1].name} (${item.tourText})`;
 
+                return item;
+            });
         return {
             tournamentIndex: index,
             hasTournament:   true,
@@ -152,8 +166,11 @@ class GamesToolbar extends React.Component {
     }
 
     render() {
+        const styles = this.getStyles();
+
         const countriesMenu =
                   <DropDownMenu
+                      style={styles.dropdownCountries}
                       menuItems={this.state.countries}
                       selectedIndex={this.state.countryIndex}
                       noDataText="Нет стран"
@@ -161,6 +178,7 @@ class GamesToolbar extends React.Component {
 
         const tournamentsMenu =
                   <DropDownMenu
+                      style={styles.dropdownTournaments}
                       menuItems={this.state.tournaments}
                       onChange={this._onTournamentSelect}
                       noDataText="Нет турниров"
@@ -168,42 +186,63 @@ class GamesToolbar extends React.Component {
 
         const gamesInput = this.state.hasTournament && this.state.games.length ?
             <Typeahead
+                style={styles.typeahead.root}
                 options={this.state.games}
                 placeholder="Введите название команд"
                 onOptionSelected={this._onGameSelect}
-                filterOption={(inputValue, option) => {
-
-                    }
-                }
-                displayOption={(option, index) => {
-                    let text = `${option.teams[0].name} - ${option.teams[1].name} (' + ${option.tourText})`;
-                    if (option.score) {
-                        text += ` ${option.score.ft[0]}:${item.score.ft[1]}`;
-                    }
-
-                    return text
-                }}
+                filterOption="filter"
+                displayOption="display"
                 customClasses={{
-                    input:    'mui-text-field-input',
-                    results:  's_position_absolute',
-                    listItem: ''
+                    input:    'typeahead__input',
+                    results:  'typeahead__results'
                 }}
                 key={`${this.props.leagueId}-${this.state.tournaments[this.state.tournamentIndex]._id}`}/> :
-            <span className="mui-label s_ml_24 s_mr_24">Загружается список команд</span>;
-
-        const cls = cx({
-            's_mt_12': true
-        });
+            <span style={styles.typeahead.holder}>Загружается список команд</span>;
 
         return (
-            <Toolbar className={cls} key={`${this.props.leagueId}-toolbar`}>
-                <ToolbarGroup float="left">
+            <Toolbar style={styles.root} key={`${this.props.leagueId}-toolbar`}>
+                <ToolbarGroup style={styles.toolbarGroup}>
                     {countriesMenu}
                     {tournamentsMenu}
                     {gamesInput}
                 </ToolbarGroup>
             </Toolbar>
         );
+    }
+
+    getStyles() {
+        return {
+            root:                {
+                marginBottom: Spacing.desktopGutter,
+                padding:      0
+            },
+            toolbarGroup:        {
+                width: '100%'
+            },
+            dropdownCountries:   {
+                height:     Spacing.desktopToolbarHeight,
+                lineHeight: `${Spacing.desktopToolbarHeight}px`,
+                width:      '30%'
+            },
+            dropdownTournaments: {
+                height:     Spacing.desktopToolbarHeight,
+                lineHeight: `${Spacing.desktopToolbarHeight}px`,
+                width:      '30%'
+            },
+            typeahead:           {
+                root:   {
+                    margin:   0,
+                    width:    '40%',
+                    height:   56,
+                    fontSize: 15
+                },
+                holder: {
+                    height:     Spacing.desktopToolbarHeight,
+                    lineHeight: `${Spacing.desktopToolbarHeight}px`,
+                    width:      '40%'
+                }
+            }
+        }
     }
 }
 

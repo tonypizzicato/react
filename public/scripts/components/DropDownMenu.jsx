@@ -23,13 +23,13 @@ var DropDownMenu = React.createClass({
 
     render: function () {
         if (!this.props.menuItems.length || !this.props.menuItems[this.props.selectedIndex]) {
-            return <span className="mui-label s_ml_24 s_mr_24">{this.props.noDataText}</span>;
+            return <span {...this.props}>{this.props.noDataText}</span>;
         }
 
         if (this.props.menuItems.length > 1) {
             return <Menu {...this.props} />;
         } else {
-            return <span className="mui-label s_ml_24 s_mr_24">{this.props.menuItems[0].text}</span>;
+            return <span {...this.props}>{this.props.menuItems[0].text}</span>;
         }
     }
 });
