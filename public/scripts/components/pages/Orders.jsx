@@ -25,6 +25,7 @@ class OrdersApp extends React.Component {
     };
 
     state = {
+        activeTab:       0,
         orders:          [],
         selectedContact: {}
     };
@@ -32,11 +33,16 @@ class OrdersApp extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onChange = this._onChange.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onTabChange = this._onTabChange.bind(this);
     }
 
     componentDidMount() {
         OrdersStore.addChangeListener(this._onChange);
+
+        if (this.props.leagues.length > 0) {
+            OrdersActions.load();
+        }
     }
 
     componentWillUnmount() {
@@ -44,9 +50,15 @@ class OrdersApp extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.leagues.length) {
+        if (this.props.leagues.length != nextProps.leagues.length) {
             OrdersActions.load();
         }
+    }
+
+    _onTabChange(tab) {
+        this.setState({
+            activeTab: tab.props.tabIndex
+        });
     }
 
     _onChange() {
@@ -55,15 +67,26 @@ class OrdersApp extends React.Component {
         });
     }
 
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
+
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map(league => {
+                {this.props.leagues.map((league, index) => {
                     const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
 
-                    return (
-                        <Tab label={league.name} key={league._id}>
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
                             <OrdersList orders={ordersItems}/>
+                        )
+                    }
+
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
                         </Tab>
                     );
                 })}

@@ -1,7 +1,9 @@
 const _               = require('lodash'),
-      scroll             = require('../../utils/scrollTo'),
+      scroll          = require('../../utils/scrollTo'),
       React           = require('react'),
       mui             = require('material-ui'),
+
+      Spacing         = mui.Styles.Spacing,
 
       Tabs            = mui.Tabs,
       Tab             = mui.Tab,
@@ -19,6 +21,7 @@ class ContactsApp extends React.Component {
     };
 
     state = {
+        activeTab:       0,
         contacts:        [],
         selectedContact: {}
     };
@@ -51,8 +54,9 @@ class ContactsApp extends React.Component {
         }
     }
 
-    _onTabChange() {
+    _onTabChange(tab) {
         this.setState({
+            activeTab:       tab.props.tabIndex,
             selectedContact: {}
         });
     }
@@ -69,8 +73,10 @@ class ContactsApp extends React.Component {
     }
 
     _onEdit(e) {
+        const id = e.currentTarget.dataset.id;
+
         this.setState({
-            selectedContact: _.findWhere(this.props.contacts, {_id: e.target.dataset.id})
+            selectedContact: _.findWhere(this.state.contacts, {_id: id})
         });
 
         _.defer(() => {
@@ -84,20 +90,48 @@ class ContactsApp extends React.Component {
         });
     }
 
-    render() {
-        const tabItems = this.props.leagues.map(league => {
-            const contactsItems = this.state.contacts.filter(item => item.leagueId == league._id);
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
 
-            return (
-                <Tab label={league.name} key={league._id}>
-                    <ContactForm contact={this.state.selectedContact} leagueId={league._id} onCancel={this._onCancel}/>
-                    <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
-                </Tab>
-            );
-        });
+    render() {
+        const styles = this.getStyles();
+
         return (
-            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    const contactsItems = this.state.contacts.filter(item => item.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <ContactForm
+                                    style={styles.form}
+                                    contact={this.state.selectedContact}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}/>
+                                <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
+    }
+
+    getStyles() {
+        return {
+            form: {
+                marginBottom: Spacing.desktopGutter
+            }
+        }
     }
 }
 

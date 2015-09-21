@@ -1,5 +1,8 @@
-const React             = require('react'),
+const _                 = require('lodash'),
+      React             = require('react'),
       mui               = require('material-ui'),
+
+      Spacing           = mui.Styles.Spacing,
 
       Tabs              = mui.Tabs,
       Tab               = mui.Tab,
@@ -24,6 +27,7 @@ class NewsApp extends React.Component {
     };
 
     state = {
+        activeTab:       0,
         news:            [],
         categories:      [],
         countries:       [],
@@ -56,8 +60,9 @@ class NewsApp extends React.Component {
         CountriesStore.removeChangeListener(this._onChange);
     }
 
-    _onTabChange() {
+    _onTabChange(tab) {
         this.setState({
+            activeTab:       tab.props.tabIndex,
             selectedArticle: {}
         });
     }
@@ -89,41 +94,62 @@ class NewsApp extends React.Component {
         });
     }
 
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
+
     render() {
-        var tabItems = this.props.leagues.map(league => {
-
-            if (!this.state.countries.length) {
-                return (
-                    <Tab label={league.name} key={league._id}>
-                        <div className="loading text_align_c s_mt_12">Loading data</div>
-                    </Tab>
-                );
-            }
-
-            const newsItems = this.state.news.filter(article => article.leagueId == league._id);
-            const countries = this.state.countries.filter(country => country.leagueId == league._id);
-
-            const key = league._id + '_' + (this.state.selectedArticle._id ? this.state.selectedArticle._id : 'article-new').toString();
-
-            return (
-                <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
-                    <NewsForm
-                        className="s_mb_24"
-                        article={this.state.selectedArticle}
-                        leagueId={league._id}
-                        categories={this.state.categories}
-                        countries={countries}
-                        onCancel={this._onCancel}
-                        key={key}/>
-
-                    <NewsList news={newsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
-                </Tab>
-            );
-        });
+        const styles = this.getStyles();
 
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    if (!this.state.countries.length) {
+                        return (
+                            <Tab label={league.name} key={league._id}>
+                                <div className="loading text_align_c s_mt_12">Loading data</div>
+                            </Tab>
+                        );
+                    }
+
+                    const newsItems = this.state.news.filter(article => article.leagueId == league._id);
+                    const countries = this.state.countries.filter(country => country.leagueId == league._id);
+
+                    const key = league._id + '_' + (this.state.selectedArticle._id ? this.state.selectedArticle._id : 'article-new').toString();
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <NewsForm
+                                    style={styles.form}
+                                    article={this.state.selectedArticle}
+                                    leagueId={league._id}
+                                    categories={this.state.categories}
+                                    countries={countries}
+                                    onCancel={this._onCancel}
+                                    key={key}/>
+
+                                <NewsList news={newsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+                    return (
+                        <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
+    }
+
+    getStyles() {
+        return {
+            form: {
+                marginBottom: Spacing.desktopGutter
+            }
+        }
     }
 }
 

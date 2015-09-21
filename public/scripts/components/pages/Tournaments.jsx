@@ -26,6 +26,7 @@ class TournamentApp extends React.Component {
     };
 
     state = {
+        activeTab:          0,
         countries:          [],
         tournaments:        [],
         selectedTournament: {},
@@ -96,8 +97,9 @@ class TournamentApp extends React.Component {
         }
     }
 
-    _onTabChange() {
+    _onTabChange(tab) {
         this.setState({
+            activeTab:          tab.props.tabIndex,
             selectedTournament: {}
         });
     }
@@ -124,18 +126,35 @@ class TournamentApp extends React.Component {
         });
     }
 
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
+
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map(league => {
+                {this.props.leagues.map((league, index) => {
                     const tournamentsItems = this.state.tournaments.filter(tournament => tournament.leagueId == league._id);
                     const countries        = this.state.countries.filter(country => country.leagueId == league._id);
 
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <TournamentForm
+                                    tournament={this.state.selectedTournament}
+                                    countries={countries}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}/>
+                                <TournamentsList
+                                    tournaments={tournamentsItems}
+                                    onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
                     return (
                         <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
-                            <TournamentForm tournament={this.state.selectedTournament} countries={countries} leagueId={league._id}
-                                            onCancel={this._onCancel}/>
-                            <TournamentsList tournaments={tournamentsItems} onEdit={this._onEdit}/>
+                            {tabContent}
                         </Tab>
                     );
                 })}

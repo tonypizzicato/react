@@ -5,9 +5,8 @@ function scrollTo(Y, duration, easingFunction, callback) {
         from  = elem.scrollTop;
 
     if (from === Y) {
-        callback();
+        callback && callback();
         return;
-        /* Prevent scrolling to the Y point if already there */
     }
 
     function min(a, b) {

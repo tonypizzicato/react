@@ -19,6 +19,7 @@ class CountriesApp extends React.Component {
     };
 
     state = {
+        activeTab:       0,
         countries:       [],
         selectedCountry: {}
     };
@@ -44,8 +45,9 @@ class CountriesApp extends React.Component {
         CountriesStore.removeChangeListener(this._onChange);
     }
 
-    _onTabChange() {
+    _onTabChange(tab) {
         this.setState({
+            activeTab:       tab.props.tabIndex,
             selectedCountry: {}
         });
     }
@@ -80,19 +82,35 @@ class CountriesApp extends React.Component {
     }
 
     render() {
-        const tabItems = this.props.leagues.map(league => {
-            const countriesItems = this.state.countries.filter(country => country.leagueId == league._id);
-
-            return (
-                <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
-                    <CountryForm country={this.state.selectedCountry} leagueId={league._id} onCancel={this._onCancel}/>
-                    <CountriesList countries={countriesItems} leagueId={league._id} onDelete={this._onDelete} onEdit={this._onEdit}/>
-                </Tab>
-            );
-        });
-
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    const countriesItems = this.state.countries.filter(country => country.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <CountryForm
+                                    country={this.state.selectedCountry}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}/>
+                                <CountriesList
+                                    countries={countriesItems}
+                                    leagueId={league._id}
+                                    onDelete={this._onDelete}
+                                    onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+
+                    return (
+                        <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
     }
 }

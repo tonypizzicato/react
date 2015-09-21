@@ -74,7 +74,7 @@ class ContactForm extends React.Component {
     componentDidUpdate() {
         if (!!this.props.contact.tournaments) {
             this.props.contact.tournaments.forEach(item => {
-                this.refs['checkbox-' + item].setChecked(true);
+                !!this.refs['checkbox-' + item._id] && this.refs['checkbox-' + item].setChecked(true);
             });
         }
     }
@@ -86,8 +86,12 @@ class ContactForm extends React.Component {
     }
 
     _onTournaments() {
+        const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
+            return !!item.country;
+        });
+
         this.setState({
-            tournaments: TournamentsStore.getByLeague(this.props.leagueId)
+            tournaments: tournaments
         });
     }
 
@@ -172,7 +176,7 @@ class ContactForm extends React.Component {
                 return <Checkbox
                     label={item.name}
                     className={item.show ? '' : 'text_color_muted'}
-                    defaultChecked={index !== false}
+                    defaultChecked={index !== -1}
                     ref={'checkbox-' + item._id}
                     key={'checkbox-' + item._id + '-' + item._id}/>
             });
