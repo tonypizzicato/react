@@ -28,7 +28,7 @@ var _extends = Object.assign || function (target) {
 
 var React = _interopRequire(require("react"));
 
-var cx = _interopRequire(require("react-classset"));
+var cx = _interopRequire(require("classnames"));
 
 var Dragon = React.createClass({
     displayName: "Dragon",

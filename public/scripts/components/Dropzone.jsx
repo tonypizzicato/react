@@ -2,7 +2,7 @@
 
 var _            = require('lodash'),
     React        = require('react'),
-    cx           = React.addons.classSet,
+    cx           = require('classnames'),
     mui          = require('material-ui'),
 
     Dropzone     = require('dropzone'),
