@@ -4,6 +4,7 @@ const _                = require('lodash'),
       mui              = require('material-ui'),
 
       Spacing          = mui.Styles.Spacing,
+      Colors           = mui.Styles.Colors,
 
       Toolbar          = mui.Toolbar,
       ToolbarGroup     = mui.ToolbarGroup,
@@ -90,7 +91,7 @@ class GamesToolbar extends React.Component {
         const countryIndex = 0;
 
         if (this.state.countries.length && !!this.state.countries[countryIndex]) {
-            var state = this._updatedCountryState(countryIndex);
+            const state = this._updatedCountryState(countryIndex);
 
             this.setState(state);
         }
@@ -170,7 +171,10 @@ class GamesToolbar extends React.Component {
 
         const countriesMenu =
                   <DropDownMenu
-                      style={styles.dropdownCountries}
+                      style={styles.dropdownCountries.root}
+                      labelStyle={styles.dropdownCountries.item}
+                      menuItemStyle={styles.dropdownCountries.item}
+                      iconStyle={styles.dropdownCountries.icon}
                       menuItems={this.state.countries}
                       selectedIndex={this.state.countryIndex}
                       noDataText="Нет стран"
@@ -178,7 +182,10 @@ class GamesToolbar extends React.Component {
 
         const tournamentsMenu =
                   <DropDownMenu
-                      style={styles.dropdownTournaments}
+                      style={styles.dropdownTournaments.root}
+                      labelStyle={styles.dropdownTournaments.item}
+                      menuItemStyle={styles.dropdownTournaments.item}
+                      iconStyle={styles.dropdownTournaments.icon}
                       menuItems={this.state.tournaments}
                       onChange={this._onTournamentSelect}
                       noDataText="Нет турниров"
@@ -186,7 +193,6 @@ class GamesToolbar extends React.Component {
 
         const gamesInput = this.state.hasTournament && this.state.games.length ?
             <Typeahead
-                style={styles.typeahead.root}
                 options={this.state.games}
                 placeholder="Введите название команд"
                 onOptionSelected={this._onGameSelect}
@@ -204,7 +210,10 @@ class GamesToolbar extends React.Component {
                 <ToolbarGroup style={styles.toolbarGroup}>
                     {countriesMenu}
                     {tournamentsMenu}
-                    {gamesInput}
+                    <div style={styles.typeahead.container}>
+                        {gamesInput}
+                    </div>
+
                 </ToolbarGroup>
             </Toolbar>
         );
@@ -220,23 +229,42 @@ class GamesToolbar extends React.Component {
                 width: '100%'
             },
             dropdownCountries:   {
-                height:     Spacing.desktopToolbarHeight,
-                lineHeight: `${Spacing.desktopToolbarHeight}px`,
-                width:      '30%'
+                root: {
+                    height:      Spacing.desktopToolbarHeight,
+                    lineHeight:  `${Spacing.desktopToolbarHeight}px`,
+                    width:       '30%',
+                    marginRight: '2%',
+                    color:       Colors.lightBlack
+                },
+                icon: {
+                    fill: Colors.lightBlack
+                },
+                item: {
+                    color: Colors.lightBlack
+                }
             },
             dropdownTournaments: {
-                height:     Spacing.desktopToolbarHeight,
-                lineHeight: `${Spacing.desktopToolbarHeight}px`,
-                width:      '30%'
+                root: {
+                    height:      Spacing.desktopToolbarHeight,
+                    lineHeight:  `${Spacing.desktopToolbarHeight}px`,
+                    width:       '30%',
+                    marginRight: '2%',
+                    color:       Colors.lightBlack
+                },
+                icon: {
+                    fill: Colors.lightBlack
+                },
+                item: {
+                    color: Colors.lightBlack
+                }
             },
             typeahead:           {
-                root:   {
-                    margin:   0,
-                    width:    '40%',
-                    height:   56,
-                    fontSize: 15
+                container: {
+                    width:  '36%',
+                    height: 56,
+                    float:  'left'
                 },
-                holder: {
+                holder:    {
                     height:     Spacing.desktopToolbarHeight,
                     lineHeight: `${Spacing.desktopToolbarHeight}px`,
                     width:      '40%'

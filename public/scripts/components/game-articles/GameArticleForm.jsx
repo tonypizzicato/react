@@ -1,74 +1,78 @@
-"use strict";
+const _                   = require('lodash'),
+      React               = require('react'),
+      mui                 = require('material-ui'),
 
-var _                   = require('lodash'),
-    React               = require('react'),
-    mui                 = require('material-ui'),
+      Spacing             = mui.Styles.Spacing,
+      Colors              = mui.Styles.Colors,
 
-    Button              = mui.RaisedButton,
-    Toggle              = mui.Toggle,
-    TextField           = mui.TextField,
-    IconButton          = mui.IconButton,
+      Button              = mui.RaisedButton,
+      Toggle              = mui.Toggle,
+      TextField           = mui.TextField,
+      IconButton          = mui.IconButton,
 
-    MediumEditor        = require('../MediumEditor.jsx'),
-    ImageUpload         = require('../ImageUpload.jsx'),
-    VideoUpload         = require('../VideoUpload.jsx'),
+      MediumEditor        = require('../MediumEditor.jsx'),
+      ImageUpload         = require('../ImageUpload.jsx'),
+      VideoUpload         = require('../VideoUpload.jsx'),
 
-    EventsConstants     = require('../../constants/EventsConstants'),
+      EventsConstants     = require('../../constants/EventsConstants'),
 
-    AuthStore           = require('../../stores/AuthStore'),
+      AuthStore           = require('../../stores/AuthStore'),
 
-    GameArticlesStore   = require('../../stores/GameArticlesStore'),
-    GameArticlesActions = require('../../actions/GameArticlesActions');
+      GameArticlesStore   = require('../../stores/GameArticlesStore'),
+      GameArticlesActions = require('../../actions/GameArticlesActions');
 
-var GameArticleForm = React.createClass({
+class GameArticleForm extends React.Component {
+    static propTypes = {
+        leagueId: React.PropTypes.string.required,
+        type:     React.PropTypes.string.required,
+        article:  React.PropTypes.object,
+        game:     React.PropTypes.object
+    };
 
-    propTypes: function () {
-        return {
-            leagueId: React.PropTypes.string.required,
-            type:     React.PropTypes.string.required,
-            article:  React.PropTypes.object,
-            game:     React.PropTypes.object
-        }
-    },
+    static defaultProps = {
+        article: {},
+        game:    {}
+    };
 
-    getDefaultProps: function () {
-        return {
-            article: {},
-            game:    {}
-        }
-    },
+    state = {
+        saving:      false,
+        article:     this.props.article,
+        validation:  {},
+        central:     this.props.article.centralGame,
+        videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
+    };
 
-    getInitialState: function () {
-        return {
-            saving:      false,
-            article:     this.props.article,
-            validation:  {},
-            central:     this.props.article.centralGame,
-            videosCount: this.props.article.video ? (this.props.article.video.length ? this.props.article.video.length : 1) : 1
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    componentDidMount: function () {
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._addVideo          = this._addVideo.bind(this);
+        this._onCentral         = this._onCentral.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
+    }
+
+    componentDidMount() {
         GameArticlesStore.addValidationListener(this._onValidationError);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         GameArticlesStore.removeValidationListener(this._onValidationError);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (!nextProps.article.hasOwnProperty('_id')) {
             this._clearForm();
         }
         this.setState({saving: false});
-    },
+    }
 
-    _onValidationError: function (validation) {
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var article = {
+    _onSave() {
+        let article = {
             body:       this.refs.body.getValue(),
             show:       this.refs.show.isToggled(),
             type:       this.props.type,
@@ -77,9 +81,9 @@ var GameArticleForm = React.createClass({
             gameId:     this.props.game._id
         };
 
-        var videos = [],
+        let videos = [],
             video;
-        for (var i = 0; i < this.state.videosCount; i++) {
+        for (let i = 0; i < this.state.videosCount; i++) {
             video = this.refs['video-' + i].getValue();
             if (video.type && video.url.length) {
                 videos.push(video);
@@ -102,7 +106,7 @@ var GameArticleForm = React.createClass({
         }
 
         this.setState({
-            validation: this.getInitialState().validation,
+            validation: {},
             saving:     true
         });
 
@@ -114,19 +118,19 @@ var GameArticleForm = React.createClass({
             article.author = AuthStore.getUser().username;
             GameArticlesActions.add(article);
         }
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
-
+    _onCancel() {
         this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    _clearForm: function () {
+    _clearForm() {
+        this.setState({});
+
         this.refs.body.setValue('');
         this.refs.show.setToggled(false);
 
@@ -137,34 +141,37 @@ var GameArticleForm = React.createClass({
         }
 
         this.refs['video-0'].clear();
-        this.setState({videosCount: 1});
-    },
+        this.setState({
+            validation:  {},
+            videosCount: 1
+        });
+    }
 
-    _onCentral: function (e, central) {
+    _onCentral(e, central) {
         this.setState({central: central});
-    },
+    }
 
-    _addVideo: function () {
+    _addVideo() {
         this.setState({videosCount: this.state.videosCount + 1});
-    },
+    }
 
-    render: function () {
-        var preview = false;
+    render() {
+        const styles = this.getStyles();
+
+        let preview;
         if (this.props.type == 'preview') {
             preview = (
                 <div>
-                    <div className="s_width_half s_display_inline-block">
-                        <div className="s_width_third">
-                            <Toggle
-                                name="central"
-                                value="central"
-                                label="Центральный"
-                                defaultToggled={this.props.article.centralGame}
-                                key={this.props.article._id + '-central'}
-                                onToggle={this._onCentral}
-                                ref="central"/>
-                        </div>
-                    </div>
+                    <Toggle
+                        style={styles.toggle}
+                        name="central"
+                        value="central"
+                        label="Центральный"
+                        labelPosition="right"
+                        defaultToggled={this.props.article.centralGame}
+                        key={this.props.article._id + '-central'}
+                        onToggle={this._onCentral}
+                        ref="central"/>
 
                     <ImageUpload
                         label="Select home team image (required if match is central)"
@@ -189,14 +196,14 @@ var GameArticleForm = React.createClass({
             )
         }
 
-        var videos = [];
+        let videos = [];
         if (this.props.article.video && this.props.article.video.length) {
-            videos = this.props.article.video.map(function (item, index) {
+            videos = this.props.article.video.map((item, index) => {
                 return <VideoUpload type={item.type} label={item.label} url={item.url} ref={'video-' + index} key={'video-' + index}/>
             });
         }
-        var start = this.props.article.video ? this.props.article.video.length : 0;
-        for (var i = start; i < this.state.videosCount; i++) {
+        const start = this.props.article.video ? this.props.article.video.length : 0;
+        for (let i = start; i < this.state.videosCount; i++) {
             videos.push(<VideoUpload ref={'video-' + i} key={'video-' + i}/>);
         }
         return (
@@ -217,31 +224,58 @@ var GameArticleForm = React.createClass({
                     {videos}
                 </div>
 
-                <div className="s_position_relative" key="article-state-radio">
+                <Toggle
+                    style={styles.toggle}
+                    name="show"
+                    value="show"
+                    label="Показывать"
+                    labelPosition="right"
+                    defaultToggled={this.props.article.show}
+                    key={this.props.article._id + '-show'}
+                    ref="show"/>
 
-                    <div className="s_float_l s_width_half s_mt_12">
-                        <div className="s_width_third s_display_inline-block">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                label="Показывать"
-                                defaultToggled={this.props.article.show}
-                                key={this.props.article._id + '-show'}
-                                ref="show"/>
-                        </div>
-                    </div>
+                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                <Button style={styles.button} label="Сохранить" disabled={this.state.saving} primary={true} onClick={this._onSave}/>
 
-                    <div className="buttons s_float_r s_width_quarter">
-                        <Button className="button_type_cancel s_mt_12" label="Отменить" secondary={true} onClick={this._onCancel}/>
-                        <Button className="button_type_save s_float_r s_mt_12" label="Сохранить" disabled={this.state.saving} primary={true}
-                                onClick={this._onSave}/>
-                    </div>
-
-                    {preview}
-                </div>
+                {preview}
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:       {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:      {
+                width: '100%'
+            },
+            radioGroup: {
+                margin: `${Spacing.desktopGutter}px 0 0`
+            },
+            toggle:     {
+                height:       Spacing.desktopGutter,
+                marginTop:    Spacing.desktopGutter,
+                marginBottom: Spacing.desktopGutter,
+                marginRight:  Spacing.desktopGutter
+            },
+            button:     {
+                marginRight: Spacing.desktopGutter
+            },
+            dropdown:   {
+                root:      {
+                    width: 200
+                },
+                label:     {
+                    paddingLeft: 0
+                },
+                underline: {
+                    margin: '-1px 12px 0 0'
+                }
+            }
+        }
+    }
+}
 
 module.exports = GameArticleForm;

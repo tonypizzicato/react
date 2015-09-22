@@ -1,32 +1,61 @@
-"use strict";
+const React        = require('react'),
+      mui          = require('material-ui'),
 
-var React      = require('react'),
-    mui        = require('material-ui'),
+      Spacing      = mui.Styles.Spacing,
+      Colors       = mui.Styles.Colors,
 
-    Button = mui.RaisedButton,
-    FontIcon   = mui.FontIcon;
+      RaisedButton = mui.RaisedButton,
+      FontIcon     = mui.FontIcon;
 
-var HelpButton = React.createClass({
-    propTypes: function() {
-        return {
-            dialog: React.PropTypes.element.required
-        };
-    },
+class HelpButton extends React.Component {
+    static propTypes = {
+        dialog: React.PropTypes.element.required
+    };
 
-    _onClick: function (e) {
-        console.log(e);
+    constructor(props) {
+        super(props);
 
+        this._onClick = this._onClick.bind(this);
+    }
+
+    _onClick() {
         this.props.dialog.show();
-    },
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
+
         return (
-            <Button className="button_type_help s_mt_24" onTouchTap={this._onClick} secondary={true}>
-                <FontIcon className="mdfi_action_help"/>
-                <span className="mui-raised-button-label">Справка</span>
-            </Button>
+            <RaisedButton
+                style={styles.root}
+                labelStyle={styles.label}
+                secondary={true}
+                backgroundColor={Colors.blue500}
+                onTouchTap={this._onClick}
+                label="Справка"
+                labelPosition="after">
+                <FontIcon style={styles.icon} className="mdfi_action_help"/>
+            </RaisedButton>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:  {
+                width:     '100%',
+                marginTop: Spacing.desktopGutter
+            },
+            label: {
+                padding: '0 8px'
+            },
+            icon:  {
+                verticalAlign: 'middle',
+                top:           '-3px',
+                fontSize:      '22px',
+                color:         Colors.white
+            }
+        }
+    }
+}
 
 module.exports = HelpButton;
