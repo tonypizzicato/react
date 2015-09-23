@@ -22,14 +22,16 @@ var DropDownMenu = React.createClass({
     },
 
     render: function () {
+        const {noItemStyle, singleItemStyle} = this.props;
+
         if (!this.props.menuItems.length || !this.props.menuItems[this.props.selectedIndex]) {
-            return <span {...this.props}>{this.props.noDataText}</span>;
+            return <span style={noItemStyle}>{this.props.noDataText}</span>;
         }
 
         if (this.props.menuItems.length > 1) {
             return <Menu {...this.props} />;
         } else {
-            return <span {...this.props}>{this.props.menuItems[0].text}</span>;
+            return <span style={singleItemStyle}>{this.props.menuItems[0].text}</span>;
         }
     }
 });

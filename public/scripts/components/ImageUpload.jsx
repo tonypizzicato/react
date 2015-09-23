@@ -31,8 +31,8 @@ class ImageUpload extends React.Component {
         image:     null,
         pos:       {x: '50%', y: '50%'},
         errorText: null,
-        width:  'auto',
-        height: 'auto'
+        width:     'auto',
+        height:    'auto'
     };
 
     state = {
@@ -105,7 +105,8 @@ class ImageUpload extends React.Component {
 
         const error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
         const image = this.state.image ?
-            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} pos={this.props.pos} ref="preview"/> : '';
+            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} pos={this.props.pos}
+                   ref="preview"/> : '';
 
         return (
             <div style={styles.root}>
@@ -129,7 +130,7 @@ class ImageUpload extends React.Component {
         return {
             root:        {
                 position:  'relative',
-                marginTop: Spacing.desktopGutter
+                marginTop: Spacing.desktopGutterMore
             },
             buttonClose: {
                 position: 'absolute',
@@ -149,11 +150,12 @@ class ImageUpload extends React.Component {
             },
             button:      {
                 root:   {
-                    position: 'absolute',
-                    width:    '100%',
-                    bottom:   0,
-                    left:     0,
-                    zIndex:   1
+                    position:      'absolute',
+                    width:         '100%',
+                    bottom:        0,
+                    left:          0,
+                    zIndex:        1,
+                    paddingBottom: Spacing.desktopGutterMini
                 },
                 button: {
                     width: '100%'
@@ -169,11 +171,11 @@ class ImageUpload extends React.Component {
             error:       {
                 display:    'block',
                 position:   'absolute',
-                bottom:     -14,
                 width:      '100%',
                 textAlign:  'center',
-                fontSize:   Spacing.desktopGutterLess,
-                lineHeight: Spacing.desktopGutterLess,
+                fontSize:   '12px',
+                lineHeight: '12px',
+                color:      Colors.red600,
                 transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
             }
         }

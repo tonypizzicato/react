@@ -174,6 +174,8 @@ class GamesToolbar extends React.Component {
                       style={styles.dropdownCountries.root}
                       labelStyle={styles.dropdownCountries.item}
                       menuItemStyle={styles.dropdownCountries.item}
+                      noItemStyle={styles.dropdownCountries.noItemStyle}
+                      singleItemStyle={styles.dropdownCountries.singleItemStyle}
                       iconStyle={styles.dropdownCountries.icon}
                       menuItems={this.state.countries}
                       selectedIndex={this.state.countryIndex}
@@ -185,6 +187,8 @@ class GamesToolbar extends React.Component {
                       style={styles.dropdownTournaments.root}
                       labelStyle={styles.dropdownTournaments.item}
                       menuItemStyle={styles.dropdownTournaments.item}
+                      noItemStyle={styles.dropdownCountries.noItemStyle}
+                      singleItemStyle={styles.dropdownCountries.singleItemStyle}
                       iconStyle={styles.dropdownTournaments.icon}
                       menuItems={this.state.tournaments}
                       onChange={this._onTournamentSelect}
@@ -203,7 +207,7 @@ class GamesToolbar extends React.Component {
                     results:  'typeahead__results'
                 }}
                 key={`${this.props.leagueId}-${this.state.tournaments[this.state.tournamentIndex]._id}`}/> :
-            <span style={styles.typeahead.holder}>Загружается список команд</span>;
+            <span style={styles.typeahead.holder}>Загружается список команд...</span>;
 
         return (
             <Toolbar style={styles.root} key={`${this.props.leagueId}-toolbar`}>
@@ -229,18 +233,40 @@ class GamesToolbar extends React.Component {
                 width: '100%'
             },
             dropdownCountries:   {
-                root: {
+                root:            {
                     height:      Spacing.desktopToolbarHeight,
                     lineHeight:  `${Spacing.desktopToolbarHeight}px`,
                     width:       '30%',
                     marginRight: '2%',
                     color:       Colors.lightBlack
                 },
-                icon: {
+                icon:            {
                     fill: Colors.lightBlack
                 },
-                item: {
+                item:            {
                     color: Colors.lightBlack
+                },
+                noItemStyle:     {
+                    boxSizing:   'border-box',
+                    width:       '30%',
+                    marginRight: '2%',
+                    float:       'left',
+                    paddingLeft: Spacing.desktopGutter,
+                    lineHeight:  '56px',
+                    fontSize:    15,
+                    paddingLeft: 24,
+                    color:       Colors.lightBlack
+                },
+                singleItemStyle: {
+                    boxSizing:   'border-box',
+                    width:       '30%',
+                    marginRight: '2%',
+                    float:       'left',
+                    paddingLeft: Spacing.desktopGutter,
+                    lineHeight:  '56px',
+                    fontSize:    15,
+                    paddingLeft: 24,
+                    color:       Colors.lightBlack
                 }
             },
             dropdownTournaments: {
@@ -267,7 +293,9 @@ class GamesToolbar extends React.Component {
                 holder:    {
                     height:     Spacing.desktopToolbarHeight,
                     lineHeight: `${Spacing.desktopToolbarHeight}px`,
-                    width:      '40%'
+                    width:      '40%',
+                    color:      Colors.lightBlack,
+                    fontSize:   15
                 }
             }
         }

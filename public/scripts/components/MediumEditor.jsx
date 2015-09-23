@@ -162,7 +162,7 @@ class Editor extends React.Component {
         ) : null;
 
         const errorTextElement = this.props.errorText ? (
-            <div className="mui-edit-field-error">{this.props.errorText}</div>
+            <div style={styles.error}>{this.props.errorText}</div>
         ) : null;
 
         return (
@@ -227,11 +227,13 @@ class Editor extends React.Component {
                 }
             },
             error:         {
+                display:    'block',
                 position:   'absolute',
                 bottom:     -10,
-                fontSize:   12,
+                width:      '100%',
+                fontSize:   '12px',
                 lineHeight: '12px',
-                color:      '#f44336',
+                color:      Colors.red600,
                 transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
             },
             hr:            {
@@ -244,16 +246,18 @@ class Editor extends React.Component {
                     borderBottom: 'solid 1px #e0e0e0;'
                 },
                 onFocused: {
-                    borderColor:       '#00bcd4',
-                    borderBottomWidth: 2,
-                    transform:         'scaleX(0)',
-                    transition:        'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+                    transform:  'scaleX(0)',
+                    transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
                 },
                 isFocused: {
-                    transform: 'scaleX(1)'
+                    borderColor: '#00bcd4',
+                    transform:   'scaleX(1)',
+                    borderWidth: 2
                 },
                 hasError:  {
-                    borderColor: '#f44336'
+                    transform:   'scaleX(1)',
+                    borderColor: Colors.red600,
+                    borderWidth: 2
                 }
             },
             editable:      {

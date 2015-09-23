@@ -158,42 +158,42 @@ class GameArticleForm extends React.Component {
     render() {
         const styles = this.getStyles();
 
-        let preview;
+        let previewImages, previewToggle;
         if (this.props.type == 'preview') {
-            preview = (
-                <div>
-                    <Toggle
-                        style={styles.toggle}
-                        name="central"
-                        value="central"
-                        label="Центральный"
-                        labelPosition="right"
-                        defaultToggled={this.props.article.centralGame}
-                        key={this.props.article._id + '-central'}
-                        onToggle={this._onCentral}
-                        ref="central"/>
+            previewImages = (
+                <div style={{overflow: 'hidden', padding: Spacing.desktopGutterMini + 'px 0'}}>
+                <ImageUpload
+                    label="Select home team image (required if match is central)"
+                    image={this.props.article.imageHome}
+                    errorText={this.state.validation.imageHome ? 'Загрузите изображение для команды хозяев' : null}
+                    width="360px"
+                    height="300px"
+                    className={this.state.central ? '' : 's_display_none'}
+                    key={this.props.article._id + '-image-home-upload'}
+                    ref="imageHome"/>
 
-                    <ImageUpload
-                        label="Select home team image (required if match is central)"
-                        image={this.props.article.imageHome}
-                        errorText={this.state.validation.imageHome ? 'Загрузите изображение для команды хозяев' : null}
-                        width="360px"
-                        height="300px"
-                        className={this.state.central ? '' : 's_display_none'}
-                        key={this.props.article._id + '-image-home-upload'}
-                        ref="imageHome"/>
-
-                    <ImageUpload
-                        label="Select away team image (required if match is central)"
-                        image={this.props.article.imageAway}
-                        errorText={this.state.validation.imageAway ? 'Загрузите изображение для команды гостей' : null}
-                        width="360px"
-                        height="300px"
-                        className={this.state.central ? '' : 's_display_none'}
-                        key={this.props.article._id + '-image-away-upload'}
-                        ref="imageAway"/>
+                <ImageUpload
+                    label="Select away team image (required if match is central)"
+                    image={this.props.article.imageAway}
+                    errorText={this.state.validation.imageAway ? 'Загрузите изображение для команды гостей' : null}
+                    width="360px"
+                    height="300px"
+                    className={this.state.central ? '' : 's_display_none'}
+                    key={this.props.article._id + '-image-away-upload'}
+                    ref="imageAway"/>
                 </div>
             )
+            previewToggle =
+                <Toggle
+                    style={styles.toggle.toggle}
+                    name="central"
+                    value="central"
+                    label="Центральный"
+                    labelPosition="right"
+                    defaultToggled={this.props.article.centralGame}
+                    key={this.props.article._id + '-central'}
+                    onToggle={this._onCentral}
+                    ref="central"/>;
         }
 
         let videos = [];
@@ -224,20 +224,28 @@ class GameArticleForm extends React.Component {
                     {videos}
                 </div>
 
-                <Toggle
-                    style={styles.toggle}
-                    name="show"
-                    value="show"
-                    label="Показывать"
-                    labelPosition="right"
-                    defaultToggled={this.props.article.show}
-                    key={this.props.article._id + '-show'}
-                    ref="show"/>
+                <div style={{overflow: 'hidden', clear: 'both', padding: '5px'}}>
+                    <div style={styles.toggle.container}>
+                        <Toggle
+                            style={styles.toggle.toggle}
+                            name="show"
+                            value="show"
+                            label="Показывать"
+                            labelPosition="right"
+                            defaultToggled={this.props.article.show}
+                            key={this.props.article._id + '-show'}
+                            ref="show"/>
+                        {previewToggle}
+                    </div>
 
-                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
-                <Button style={styles.button} label="Сохранить" disabled={this.state.saving} primary={true} onClick={this._onSave}/>
+                    <div style={styles.button.container}>
+                        <Button style={styles.button.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                        <Button style={styles.button.button} label="Сохранить" disabled={this.state.saving} primary={true}
+                                onClick={this._onSave}/>
+                    </div>
+                </div>
 
-                {preview}
+                {previewImages}
             </div>
         );
     }
@@ -255,13 +263,23 @@ class GameArticleForm extends React.Component {
                 margin: `${Spacing.desktopGutter}px 0 0`
             },
             toggle:     {
-                height:       Spacing.desktopGutter,
-                marginTop:    Spacing.desktopGutter,
-                marginBottom: Spacing.desktopGutter,
-                marginRight:  Spacing.desktopGutter
+                container: {
+                    float: 'left'
+                },
+                toggle:    {
+                    height:       Spacing.desktopGutter,
+                    marginBottom: Spacing.desktopGutterMini,
+                    marginRight:  Spacing.desktopGutter
+                }
             },
             button:     {
-                marginRight: Spacing.desktopGutter
+                container: {
+                    float:     'right',
+                    marginTop: Spacing.desktopGutterMini
+                },
+                button:    {
+                    marginRight: Spacing.desktopGutter
+                }
             },
             dropdown:   {
                 root:      {
