@@ -7,6 +7,7 @@ var React          = require('react'),
     DefaultRoute   = Router.DefaultRoute,
 
     MainApp        = require('./components/pages/main.jsx'),
+    ProfileApp     = require('./components/pages/Profile.jsx'),
     LeaguesApp     = require('./components/pages/Leagues.jsx'),
     CountriesApp   = require('./components/pages/Countries.jsx'),
     TournamentsApp = require('./components/pages/Tournaments.jsx'),
@@ -24,6 +25,7 @@ var Routes = (
         <Route name="signup" handler={Auth.SignUp}/>
         <Route name="login" handler={Auth.Login}/>
         <Route name="logout" handler={Auth.Logout}/>
+        <Route name="profile" handler={ProfileApp}/>
 
         <Route name="users" handler={UsersApp}/>
         <Route name="leagues" handler={LeaguesApp}/>

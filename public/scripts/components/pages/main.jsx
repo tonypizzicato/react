@@ -1,5 +1,3 @@
-"use strict";
-
 const _                = require('lodash'),
       $                = require('jquery'),
       React            = require('react'),
@@ -13,6 +11,7 @@ const _                = require('lodash'),
       Colors           = mui.Styles.Colors,
       Spacing          = mui.Styles.Spacing,
 
+      MenuItem         = mui.MenuItem,
       Canvas           = mui.AppCanvas,
       AppBar           = mui.AppBar,
       Icon             = mui.FontIcon,
@@ -31,6 +30,8 @@ const _                = require('lodash'),
       GamesStore       = require('../../stores/GamesStore');
 
 const menuItems = [
+    {route: 'profile', text: 'Профиль'},
+    {type: MenuItem.Types.SUBHEADER, text: 'Ресурсы'},
     {route: 'users', text: 'Пользователи'},
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
@@ -148,9 +149,7 @@ const MainApp = React.createClass({
             <Link style={styles.login.label} to="logout">Выход</Link> :
             <Link style={styles.login.label} to="login">Вход</Link>;
 
-        const appBarTitle = _.result(_(menuItems).find(item => {
-            return this.context.router.isActive(item.route);
-        }), 'text');
+        const appBarTitle = _.result(_(menuItems).find(item => item.route && this.context.router.isActive(item.route)), 'text');
 
         return (
             <div>
