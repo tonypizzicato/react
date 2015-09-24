@@ -1,78 +1,86 @@
-"use strict";
+const cx       = require('classnames'),
+      React    = require('react'),
+      mui      = require('material-ui'),
 
-var React      = require('react'),
-    cx         = React.addons.classSet,
-    mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+      Colors   = mui.Styles.Colors,
+      Spacing  = mui.Styles.Spacing,
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
-    IconButton = mui.IconButton;
+      Dragon   = require('../Dragon.jsx'),
 
-var TournamentItem = React.createClass({
 
-    propTypes: function () {
-        return {
-            tournament: React.PropTypes.shape({
-                name:    React.PropTypes.string,
-                slug:    React.PropTypes.string,
-                country: React.PropTypes.object,
-                state:   React.PropTypes.string
-            }).required,
-            onEdit:     React.PropTypes.func.required,
-            onDrop:     React.PropTypes.func.required
-        };
-    },
+      ListItem = mui.ListItem,
+      Avatar   = mui.Avatar,
+      Icon     = mui.FontIcon;
 
-    getDefaultProps: function () {
-        return {
-            tournament: {}
-        }
-    },
+class TournamentItem extends React.Component {
 
-    render: function () {
-        var visibilityClass = cx({
-            'list-item__visibility':      true,
+    static propTypes = {
+        tournament: React.PropTypes.shape({
+            name:    React.PropTypes.string,
+            slug:    React.PropTypes.string,
+            country: React.PropTypes.object,
+            state:   React.PropTypes.string
+        }).required,
+        onEdit:     React.PropTypes.func.required,
+        onDrop:     React.PropTypes.func.required
+    };
+
+    static defaultProps = {
+        tournament: {}
+    };
+
+    render() {
+        const styles = this.getStyles();
+        const avatar = this.props.tournament.name ? this.props.tournament.name : this.props.tournament.slug;
+
+        const visibilityClass = cx({
             'mdfi_action_visibility':     true,
             'mdfi_action_visibility_off': !this.props.tournament.show
         });
-        var item = (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <Icon className="list-item__sort mdfi_action_swap_vert" />
-                            <Icon className={visibilityClass} />
-                        </div>
 
-                        <div className="list-item__title s_display_inline-block s_valign_m">
-                            <h5>{this.props.tournament.name}&nbsp;
-                                <span className="text_color_muted">{this.props.tournament.slug}</span>
-                            </h5>
-
-                        </div>
-
-                        <div className="s_float_r">
-                            <div className="mui-label s_display_inline-block s_valign_m text_align_r s_mr_12">
-                                {this.props.tournament.country ? this.props.tournament.country.name : ''}
-                            </div>
-                            <div className="mui-label s_display_inline-block s_valign_m text_align_r s_mr_12">
-                                {this.props.tournament.state}
-                            </div>
-                            <div className="s_display_inline-block s_valign_m s_float_r">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.tournament._id} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Paper>
-        );
         return (
-            <Dragon key={this.props.tournament._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                {item}
+            <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
+                <ListItem
+                    style={styles.root}
+                    onTouchTap={this.props.onEdit}
+                    data-id={this.props.tournament._id}
+                    leftAvatar={<Avatar>{avatar[0]}</Avatar>}
+                    primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span style={styles.label.name}>{this.props.tournament.name}</span>
+                            <span style={{color: Colors.minBlack}}>{this.props.tournament.slug}</span>
+                        </p>
+                    }
+                    secondaryText={
+                        <p>
+                            <span style={{color: Colors.minBlack}}>{this.props.tournament.state}</span><br/>
+                            <span style={{color: Colors.lightBlack}}>{this.props.tournament.country ? this.props.tournament.country.name : '—'}</span>
+                        </p>
+                    }
+                    secondaryTextLines={2}
+                    />
             </Dragon>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:           {
+                margin: Spacing.desktopGutter + ' 0'
+            },
+            label:          {
+                name: {
+                    marginRight: Spacing.desktopGutterMini
+                }
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.tournament.show ? Colors.blueGrey900 : Colors.lightBlack
+            }
+        }
+    }
+}
 
 module.exports = TournamentItem;

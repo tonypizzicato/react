@@ -1,69 +1,86 @@
-"use strict";
+const cx           = require('classnames'),
+      React        = require('react'),
+      mui          = require('material-ui'),
 
-var React      = require('react'),
-    cx         = React.addons.classSet,
-    mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+      Colors       = mui.Styles.Colors,
+      Spacing      = mui.Styles.Spacing,
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
-    IconButton = mui.IconButton;
+      ListItem     = mui.ListItem,
+      Avatar       = mui.Avatar,
+      IconMenu     = mui.IconMenu,
+      IconButton   = mui.IconButton,
+      Icon         = mui.FontIcon,
+      MenuItem     = require('material-ui/lib/menus/menu-item'),
+      MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
+      DeleteIcon   = require('material-ui/lib/svg-icons/action/delete'),
 
-var CountryItem = React.createClass({
+      Dragon       = require('../Dragon.jsx');
 
-    propTypes: function () {
-        return {
-            country:  React.PropTypes.object,
-            onDelete: React.PropTypes.func,
-            onEdit:   React.PropTypes.func
-        }
-    },
+class CountryItem extends React.Component {
 
-    render: function () {
-        var visibilityClass = cx({
-            'list-item__visibility':      true,
+    static propTypes = {
+        country:  React.PropTypes.object,
+        onDelete: React.PropTypes.func.required,
+        onEdit:   React.PropTypes.func.required
+    };
+
+    render() {
+        const styles = this.getStyles();
+
+        const visibilityClass = cx({
             'mdfi_action_visibility':     true,
             'mdfi_action_visibility_off': !this.props.country.show
         });
-        var item = (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <Icon className="list-item__sort mdfi_action_swap_vert" />
-                            <Icon className={visibilityClass} />
-                        </div>
 
-                        <div className="list-item__title s_display_inline-block s_valign_m">
-                            <h5>{this.props.country.name}&nbsp;
-                                <span className="text_color_muted">{this.props.country.slug}</span>
-                            </h5>
+        const iconButtonMenu = (
+            <IconButton touch={true}>
+                <MoreVertIcon color={Colors.grey600}/>
+            </IconButton>
+        );
 
-                        </div>
-
-                        <div className="s_float_r">
-                            <div className="s_display_inline-block s_valign_m text_align_r">
-                            {this.props.country.state}
-                            </div>
-
-                            <div className="s_display_inline-block s_valign_m">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.country._id} data-sort="-1" />
-                            </div>
-                            <div className="s_display_inline-block s_valign_m s_float_r">
-                                <IconButton iconClassName="mdfi_action_highlight_remove" onClick={this.props.onDelete} data-id={this.props.country._id} data-sort="-1" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Paper>
+        const rightIconMenu = (
+            <IconMenu iconButtonElement={iconButtonMenu}>
+                <MenuItem
+                    primaryText="Удалить"
+                    onClick={this.props.onDelete}
+                    data-id={this.props.country._id}
+                    leftIcon={<DeleteIcon color={Colors.grey600}/>}/>
+            </IconMenu>
         );
 
         return (
             <Dragon key={this.props.country._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                {item}
+                <ListItem
+                    style={styles.root}
+                    onTouchTap={this.props.onEdit}
+                    data-id={this.props.country._id}
+                    leftAvatar={<Avatar>{this.props.country.name[0]}</Avatar>}
+                    primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span style={{color: Colors.darkBlack, marginRight: Spacing.desktopGutterMini}}>{this.props.country.name}</span>
+                            <span style={{color: Colors.minBlack}}>{this.props.country.slug}</span>
+                        </p>
+                        }
+                    secondaryText={this.props.country.state}
+                    rightIconButton={rightIconMenu}
+                    />
             </Dragon>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:           {
+                margin: Spacing.desktopGutter + ' 0'
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.country.show ? Colors.blueGrey900 : Colors.lightBlack
+            }
+        }
+    }
+}
 
 module.exports = CountryItem;

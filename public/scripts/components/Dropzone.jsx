@@ -1,44 +1,37 @@
-"use strict";
+const _            = require('lodash'),
+      React        = require('react'),
+      mui          = require('material-ui'),
 
-var _            = require('underscore'),
-    React        = require('react'),
-    cx           = React.addons.classSet,
-    mui          = require('material-ui'),
+      Spacing      = mui.Styles.Spacing,
 
-    Dropzone     = require('dropzone'),
+      Dropzone     = require('dropzone'),
 
-    Button       = mui.FlatButton,
-    Icon         = mui.FontIcon,
-    ActionButton = mui.FloatingActionButton;
+      ActionButton = mui.FloatingActionButton;
 
-var DropzoneComponent = React.createClass({
+class DropzoneComponent extends React.Component {
 
-    _reader: null,
+    static propTypes = {
+        url:            React.PropTypes.string.required,
+        uploadMultiple: React.PropTypes.bool,
+        onUpload:       React.PropTypes.func,
+        onChunkUpload:  React.PropTypes.func
+    };
 
-    propTypes: function () {
-        return {
-            url:            React.PropTypes.string.required,
-            uploadMultiple: React.PropTypes.bool,
-            onUpload:       React.PropTypes.func,
-            onChunkUpload:  React.PropTypes.func
-        }
-    },
+    static defaultProps = {
+        uploadMultiple: true
+    };
 
-    getDefaultProps: function () {
-        return {
-            uploadMultiple: true
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {}
-    },
+        this._onClick = this._onClick.bind(this);
+    }
 
-    _onClick: function () {
+    _onClick() {
         this._loader.processQueue();
-    },
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         this._loader = new Dropzone(this.refs.dropzone.getDOMNode(), {
             url:              this.props.url,
             autoProcessQueue: false,
@@ -47,9 +40,7 @@ var DropzoneComponent = React.createClass({
             uploadMultiple:   this.props.uploadMultiple
         });
 
-        this._loader.on('completemultiple', function () {
-            this._loader.processQueue();
-        }.bind(this));
+        this._loader.on('completemultiple', this._loader.processQueue);
 
         if (this.props.onUpload) {
             this._loader.on('processingmultiple', this.props.onUpload);
@@ -58,16 +49,36 @@ var DropzoneComponent = React.createClass({
         if (this.props.onChunkUpload) {
             this._loader.on('completemultiple', this.props.onChunkUpload);
         }
-    },
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
+
         return (
-            <div className="mui-dropzone-container s_mt_24">
-                <div className="dropzone" ref="dropzone"/>
-                <ActionButton iconClassName="mdfi_file_file_upload" className="s_mt_12" onClick={this._onClick}/>
+            <div style={styles.root}>
+                <div style={styles.dropzone} className="dropzone" ref="dropzone"/>
+                <ActionButton style={styles.button} iconClassName="mdfi_file_file_upload" onClick={this._onClick}/>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:     {
+                marginTop: Spacing.desktopGutter
+            },
+            dropzone: {
+                border: '2px dashed #34495e',
+                zIndex: 1
+            },
+            button:   {
+                position:  'absolute',
+                marginTop: 12,
+                right:     0,
+                zIndex:    10
+            }
+        }
+    }
+}
 
 module.exports = DropzoneComponent;

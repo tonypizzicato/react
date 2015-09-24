@@ -3,8 +3,6 @@ var React                = require('react'),
     injectTapEventPlugin = require("react-tap-event-plugin"),
     mui                  = require('material-ui'),
 
-    a11y                 = require('react-a11y'),
-
     AppRoutes            = require('./routes.jsx');
 
 //Needed for onTouchTap
@@ -17,6 +15,5 @@ Router.create({
     routes:         AppRoutes,
     scrollBehavior: Router.ScrollToTopBehavior
 }).run(function (Handler) {
-    //a11y(); // TODO: check env and off on prod
     React.render(<Handler />, document.getElementById('app-content'));
 });

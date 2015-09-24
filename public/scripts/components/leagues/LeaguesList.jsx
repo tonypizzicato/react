@@ -1,28 +1,36 @@
-"use strict";
+const React          = require('react'),
+      mui            = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing        = mui.Styles.Spacing,
+      Colors         = mui.Styles.Colors,
 
-    LeagueItem           = require('../leagues/LeagueItem.jsx'),
+      List           = mui.List,
+      ListDivider    = mui.ListDivider,
 
-    LeaguesActions       = require('../../actions/LeaguesActions');
+      Sortable       = require('../Sortable.jsx'),
 
-var LeaguesList = React.createClass({
+      LeagueItem     = require('../leagues/LeagueItem.jsx'),
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array
-        }
-    },
+      LeaguesActions = require('../../actions/LeaguesActions');
 
-    getDefaultProps: function () {
-        return {
-            leagues: []
-        }
-    },
+class LeaguesList extends React.Component {
 
-    _onDrop: function (from, to) {
-        var items = this.props.leagues.slice();
+    static propTypes = {
+        leagues: React.PropTypes.array
+    };
+
+    static defaultProps = {
+        leagues: []
+    };
+
+    constructor(props) {
+        super(props);
+
+        this._onDrop = this._onDrop.bind(this);
+    }
+
+    _onDrop(from, to) {
+        const items = this.props.leagues.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
         if (this.props.onDrop) {
@@ -35,26 +43,41 @@ var LeaguesList = React.createClass({
                 sort: index
             });
         })
-    },
+    }
 
-    render: function () {
+    render() {
         if (!this.props.leagues.length) {
             return false;
         }
 
-        var items = this.props.leagues.map(function (item, i) {
-            return (
-                <LeagueItem league={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id} />
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.props.leagues.map((item, index) => {
+                    const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
 
+                    return (
+                        <div key={item._id}>
+                            <LeagueItem league={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={index} key={item._id}/>
+                            {divider}
+                        </div>
+                    )
+                })}
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack,
+                //position:      'relative',
+                //height:        '1000px',
+                //overflow:      'hidden'
+            }
+        }
+    }
+}
 
 module.exports = LeaguesList;

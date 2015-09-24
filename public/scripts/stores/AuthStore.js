@@ -1,7 +1,7 @@
 "use strict";
 
 var $               = require('jquery'),
-    _               = require('underscore'),
+    _               = require('lodash'),
     assign          = require('object-assign'),
     EventEmitter    = require('events').EventEmitter,
 
@@ -85,7 +85,7 @@ AppDispatcher.register(function (action) {
             }).fail(function (res) {
                 Store.emitUnauthorized(res);
             });
-            Store.emitChange();
+            //Store.emitChange();
 
             break;
         case AuthConstants.AUTH_LOGOUT:

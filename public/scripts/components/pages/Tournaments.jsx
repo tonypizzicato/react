@@ -1,8 +1,7 @@
-"use strict";
-
 var $                  = require('jquery'),
+    _                  = require('lodash'),
+    scroll             = require('../../utils/scrollTo'),
     React              = require('react'),
-    Router             = require('react-router'),
     mui                = require('material-ui'),
 
     Tabs               = mui.Tabs,
@@ -14,43 +13,50 @@ var $                  = require('jquery'),
     TournamentsActions = require('../../actions/TournamentsActions'),
     TournamentStore    = require('../../stores/TournamentsStore'),
 
-    TournamentForm      = require('../tournaments/TournamentForm.jsx'),
+    TournamentForm     = require('../tournaments/TournamentForm.jsx'),
     TournamentsList    = require('../tournaments/TournamentsList.jsx');
 
 var _calls = [],
     _deferred;
 
-var TournamentApp = React.createClass({
+class TournamentApp extends React.Component {
 
-    mixins: [Router.State],
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    state = {
+        activeTab:          0,
+        countries:          [],
+        tournaments:        [],
+        selectedTournament: {},
+        mounted:            false
+    };
 
-    getInitialState: function () {
-        return {
-            countries:          [],
-            tournaments:        [],
-            selectedTournament: {}
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    componentDidMount: function () {
-        _calls = [];
+        this._onTabChange = this._onTabChange.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onEdit      = this._onEdit.bind(this);
+        this._onCancel    = this._onCancel.bind(this);
+    }
+
+    componentDidMount() {
+        this.state.mounted = true;
+
+        _calls    = [];
         _deferred = new $.Deferred();
 
         _deferred.then(function () {
-            if (!this.isMounted()) {
+            if (!this.state.mounted) {
                 return;
             }
 
             this.setState({
                 countries:          CountriesStore.getAll(),
                 tournaments:        TournamentStore.getAll(),
-                selectedTournament: this.getInitialState().selectedTournament
+                selectedTournament: {}
             });
         }.bind(this));
 
@@ -63,23 +69,25 @@ var TournamentApp = React.createClass({
             CountriesActions.load();
             TournamentsActions.load();
         }
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
+        this.state.mounted = false;
+
         TournamentStore.removeChangeListener(this._onChange);
 
         CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.leagues.length !== this.props.leagues.length) {
             CountriesActions.load();
             TournamentsActions.load();
         }
-    },
+    }
 
-    _onCall: function (call) {
+    _onCall(call) {
         _calls.push(call);
 
         if (_calls.length == 2) {
@@ -87,59 +95,72 @@ var TournamentApp = React.createClass({
                 _deferred.resolve();
             }.bind(this));
         }
-    },
+    }
 
-    _onTabChange: function () {
+    _onTabChange(tab) {
         this.setState({
-            selectedTournament: this.getInitialState().selectedTournament
+            activeTab:          tab.props.tabIndex,
+            selectedTournament: {}
         });
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
-            selectedTournament: this.getInitialState().selectedTournament
+            selectedTournament: {}
         });
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
         this.setState({
-            selectedTournament: this.state.tournaments.filter(function (tournament) {
-                return tournament._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedTournament: _.findWhere(this.state.tournaments, {_id: e.currentTarget.dataset.id})
         });
-    },
 
-    _onCancel: function () {
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
+        });
+    }
+
+    _onCancel() {
         this.setState({
-            selectedTournament: this.getInitialState().selectedTournament
+            selectedTournament: {}
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
 
-            var tournamentsItems = this.state.tournaments.filter(function (tournament) {
-                return tournament.leagueId == league._id;
-            }.bind(this));
-
-            var countries = this.state.countries.filter(function (country) {
-                return country.leagueId == league._id;
-            });
-
-            var key = this.state.selectedTournament._id + '-edit';
-
-            return (
-                <Tab label={league.name} key={league._id}>
-                    <TournamentForm tournament={this.state.selectedTournament} countries={countries} leagueId={league._id} onCancel={this._onCancel} key={key} />
-                    <TournamentsList tournaments={tournamentsItems} onEdit={this._onEdit} />
-                </Tab>
-            );
-        }.bind(this));
-
+    render() {
         return (
-            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    const tournamentsItems = this.state.tournaments.filter(tournament => tournament.leagueId == league._id);
+                    const countries        = this.state.countries.filter(country => country.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <TournamentForm
+                                    tournament={this.state.selectedTournament}
+                                    countries={countries}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}/>
+                                <TournamentsList
+                                    tournaments={tournamentsItems}
+                                    onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
     }
-});
+}
 
 module.exports = TournamentApp;

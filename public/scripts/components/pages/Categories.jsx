@@ -1,68 +1,73 @@
-"use strict";
+const _                 = require('lodash'),
+      scroll             = require('../../utils/scrollTo'),
+      React             = require('react'),
 
-var React             = require('react'),
-    Router            = require('react-router'),
-    mui               = require('material-ui'),
+      CategoriesActions = require('../../actions/CategoriesActions'),
+      CategoriesStore   = require('../../stores/CategoriesStore'),
 
-    CategoriesActions = require('../../actions/CategoriesActions'),
-    CategoriesStore   = require('../../stores/CategoriesStore'),
+      CategoryForm      = require('../categories/CategoryForm.jsx'),
+      CategoriesList    = require('../categories/CategoriesList.jsx');
 
-    CategoryForm      = require('../categories/CategoryForm.jsx'),
-    CategoriesList    = require('../categories/CategoriesList.jsx');
+class CategoriesApp extends React.Component {
 
-var CategoriesApp = React.createClass({
+    state = {
+        categories:       [],
+        selectedCategory: {}
+    };
 
-    mixins: [Router.State],
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
-            categories:       [],
-            selectedCategory: {}
-        }
-    },
+        this._onChange = this._onChange.bind(this);
+        this._onDelete = this._onDelete.bind(this);
+        this._onEdit   = this._onEdit.bind(this);
+        this._onCancel = this._onCancel.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         CategoriesStore.addChangeListener(this._onChange);
         CategoriesActions.load();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         CategoriesStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             categories:       CategoriesStore.getAll(),
-            selectedCategory: this.getInitialState().selectedCategory
+            selectedCategory: {}
         });
-    },
+    }
 
-    _onDelete: function (e) {
+    _onDelete(e) {
         CategoriesActions.delete(e.currentTarget.dataset.id);
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
         this.setState({
-            selectedCategory: this.state.categories.filter(function (category) {
-                return category._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedCategory: _.findWhere(this.state.categories, {_id: e.currentTarget.dataset.id})
         });
-    },
 
-    _onCancel: function () {
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
+        });
+    }
+
+    _onCancel() {
         this.setState({
-            selectedCategory: this.getInitialState().selectedCategory
+            selectedCategory: {}
         });
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <div>
-                <CategoryForm category={this.state.selectedCategory} onCancel={this._onCancel} key={'category-form'}/>
+                <CategoryForm category={this.state.selectedCategory} onCancel={this._onCancel}/>
                 <CategoriesList categories={this.state.categories} onDelete={this._onDelete} onEdit={this._onEdit}/>
             </div>
         )
     }
-});
+}
 
 module.exports = CategoriesApp;

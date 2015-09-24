@@ -1,62 +1,62 @@
-"use strict";
+const React             = require('react'),
+      mui               = require('material-ui'),
 
-var _                 = require('underscore'),
-    React             = require('react'),
-    mui               = require('material-ui'),
+      Spacing           = mui.Styles.Spacing,
 
-    Paper             = mui.Paper,
-    TextField         = mui.TextField,
-    Button            = mui.RaisedButton,
+      TextField         = mui.TextField,
+      Button            = mui.RaisedButton,
 
-    EventsConstants   = require('../../constants/EventsConstants'),
+      EventsConstants   = require('../../constants/EventsConstants'),
 
-    CategoriesActions = require('../../actions/CategoriesActions'),
-    CategoriesStore   = require('../../stores/CategoriesStore');
+      CategoriesActions = require('../../actions/CategoriesActions'),
+      CategoriesStore   = require('../../stores/CategoriesStore');
 
-var CategoryForm = React.createClass({
+class CategoryForm extends React.Component {
 
-    propTypes: function () {
-        return {
-            category: React.PropTypes.object,
-            onCancel: React.PropTypes.func
-        }
-    },
+    static propTypes = {
+        category: React.PropTypes.object,
+        onCancel: React.PropTypes.func
+    };
 
-    getDefaultProps: function () {
-        return {
-            category: {
-                name: ''
-            },
-            leagueId: ''
-        }
-    },
+    static defaultProps = {
+        category: {
+            name: ''
+        },
+        leagueId: ''
+    };
 
-    getInitialState: function () {
-        return {
-            validation: {}
-        }
-    },
+    state = {
+        validation: {}
+    };
 
-    componentWillMount: function () {
+    constructor(props) {
+        super(props);
+
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
+    }
+
+    componentWillMount() {
         CategoriesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         CategoriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (!nextProps.category.hasOwnProperty('_id') && this.refs.form) {
             this._clearForm();
         }
-    },
+    }
 
-    _onValidationError: function (validation) {
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var category = {
+    _onSave() {
+        let category = {
             name: this.refs.name.getValue()
         };
 
@@ -67,42 +67,56 @@ var CategoryForm = React.createClass({
         } else {
             CategoriesActions.add(category);
         }
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
-
+    _onCancel() {
         this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    _clearForm: function () {
+    _clearForm() {
+        this.setState({validation: {}});
+
         this.refs.name.setValue('');
-    },
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
 
         return (
-            <div className="panel panel_type_category-create s_pt_0" key={this.props.category._id ? this.props.category._id : 'category-form'} ref="form">
+            <div style={styles.root} key={`${this.props.category._id}-category-form`} ref="form">
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.category.name}
                     hintText="Введите имя категории"
                     floatingLabelText="Категория"
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
                     ref="name"/>
 
-                <div className="s_position_relative s_overflow_hidden s_mt_24">
-                    <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel" label="Отменить" secondary={true} onClick={this._onCancel}/>
-                        <Button className="button_type_save s_float_r" label="Сохранить" primary={true} onClick={this._onSave}/>
-                    </div>
-                </div>
+                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:   {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:  {
+                width:        '100%',
+                marginBottom: Spacing.desktopGutter
+            },
+            button: {
+                marginRight: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = CategoryForm;

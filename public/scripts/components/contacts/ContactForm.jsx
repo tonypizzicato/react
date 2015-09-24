@@ -1,105 +1,114 @@
-"use strict";
+const _                  = require('lodash'),
+      React              = require('react'),
+      mui                = require('material-ui'),
 
-var _                  = require('underscore'),
-    React              = require('react'),
-    mui                = require('material-ui'),
+      Spacing            = mui.Styles.Spacing,
 
-    Paper              = mui.Paper,
-    TextField          = mui.TextField,
-    Toggle             = mui.Toggle,
-    Button             = mui.RaisedButton,
-    Checkbox           = mui.Checkbox,
+      TextField          = mui.TextField,
+      Toggle             = mui.Toggle,
+      Button             = mui.RaisedButton,
+      Checkbox           = mui.Checkbox,
 
-    ImageUpload        = require('../ImageUpload.jsx'),
+      ImageUpload        = require('../ImageUpload.jsx'),
 
-    EventsConstants    = require('../../constants/EventsConstants'),
+      EventsConstants    = require('../../constants/EventsConstants'),
 
-    ContactsActions    = require('../../actions/ContactsActions'),
-    ContactsStore      = require('../../stores/ContactsStore'),
+      ContactsActions    = require('../../actions/ContactsActions'),
+      ContactsStore      = require('../../stores/ContactsStore'),
 
-    TournamentsActions = require('../../actions/TournamentsActions'),
-    TournamentsStore   = require('../../stores/TournamentsStore');
+      TournamentsActions = require('../../actions/TournamentsActions'),
+      TournamentsStore   = require('../../stores/TournamentsStore');
 
-var ContactForm = React.createClass({
+class ContactForm extends React.Component {
 
-    propTypes: function () {
-        return {
-            contact:  React.PropTypes.object,
-            leagueId: React.PropTypes.string.required
-        }
-    },
+    static propTypes = {
+        contact:  React.PropTypes.object,
+        leagueId: React.PropTypes.string.required
+    };
 
-    getDefaultProps: function () {
-        return {
-            contact:  {
-                name:        '',
-                title:       '',
-                phone:       '',
-                email:       '',
-                image:       '',
-                toCall:      false,
-                vk:          {
-                    name: '',
-                    url:  ''
-                },
-                show:        false,
-                tournaments: []
+    static defaultProps = {
+        contact:  {
+            name:        '',
+            title:       '',
+            phone:       '',
+            email:       '',
+            image:       '',
+            toCall:      false,
+            vk:          {
+                name: '',
+                url:  ''
             },
-            leagueId: ''
-        }
-    },
-
-    getInitialState: function () {
-        return {
-            validation:  {},
+            show:        false,
             tournaments: []
-        }
-    },
+        },
+        leagueId: ''
+    };
 
-    componentWillMount: function () {
+    state = {
+        validation:  {},
+        tournaments: []
+    };
+
+    constructor(props) {
+        super(props);
+
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
+
+        this._onTournaments = this._onTournaments.bind(this);
+    }
+
+    componentWillMount() {
         ContactsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
         TournamentsStore.addChangeListener(this._onTournaments);
 
         TournamentsActions.load();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         ContactsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
         TournamentsStore.removeChangeListener(this._onTournaments);
-    },
+    }
 
-    componentDidUpdate: function () {
+    componentDidUpdate() {
         if (!!this.props.contact.tournaments) {
-            this.props.contact.tournaments.forEach(function (item) {
-                this.refs['checkbox-' + item].setChecked(true);
-            }.bind(this));
+            this.props.contact.tournaments.forEach(item => {
+                !!this.refs['checkbox-' + item._id] && this.refs['checkbox-' + item].setChecked(true);
+            });
         }
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (!nextProps.contact.hasOwnProperty('_id') && this.refs.form) {
             this._clearForm();
         }
-    },
+    }
 
-    _onTournaments: function () {
-        this.setState({
-            tournaments: TournamentsStore.getByLeague(this.props.leagueId)
+    _onTournaments() {
+        const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
+            return !!item.country;
         });
-    },
 
-    _onValidationError: function (validation) {
+        this.setState({
+            tournaments: tournaments
+        });
+    }
+
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var tournaments = [];
-        this.state.tournaments.forEach(function (item) {
+    _onSave() {
+        let tournaments = [];
+
+        this.state.tournaments.forEach(item => {
             if (this.refs['checkbox-' + item._id].isChecked()) {
                 tournaments.push(item._id);
             }
-        }.bind(this));
-        var contact     = {
+        });
+
+        let contact = {
             name:        this.refs.name.getValue(),
             title:       this.refs.title.getValue(),
             phone:       this.refs.phone.getValue(),
@@ -116,25 +125,26 @@ var ContactForm = React.createClass({
         };
 
         this.setState({validation: {}});
+
         if (this.props.contact._id) {
             contact._id = this.props.contact._id;
             ContactsActions.save(contact);
         } else {
             ContactsActions.add(contact);
         }
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
-
+    _onCancel() {
         this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    _clearForm: function () {
+    _clearForm() {
+        this.setState({validation: {}});
+
         this.refs.name.setValue('');
         this.refs.title.setValue('');
         this.refs.phone.setValue('');
@@ -145,29 +155,31 @@ var ContactForm = React.createClass({
         this.refs.toCall.setToggled(false);
         this.refs.image.setImage(null);
 
-        this.state.tournaments.forEach(function (item) {
+        this.state.tournaments.forEach(item => {
             this.refs['checkbox-' + item._id].setChecked(false);
-        }.bind(this));
-    },
+        });
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
+
         if (!this.props.leagueId || !this.state.tournaments.length) {
             return (<h4>Required data is loading or not available</h4>);
         }
-        var tournaments = _.groupBy(this.state.tournaments, function (item) {
-            return item.country ? item.country.name : 'Остальные';
-        });
 
-        var tournamentsBlock = _.mapObject(tournaments, function (tournaments, country) {
-            var tournamentsEl = tournaments.map(function (item) {
-                var index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : false;
+        const tournaments = _.groupBy(this.state.tournaments, item => item.country ? item.country.name : 'Остальные');
+
+        const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
+            const tournamentsEl = tournaments.map(item => {
+                const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : false;
+
                 return <Checkbox
                     label={item.name}
                     className={item.show ? '' : 'text_color_muted'}
-                    defaultChecked={index !== false}
+                    defaultChecked={index !== -1}
                     ref={'checkbox-' + item._id}
                     key={'checkbox-' + item._id + '-' + item._id}/>
-            }.bind(this));
+            });
 
             return (
                 <div className="s_display_inline-block s_mr_24 s_mb_24">
@@ -175,11 +187,12 @@ var ContactForm = React.createClass({
                     {tournamentsEl}
                 </div>);
 
-        }.bind(this));
+        });
 
         return (
-            <div className="panel panel_type_contact-create s_pt_0" key={this.props.contact._id ? this.props.contact._id : 'contact-form'} ref="form">
+            <div style={styles.root} key={`${this.props.contact._id}-contact-form`} ref="form">
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.name}
                     hintText="Введите имя"
                     floatingLabelText="Имя"
@@ -187,6 +200,7 @@ var ContactForm = React.createClass({
                     ref="name"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.title}
                     hintText="Введите должность"
                     floatingLabelText="Должность"
@@ -194,6 +208,7 @@ var ContactForm = React.createClass({
                     ref="title"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.email}
                     floatingLabelText="Email"
                     hintText="contacts.email@amateurs.io"
@@ -202,6 +217,7 @@ var ContactForm = React.createClass({
                     ref="email"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.phone}
                     floatingLabelText="Телефон"
                     hintText="+7 (999) 999 99 99"
@@ -210,6 +226,7 @@ var ContactForm = React.createClass({
                     ref="phone"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.vk ? this.props.contact.vk.url : ''}
                     hintText="https://vk.com/id111111"
                     floatingLabelText="Вкотнакте URL"
@@ -217,6 +234,7 @@ var ContactForm = React.createClass({
                     ref="vk_url"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.contact.vk ? this.props.contact.vk.name : ''}
                     hintText="Имя Прозвище Фамилия"
                     floatingLabelText="Имя Вконтакте"
@@ -236,34 +254,48 @@ var ContactForm = React.createClass({
                     key={this.props._id + '-image-upload'}
                     ref="image"/>
 
-                <div className="s_position_relative s_overflow_hidden s_mt_24" key="contact-state-radio">
-                    <div className="s_float_l s_width_half">
-                        <div className="s_width_third s_display_inline-block s_mt_24">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                ref="show"
-                                defaultToggled={this.props.contact.show}
-                                label="Показывать"/>
-                        </div>
-                        <div className="s_width_third s_display_inline-block s_mt_24">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                ref="toCall"
-                                defaultToggled={this.props.contact.toCall}
-                                label="Для связи"/>
-                        </div>
-                    </div>
+                <Toggle
+                    style={styles.toggle}
+                    name="show"
+                    value="show"
+                    labelPosition="right"
+                    ref="show"
+                    defaultToggled={this.props.contact.show}
+                    label="Показывать"/>
+                <Toggle
+                    style={styles.toggle}
+                    name="toCall"
+                    value="toCall"
+                    ref="toCall"
+                    defaultToggled={this.props.contact.toCall}
+                    label="Для связи"/>
 
-                    <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
-                    </div>
-                </div>
+                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:   {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:  {
+                width: '100%'
+            },
+            toggle: {
+                height:       Spacing.desktopGutter,
+                marginTop:    Spacing.desktopGutter,
+                marginBottom: Spacing.desktopGutter,
+                marginRight:  Spacing.desktopGutter
+            },
+            button: {
+                marginRight: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = ContactForm;

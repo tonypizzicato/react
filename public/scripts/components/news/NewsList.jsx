@@ -1,41 +1,39 @@
-"use strict";
+const React       = require('react'),
+      mui         = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing     = mui.Styles.Spacing,
+      Colors      = mui.Styles.Colors,
 
-    NewsItem             = require('../news/NewsItem.jsx'),
+      List        = mui.List,
+      ListDivider = mui.ListDivider,
 
-    NewsActions          = require('../../actions/NewsActions');
+      NewsItem    = require('../news/NewsItem.jsx'),
 
-var NewsList = React.createClass({
+      NewsActions = require('../../actions/NewsActions');
 
-    propTypes: function () {
-        return {
-            news:   React.PropTypes.array,
-            onEdit: React.PropTypes.func.required
-        }
-    },
+class NewsList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            news: []
-        }
-    },
+    static propTypes = {
+        news:   React.PropTypes.array,
+        onEdit: React.PropTypes.func.required
+    };
 
-    getInitialState: function () {
-        return {
-            news: this.props.news
-        }
-    },
+    static defaultProps = {
+        news: []
+    };
 
-    componentWillReceiveProps: function (nextProps) {
+    state = {
+        news: this.props.news
+    };
+
+    componentWillReceiveProps(nextProps) {
         if (this.state.news.length != nextProps.news.length) {
             this.setState({news: nextProps.news});
         }
-    },
+    }
 
-    _onDrop: function (from, to) {
-        var items = this.state.news.slice();
+    _onDrop(from, to) {
+        let items = this.state.news.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
         this.setState({news: items});
@@ -44,31 +42,44 @@ var NewsList = React.createClass({
             this.props.onDrop(items);
         }
 
-        items.forEach(function (item, index) {
+        items.forEach((item, index) => {
             NewsActions.save({
-                _id:      item._id,
-                sort:     index
+                _id:  item._id,
+                sort: index
             }, {silent: true});
-        }.bind(this))
-    },
+        })
+    }
 
-    render: function () {
-        if (!this.state.news.length) {
+    render() {
+        if (!this.props.news.length) {
             return false;
         }
 
-        var items = this.state.news.map(function (item, i) {
-            return (
-                <NewsItem article={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id} />
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.props.news.map((item, i) => {
+                    const divider = i != this.props.news.length - 1 ? <ListDivider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <NewsItem article={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
+                            {divider}
+                        </div>
+                    );
+                })}
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = NewsList;

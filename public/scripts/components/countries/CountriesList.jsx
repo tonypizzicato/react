@@ -1,42 +1,48 @@
 "use strict";
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+var React            = require('react'),
+    mui              = require('material-ui'),
 
-    CountryItem          = require('../countries/CountryItem.jsx'),
+    Spacing          = mui.Styles.Spacing,
+    Colors           = mui.Styles.Colors,
 
-    CountriesActions     = require('../../actions/CountriesActions');
+    List             = mui.List,
+    ListDivider      = mui.ListDivider,
 
-var CountriesList = React.createClass({
+    CountryItem      = require('../countries/CountryItem.jsx'),
 
-    propTypes: function () {
-        return {
-            countries: React.PropTypes.array,
-            leagueId:  React.PropTypes.string
-        }
-    },
+    CountriesActions = require('../../actions/CountriesActions');
 
-    getDefaultProps: function () {
-        return {
-            countries: [],
-            leagueId:  null
-        }
-    },
+class CountriesList extends React.Component {
 
-    getInitialState: function () {
-        return {
-            countries: this.props.countries
-        }
-    },
+    static propTypes = {
+        countries: React.PropTypes.array,
+        leagueId:  React.PropTypes.string
+    };
 
-    componentWillReceiveProps: function (nextProps) {
+    static defaultProps = {
+        countries: [],
+        leagueId:  null
+    };
+
+    state = {
+        countries: this.props.countries
+    };
+
+    constructor(props) {
+        super(props);
+
+        this._onDrop = this._onDrop.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
         if (this.state.countries.length != nextProps.countries.length) {
             this.setState({countries: nextProps.countries});
         }
-    },
+    }
 
-    _onDrop: function (from, to) {
-        var items = this.state.countries.slice();
+    _onDrop(from, to) {
+        let items = this.state.countries.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
         this.setState({countries: items});
@@ -45,32 +51,51 @@ var CountriesList = React.createClass({
             this.props.onDrop(items);
         }
 
-        items.forEach(function (item, index) {
+        items.forEach((item, index) => {
             CountriesActions.save({
                 _id:      item._id,
                 sort:     index,
                 leagueId: this.props.leagueId
             }, {silent: true});
-        }.bind(this))
-    },
+        });
+    }
 
-    render: function () {
+    render() {
         if (!this.state.countries.length) {
             return false;
         }
 
-        var items = this.state.countries.map(function (item, i) {
-            return (
-                <CountryItem country={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id} />
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.state.countries.map((item, i) => {
+                    const divider = i != this.props.countries.length - 1 ? <ListDivider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <CountryItem
+                                country={item}
+                                onEdit={this.props.onEdit}
+                                onDelete={this.props.onDelete}
+                                onDrop={this._onDrop}
+                                index={i}
+                                key={item._id}/>
+                            {divider}
+                        </div>
+                    );
+                })}
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = CountriesList;

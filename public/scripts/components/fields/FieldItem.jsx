@@ -1,9 +1,10 @@
 "use strict";
 
 var React      = require('react'),
-    cx         = React.addons.classSet,
+    cx         = require('classnames'),
     mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+
+    Dragon     = require('../Dragon.jsx'),
 
     Paper      = mui.Paper,
     Icon       = mui.FontIcon,
@@ -35,14 +36,16 @@ var FieldItem = React.createClass({
                             <Icon className={visibilityClass}/>
                         </div>
 
-                        <div className="list-item__title list-item__title_type_fields text_overflow_ellipsis s_display_inline-block s_valign_m">
+                        <div
+                            className="list-item__title list-item__title_type_fields text_overflow_ellipsis s_display_inline-block s_valign_m">
                             <span>{this.props.field.title}&nbsp;</span>
                             <span className="text_color_muted">{this.props.field.address}</span>
                         </div>
 
                         <div className="s_float_r">
                             <div className="s_display_inline-block s_valign_m">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.field._id} data-sort="-1"/>
+                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.field._id}
+                                            data-sort="-1"/>
                             </div>
                         </div>
                     </div>

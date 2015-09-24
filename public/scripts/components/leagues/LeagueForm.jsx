@@ -1,58 +1,59 @@
 "use strict";
 
-var assign          = require('object-assign'),
-    React           = require('react'),
-    mui             = require('material-ui'),
+const React           = require('react'),
+      mui             = require('material-ui'),
 
-    Paper           = mui.Paper,
-    TextField       = mui.TextField,
-    Toggle          = mui.Toggle,
-    Button          = mui.RaisedButton,
+      Spacing         = mui.Styles.Spacing,
 
-    EventsConstants = require('../../constants/EventsConstants'),
+      TextField       = mui.TextField,
+      Toggle          = mui.Toggle,
+      Button          = mui.RaisedButton,
 
-    LeaguesActions  = require('../../actions/LeaguesActions'),
-    LeaguesStore    = require('../../stores/LeaguesStore');
+      EventsConstants = require('../../constants/EventsConstants'),
 
-var LeagueForm = React.createClass({
+      LeaguesActions  = require('../../actions/LeaguesActions'),
+      LeaguesStore    = require('../../stores/LeaguesStore');
 
-    propTypes: function () {
-        return {
-            league: React.PropTypes.object
+class LeagueForm extends React.Component {
+
+    static propTypes() {
+        league: React.PropTypes.object
+    };
+
+    static defaultProps = {
+        league: {
+            _id:  null,
+            name: '',
+            slug: '',
+            show: false
         }
-    },
+    };
 
-    getDefaultProps: function () {
-        return {
-            league: {
-                _id:  null,
-                name: '',
-                slug: '',
-                show: false
-            }
-        }
-    },
+    state = {
+        validation: {}
+    };
 
-    getInitialState: function () {
-        return {
-            validation: {}
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    componentDidMount: function () {
+        this._onCancel = this._onCancel.bind(this);
+        this._onSave   = this._onSave.bind(this);
+    }
+
+    componentDidMount() {
         LeaguesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         LeaguesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    _onValidationError: function (validation) {
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var league = {
+    _onSave() {
+        const league = {
             _id:  this.props.league._id,
             name: this.refs.name.getValue(),
             slug: this.refs.slug.getValue(),
@@ -61,59 +62,85 @@ var LeagueForm = React.createClass({
 
         this.setState({validation: {}});
         LeaguesActions.save(league);
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
+    _onCancel() {
+        this.setState({validation: {}});
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    render: function () {
-        var disabled = !this.props.league._id;
-        console.log(this.props.league);
+    render() {
+        const disabled = !this.props.league._id;
+        const styles   = this.getStyles();
+
         return (
-            <div className="panel panel_type_league-create s_pt_0">
+            <div style={styles.root}>
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.league.name}
                     hintText="Введите название турнира"
                     floatingLabelText="Название"
                     disabled={true}
                     errorText={this.state.validation.name ? 'Поле не может быть пустым' : null}
-                    ref="name" />
+                    ref="name"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.league.slug}
                     hintText="Введите url турнира (пример: bpl)"
                     placehoder="URL"
                     floatingLabelText="URL"
                     disabled={disabled}
                     errorText={this.state.validation.slug ? 'Поле не может быть пустым' : null}
-                    ref="slug" />
+                    ref="slug"/>
 
-
-                <div className="s_position_relative s_overflow_hidden s_mt_24">
-                    <div className="s_float_l s_width_half">
-                        <div className="s_width_third s_display_inline-block s_mt_24">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                ref="show"
-                                defaultToggled={this.props.league.show}
-                                label="Показывать" />
-                        </div>
-                    </div>
-
-                    <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} disabled={!this.props.league.name} onClick={this._onCancel} />
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} disabled={!this.props.league.name} onClick={this._onSave} />
-                    </div>
-                </div>
+                <Toggle
+                    style={styles.toggle}
+                    labelPosition="right"
+                    name="show"
+                    value="show"
+                    ref="show"
+                    defaultToggled={this.props.league.show}
+                    label="Показывать"/>
+                <Button
+                    style={styles.button}
+                    label="Отменить"
+                    secondary={true}
+                    disabled={!this.props.league.name}
+                    onClick={this._onCancel}/>
+                <Button
+                    style={styles.button}
+                    label="Сохранить"
+                    primary={true}
+                    disabled={!this.props.league.name}
+                    onClick={this._onSave}/>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:   {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:  {
+                width: '100%'
+            },
+            toggle: {
+                height:       Spacing.desktopGutter,
+                marginTop:    Spacing.desktopGutter,
+                marginBottom: Spacing.desktopGutter,
+                marginRight:  Spacing.desktopGutter
+            },
+            button: {
+                marginRight: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = LeagueForm;

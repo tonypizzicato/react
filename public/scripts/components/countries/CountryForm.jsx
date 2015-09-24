@@ -1,60 +1,63 @@
-"use strict";
+const React            = require('react'),
+      mui              = require('material-ui'),
 
-var React            = require('react'),
-    mui              = require('material-ui'),
+      Spacing          = mui.Styles.Spacing,
 
-    Paper            = mui.Paper,
-    TextField        = mui.TextField,
-    Toggle           = mui.Toggle,
-    RadioButtonGroup = mui.RadioButtonGroup,
-    RadioButton      = mui.RadioButton,
-    Button           = mui.RaisedButton,
+      TextField        = mui.TextField,
+      Toggle           = mui.Toggle,
+      RadioButtonGroup = mui.RadioButtonGroup,
+      RadioButton      = mui.RadioButton,
+      Button           = mui.RaisedButton,
 
-    EventsConstants  = require('../../constants/EventsConstants'),
+      EventsConstants  = require('../../constants/EventsConstants'),
 
-    CountriesActions = require('../../actions/CountriesActions'),
-    CountriesStore   = require('../../stores/CountriesStore');
+      CountriesActions = require('../../actions/CountriesActions'),
+      CountriesStore   = require('../../stores/CountriesStore');
 
-var CountryForm = React.createClass({
+class CountryForm extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            country:  {
-                name:  '',
-                slug:  '',
-                state: 'CREATED',
-                show:  false
-            },
-            leagueId: null
-        }
-    },
+    static defaultProps = {
+        country:  {
+            name:  '',
+            slug:  '',
+            state: 'CREATED',
+            show:  false
+        },
+        leagueId: null
+    };
 
-    getInitialState: function () {
-        return {
-            validation: {}
-        }
-    },
+    state = {
+        validation: {}
+    };
 
-    componentDidMount: function () {
+    constructor(props) {
+        super(props);
+
+        this._onValidationError = this._onValidationError.bind(this);
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+    }
+
+    componentDidMount() {
         CountriesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         CountriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (!nextProps.country.hasOwnProperty('_id')) {
             this._clearForm();
         }
-    },
+    }
 
-    _onValidationError: function (validation) {
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var country = {
+    _onSave() {
+        let country = {
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             vk:       this.refs.vk.getValue(),
@@ -70,30 +73,33 @@ var CountryForm = React.createClass({
         } else {
             CountriesActions.add(country);
         }
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
-
+    _onCancel() {
         this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    _clearForm: function () {
+    _clearForm() {
+        this.setState({validation: {}});
+
         this.refs.name.setValue('');
         this.refs.slug.setValue('');
         this.refs.vk.setValue('');
         this.refs.state.setSelectedValue('CREATED');
         this.refs.show.setToggled(false);
-    },
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
+
         return (
-            <div className="panel panel_type_country-create s_pt_0" key={this.props.country._id ? this.props.country._id : 'country-form'}>
+            <div style={styles.root} key={`${this.props.country._id}-country-form`}>
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.country.name}
                     hintText="Введите название страны"
                     floatingLabelText="Название"
@@ -101,6 +107,7 @@ var CountryForm = React.createClass({
                     ref="name"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.country.slug}
                     hintText="Введите url страны (пример: en)"
                     floatingLabelText="URL"
@@ -108,48 +115,64 @@ var CountryForm = React.createClass({
                     ref="slug"/>
 
                 <TextField
+                    style={styles.input}
                     defaultValue={this.props.country.vk}
                     hintText="Введите адрес страны Вконтакте"
                     floatingLabelText="VK"
                     ref="vk"/>
+                <RadioButtonGroup
+                    style={styles.radioGroup}
+                    name="state"
+                    defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
+                    ref="state">
+                    <RadioButton
+                        value="CREATED"
+                        label="CREATED"/>
+                    <RadioButton
+                        value="ACTIVE"
+                        label="ACTIVE"/>
+                    <RadioButton
+                        value="ARCHIVE"
+                        label="ARCHIVE"/>
+                </RadioButtonGroup>
 
-                <div className="s_position_relative s_overflow_hidden s_mt_24" key="country-state-radio">
-                    <div className="s_float_l s_width_half">
-                        <div className="s_float_l s_width_half">
-                            <RadioButtonGroup
-                                name="state"
-                                defaultSelected={this.props.country.state ? this.props.country.state : 'CREATED'}
-                                ref="state">
-                                <RadioButton
-                                    value="CREATED"
-                                    label="CREATED"/>
-                                <RadioButton
-                                    value="ACTIVE"
-                                    label="ACTIVE"/>
-                                <RadioButton
-                                    value="ARCHIVE"
-                                    label="ARCHIVE"/>
-                            </RadioButtonGroup>
-                        </div>
-
-                        <div className="s_width_third s_display_inline-block s_mt_24">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                ref="show"
-                                defaultToggled={this.props.country.show}
-                                label="Показывать"/>
-                        </div>
-                    </div>
-
-                    <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
-                    </div>
-                </div>
+                <Toggle
+                    style={styles.toggle}
+                    labelPosition="right"
+                    name="show"
+                    value="show"
+                    ref="show"
+                    defaultToggled={this.props.country.show}
+                    label="Показывать"/>
+                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:       {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:      {
+                width: '100%',
+            },
+            radioGroup: {
+                margin: `${Spacing.desktopGutter}px 0 0`
+            },
+            toggle:     {
+                height:       Spacing.desktopGutter,
+                marginTop:    Spacing.desktopGutter,
+                marginBottom: Spacing.desktopGutter,
+                marginRight:  Spacing.desktopGutter
+            },
+            button:     {
+                marginRight: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = CountryForm;
