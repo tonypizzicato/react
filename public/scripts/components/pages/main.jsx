@@ -199,7 +199,7 @@ const MainApp = React.createClass({
     getStyles: function () {
         return {
             content:  {
-                width:         1000,
+                width:         1092,
                 margin:        '0 auto',
                 padding:       Spacing.desktopGutter,
                 paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,

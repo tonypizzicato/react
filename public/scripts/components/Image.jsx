@@ -9,18 +9,17 @@ let _img;
 class Image extends React.Component {
 
     static propTypes = {
-        src:         React.PropTypes.string.required,
-        transition:  React.PropTypes.string,
-        aspectRatio: React.PropTypes.number,
-        width:       React.PropTypes.number.required,
-        height:      React.PropTypes.number.required,
-        pos:         React.PropTypes.shape({
+        src:            React.PropTypes.string.required,
+        transition:     React.PropTypes.string,
+        aspectRatio:    React.PropTypes.number,
+        width:          React.PropTypes.number.required,
+        height:         React.PropTypes.number.required,
+        pos:            React.PropTypes.shape({
             x: React.PropTypes.string,
             y: React.PropTypes.string
         }),
-        style:       React.PropTypes.shape({
-            size: React.PropTypes.string
-        })
+        style:          React.PropTypes.object,
+        containerStyle: React.PropTypes.object
     };
 
     static defaultProps = {
@@ -59,14 +58,14 @@ class Image extends React.Component {
     }
 
     render() {
-        var divStyles = {
+        const divStyles = Styles.mergeAndPrefix({
             position: 'relative',
             width:    this.props.width,
             height:   this.props.height,
             margin:   '0 auto 24px'
-        };
+        }, this.props.containerStyle);
 
-        const imageStyles = Styles.mergeAndPrefix(this.props.style, {
+        const imageStyles = Styles.mergeAndPrefix({
             position:           'absolute',
             top:                0,
             right:              0,
@@ -76,7 +75,7 @@ class Image extends React.Component {
             backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
             backgroundImage:    'url(' + this.props.src + ')',
             transition:         this.props.transition || 'opacity 0.6s ease'
-        });
+        }, this.props.style);
 
         return (
             <div style={divStyles}>

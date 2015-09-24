@@ -1,23 +1,23 @@
-"use strict";
+const React  = require('react'),
+      mui    = require('material-ui'),
 
-var React  = require('react'),
-    mui    = require('material-ui'),
+      Dialog = mui.Dialog;
 
-    Dialog = mui.Dialog;
+class HelpPhoto extends React.Component {
 
-var HelpPhoto = React.createClass({
-
-    show: function () {
+    show() {
         this.refs.dialog.show();
-    },
+    }
 
-    render: function () {
-        var actions = [
+    render() {
+        const styles = this.getStyles();
+        
+        const actions = [
             {text: 'Ну, OK'}
         ];
 
         return (
-            <Dialog title="Оформление анонсов и обзоров" actions={actions} ref="dialog">
+            <Dialog contentStyle={styles.root} title="Оформление анонсов и обзоров" autoDetectWindowHeight={true} autoScrollBodyContent={true} actions={actions} ref="dialog">
                 <p>
                     Для оформления обзора или анонса необходимо ввести текст в соотвествующее поле, а так же добавить ссылки на видео, если они есть.<br />
                     <strong>Важно.</strong> Для того чтобы обзор/анонс стали доступны на сайте необходимо включить переключатель "Показывать".
@@ -25,9 +25,9 @@ var HelpPhoto = React.createClass({
 
                 <p>
                     Анонс<br />
-                    <img className="s_mt_12" src="/images/help/review/review1.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review1.png"/>
                     Обзор<br />
-                    <img className="s_mt_12" src="/images/help/review/review2.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review2.png"/>
                 </p>
 
                 <p>
@@ -35,7 +35,7 @@ var HelpPhoto = React.createClass({
                     В этом случае необходимо загрузить фото встречающихся команд.
                     В результате на сайте появится блок центрального матча следующего тура.
 
-                    <img className="s_mt_12" src="/images/help/review/review3.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review3.png"/>
                 </p>
 
                 <h3>Отображение анонса/обзора на сайте</h3>
@@ -54,7 +54,7 @@ var HelpPhoto = React.createClass({
                     Для активации редактирования нужно выделить текст, который необходимо выделить особым образом, в результате появится панель форматирования.
                     Пиктограммы кнопок панели имеют общепринятые обозначения.
 
-                    <img className="s_mt_12" src="/images/help/review/review8.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review8.png"/>
                 </p>
 
                 <h3>Добавление видео</h3>
@@ -66,7 +66,7 @@ var HelpPhoto = React.createClass({
                     Дополнительно можно добавить заголовок для этого видео(пока это поле не выводится, но может быть добавлено на сайт).<br />
                     Для того, чтобы добавить несколько видео, необходимо нажать на кнопку добавления дополнительного видео(иконка плюсика у последнего видео).
 
-                    <img className="s_mt_12" src="/images/help/review/review9.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review9.png"/>
                 </p>
 
                 <h4>Где взять правильную ссылку</h4>
@@ -86,7 +86,7 @@ var HelpPhoto = React.createClass({
                     Все ссылки для вставки из youtube должны выглядеть так, а отличаться только ID видео(в данном случае это bmXumtgwtak).
                     Чтобы получить эту ссыку можно на странице с видео скопировать её из специального элемента
 
-                    <img className="s_mt_12" src="/images/help/review/review4.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review4.png"/>
 
                 </p>
                 <h5 className="s_mb_0">Vimeo</h5>
@@ -94,9 +94,9 @@ var HelpPhoto = React.createClass({
                 <p>
                     Ссылка вытаскивается по аналогии.<br />
                     Для её получения необходимо нажать на кнопку Share(иконка самолетика)
-                    <img className="s_mt_12" src="/images/help/review/review5.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review5.png"/>
                     И скопировать <strong>только ссылку</strong>.
-                    <img className="s_mt_12" src="/images/help/review/review6.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review6.png"/>
                     Поскольку vimeo дает выдделить только весь текст и не дает выделить только ссылку,
                     копируем что можем и оставляем <strong>только ссылку</strong>.
                 </p>
@@ -114,7 +114,7 @@ var HelpPhoto = React.createClass({
                     Схема отработанная: переходим на страницу с видео, получаем embed ссылку, сохраняем в системе.<br />
                     Для получения ссылки необходимо нажать на кнопку получения ссылки для встраивания видео(сверху справа в плеере иконка с угловыми скобками).
                     Далее как и в вимео выбираем код для вставки и оставляем <strong>только ссылку</strong>.
-                    <img className="s_mt_12" src="/images/help/review/review7.png"/>
+                    <img style={styles.image} className="s_mt_12" src="/images/help/review/review7.png"/>
                 </p>
 
                 <p>
@@ -122,6 +122,7 @@ var HelpPhoto = React.createClass({
                     которая для браузера выглядит так: https://vk.com/video?z=video1572731_149462834, <strong>для сохранения в системе</strong> будет
                     выглядеть так: <strong>//vk.com/video_ext.php?oid=1572731&amp;id=149462834&amp;hash=b61399023b11f89e&amp;hd=2</strong>.
                 </p>
+
                 <p>
                     В случае возникновения затруднений прошу писать в <a href="https://vk.com/id1572731" target="_blank">ВК</a> либо
                     на <a href="mailto:tony.grebnev@gmail.com?Subject=Ошибка зыгрузки фото" target="_blank">почту</a>.
@@ -129,6 +130,17 @@ var HelpPhoto = React.createClass({
             </Dialog>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:  {
+                maxWidth: '1024px'
+            },
+            image: {
+                width: '100%'
+            }
+        }
+    }
+}
 
 module.exports = HelpPhoto;
