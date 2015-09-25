@@ -35,8 +35,8 @@ class Auth extends React.Component {
         return {
             root: {
                 width:    520,
+                minWidth: 320,
                 margin:   '50px auto',
-                top:      50,
                 position: 'relative'
             }
         }
@@ -255,7 +255,7 @@ var Login = React.createClass({
 
     getStyles() {
         return {
-            root: {
+            root:   {
                 padding: '0 24px 24px'
             },
             button: {

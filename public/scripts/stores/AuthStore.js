@@ -1,21 +1,18 @@
-"use strict";
+const $               = require('jquery'),
+      _               = require('lodash'),
+      EventEmitter    = require('events').EventEmitter,
 
-var $               = require('jquery'),
-    _               = require('lodash'),
-    assign          = require('object-assign'),
-    EventEmitter    = require('events').EventEmitter,
+      routes          = require('../utils/routes'),
+      api             = require('../utils/api').init(routes.routes, routes.basePath),
 
-    routes          = require('../utils/routes'),
-    api             = require('../utils/api').init(routes.routes, routes.basePath),
+      AppDispatcher   = require('../dispatcher/app-dispatcher'),
 
-    AppDispatcher   = require('../dispatcher/app-dispatcher'),
+      EventsConstants = require('../constants/EventsConstants'),
+      AuthConstants   = require('../constants/AuthConstants');
 
-    EventsConstants = require('../constants/EventsConstants'),
-    AuthConstants   = require('../constants/AuthConstants');
-
-var initUser = function () {
-    var el = $('#user'),
-        user = null;
+const initUser = function () {
+    var el      = $('#user'),
+        user    = null;
     var userObj = el.data('user');
     if (userObj !== undefined) {
         if (userObj._id) {
@@ -27,9 +24,10 @@ var initUser = function () {
     return user;
 };
 
-var _user = initUser();
+let _user            = initUser(),
+    _validationError = null;
 
-var Store = assign({}, EventEmitter.prototype, {
+const Store = _.extend({}, EventEmitter.prototype, {
 
     emitChange: function () {
         this.emit(EventsConstants.EVENT_CHANGE);
@@ -61,16 +59,62 @@ var Store = assign({}, EventEmitter.prototype, {
 
     loggedIn: function () {
         return !!_user;
+    },
+
+    /**
+     * @returns {Object|null} Validation error object
+     */
+    getValidationError: function () {
+        const err        = _validationError;
+        _validationError = null;
+
+        return err;
+    },
+
+    /**
+     * @param {Object} New user object
+     * @returns {boolean}
+     */
+    validate: function (user) {
+        const notEmpty = function (value) {
+            return value.toString().length > 0;
+        };
+
+        const rules = {
+            username: notEmpty,
+            email:    notEmpty
+        };
+
+        return this._isValid(user, rules);
+    },
+
+    _isValid: function (entity, rules) {
+
+        let result = true,
+            ruleResult;
+
+        for (let rule in rules) {
+            if (entity.hasOwnProperty(rule)) {
+                ruleResult = rules[rule](entity[rule]);
+                if (!ruleResult) {
+                    _validationError       = _validationError || {};
+                    _validationError[rule] = true;
+                    result                 = false;
+                }
+            }
+        }
+
+        return result;
     }
 });
 
 
 AppDispatcher.register(function (action) {
-    var options = assign({}, action.data);
+    const options = _.extend({}, {validate: true, silent: false}, action.options);
 
     switch (action.type) {
         case AuthConstants.AUTH_SIGNUP:
-            api.call('auth:signup', options).done(function (response) {
+            api.call('auth:signup', action.data).done(function (response) {
                 _user = response;
                 Store.emitChange();
             });
@@ -79,7 +123,7 @@ AppDispatcher.register(function (action) {
 
             break;
         case AuthConstants.AUTH_LOGIN:
-            api.call('auth:login', options).done(function (response) {
+            api.call('auth:login', action.data).done(function (response) {
                 _user = response;
                 Store.emitChange();
             }).fail(function (res) {
@@ -89,10 +133,24 @@ AppDispatcher.register(function (action) {
 
             break;
         case AuthConstants.AUTH_LOGOUT:
-            api.call('auth:logout', options).done(function (response) {
+            api.call('auth:logout').done(function (response) {
                 _user = null;
                 Store.emitChange();
             });
+            break;
+
+        case AuthConstants.USER_SAVE:
+            if (!options.validate || Store.validate(action.data)) {
+                api.call('user:save', action.data).done(function () {
+                    _user = _.extend({}, action.data, _user);
+
+                    if (!options.silent) {
+                        Store.emitChange();
+                    }
+                });
+            } else {
+                Store.emitEvent(EventsConstants.EVENT_VALIDATION, Store.getValidationError());
+            }
             break;
     }
 });

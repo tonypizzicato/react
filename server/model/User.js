@@ -12,10 +12,12 @@ var userSchema = new Schema({
     dc: {type: Date, default: Date.now},
     du: {type: Date},
 
-    username: {type: String, required: true, unique: true},
+    username: {type: String, required: true},
     email:    {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    vk:       {type: String, required: true},
+    avatar:   {type: String},
+    leagueId: {type: ObjectId},
+    position: {type: String},
     roles:    {type: Array, required: true, default: ['user']}
 });
 

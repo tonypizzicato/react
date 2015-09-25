@@ -149,7 +149,10 @@ const MainApp = React.createClass({
             <Link style={styles.login.label} to="logout">Выход</Link> :
             <Link style={styles.login.label} to="login">Вход</Link>;
 
-        const appBarTitle = _.result(_(menuItems).find(item => item.route && this.context.router.isActive(item.route)), 'text');
+        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.context.router.isActive(item.route)), 'text');
+        if (!appBarTitle) {
+            appBarTitle = 'amateurs.io';
+        }
 
         return (
             <div>
