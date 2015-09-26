@@ -5,6 +5,9 @@ const $               = require('jquery'),
       routes          = require('../utils/routes'),
       api             = require('../utils/api').init(routes.routes, routes.basePath),
 
+      routesApi       = require('../utils/api-routes'),
+      apiRemote       = require('../utils/api').init(routesApi.routes, routesApi.basePath),
+
       AppDispatcher   = require('../dispatcher/app-dispatcher'),
 
       EventsConstants = require('../constants/EventsConstants'),
@@ -141,8 +144,10 @@ AppDispatcher.register(function (action) {
 
         case AuthConstants.USER_SAVE:
             if (!options.validate || Store.validate(action.data)) {
-                api.call('user:save', action.data).done(function () {
-                    _user = _.extend({}, action.data, _user);
+                api.call('users:save', action.data, true).done(function () {
+                    _user = _.extend({}, _user, action.data);
+
+                    apiRemote.call('users:save', action.data, true);
 
                     if (!options.silent) {
                         Store.emitChange();

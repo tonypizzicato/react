@@ -21,6 +21,10 @@ var routes = {
         'list': {
             path:   '/users',
             method: 'GET'
+        },
+        'save': {
+            path:   '/users/%(_id)s',
+            method: 'PUT'
         }
     }
 };

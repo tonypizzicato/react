@@ -42,6 +42,22 @@ var init = function (app) {
             res.json(docs);
         });
     });
+
+    app.put('/users/:id', function (req, res) {
+        User.update({_id: req.params.id}, {$set: req.body}, function (err, count) {
+            if (err) {
+                console.log(err);
+                res.status(500).json({error: err});
+                return;
+            }
+
+            if (count) {
+                res.status(200).json({});
+            } else {
+                res.status(404).json({});
+            }
+        });
+    });
 };
 
 module.exports.init = init;

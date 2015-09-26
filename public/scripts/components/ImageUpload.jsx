@@ -3,6 +3,7 @@ const _            = require('lodash'),
       cx           = require('classnames'),
       mui          = require('material-ui'),
 
+      Styles       = mui.Utils.Styles,
       Spacing      = mui.Styles.Spacing,
       Colors       = mui.Styles.Colors,
 
@@ -15,24 +16,28 @@ const _            = require('lodash'),
 class ImageUpload extends React.Component {
 
     static propTypes = {
-        label:     React.PropTypes.string,
-        image:     React.PropTypes.string,
-        pos:       React.PropTypes.shape({
+        label:      React.PropTypes.string,
+        image:      React.PropTypes.string,
+        imageStyle: React.PropTypes.object,
+        pos:        React.PropTypes.shape({
             x: React.PropTypes.string,
             y: React.PropTypes.string
         }),
-        errorText: React.PropTypes.string,
-        width:     React.PropTypes.string,
-        height:    React.PropTypes.string
+        errorText:  React.PropTypes.string,
+        width:      React.PropTypes.string,
+        height:     React.PropTypes.string,
+        deletable:  React.PropTypes.bool
     };
 
-    static getDefaultProps = {
-        label:     "Выберите изображение",
-        image:     null,
-        pos:       {x: '50%', y: '50%'},
-        errorText: null,
-        width:     'auto',
-        height:    'auto'
+    static defaultProps = {
+        label:      "Выберите изображение",
+        image:      null,
+        imageStyle: {},
+        pos:        {x: '50%', y: '50%'},
+        errorText:  null,
+        width:      'auto',
+        height:     'auto',
+        deletable:  true
     };
 
     state = {
@@ -105,14 +110,26 @@ class ImageUpload extends React.Component {
 
         const error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
         const image = this.state.image ?
-            <Image style={styles.preview} src={this.state.image} width={this.props.width} height={this.props.height} pos={this.props.pos}
-                   ref="preview"/> : '';
+            <Image
+                style={Styles.mergeAndPrefix(styles.preview, this.props.imageStyle)}
+                src={this.state.image}
+                width={this.props.width}
+                height={this.props.height}
+                pos={this.props.pos}
+                ref="preview"/> : '';
 
+        let deleteButton;
+        if (this.props.deletable) {
+            deleteButton = <ActionButton
+                style={styles.buttonClose}
+                backgroundColor={'rgba(255, 64, 129, .5)'}
+                iconClassName="mdfi_navigation_close"
+                onClick={this._onDelete}/>
+        }
         return (
             <div style={styles.root}>
                 {image}
-                <ActionButton style={styles.buttonClose} backgroundColor={'rgba(255, 64, 129, .5)'} iconClassName="mdfi_navigation_close"
-                              onClick={this._onDelete}/>
+                {deleteButton}
                 <input style={styles.input} type="file" onChange={this._onImage} ref="upload"/>
 
                 <div style={styles.button.root}>
@@ -145,7 +162,7 @@ class ImageUpload extends React.Component {
             preview:     {
                 width:          '100%',
                 height:         this.state.uploaded ? '100%' : 0,
-                margin:         this.state.uploaded ? `0 auto ${Spacing.desktopGutter}px` : 0,
+                margin:         this.state.uploaded ? `0 auto ${Spacing.desktopGutterMore}px` : 0,
                 backgroundSize: 'cover'
             },
             button:      {
