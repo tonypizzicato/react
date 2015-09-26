@@ -17,7 +17,6 @@ var browserify   = require('browserify');
 var babelify     = require('babelify');
 var envify       = require('envify');
 var watchify     = require('watchify');
-var replace      = require('gulp-replace');
 var source       = require('vinyl-source-stream');
 var imagemin     = require('gulp-imagemin');
 var pngquant     = require('imagemin-pngquant');
