@@ -17,6 +17,7 @@ var browserify   = require('browserify');
 var babelify     = require('babelify');
 var envify       = require('envify');
 var watchify     = require('watchify');
+var replace      = require('gulp-replace');
 var source       = require('vinyl-source-stream');
 
 var paths = {
@@ -207,6 +208,9 @@ gulp.task('copy.favicon:dist', function () {
  */
 gulp.task('copy.views:dist', function () {
     return gulp.src(paths.SERVER + '/views/*')
+        .pipe(replace("href=\"/styles/", "href=\"/admin/site/styles/"))
+        .pipe(replace("src=\"/scripts/", "src=\"/admin/site/scripts/"))
+        .pipe(replace("src=\"/images/", "src=\"/admin/site/images/"))
         .pipe(gulp.dest(paths.DIST + '/views/'));
 });
 
