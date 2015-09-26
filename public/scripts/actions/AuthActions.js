@@ -1,16 +1,14 @@
-"use strict";
-
-var AppDispatcher = require('../dispatcher/app-dispatcher'),
-    AuthConstants = require('../constants/AuthConstants');
+const AppDispatcher = require('../dispatcher/app-dispatcher'),
+      AuthConstants = require('../constants/AuthConstants');
 
 module.exports = {
-    signup: function (data) {
+    signup (data) {
         AppDispatcher.dispatch({
             type: AuthConstants.AUTH_SIGNUP,
             data: data
         });
     },
-    login:  function (email, password) {
+    login (email, password) {
         AppDispatcher.dispatch({
             type: AuthConstants.AUTH_LOGIN,
             data: {
@@ -19,9 +17,15 @@ module.exports = {
             }
         });
     },
-    logout: function () {
+    logout () {
         AppDispatcher.dispatch({
             type: AuthConstants.AUTH_LOGOUT
+        });
+    },
+    saveUser(data) {
+        AppDispatcher.dispatch({
+            type: AuthConstants.USER_SAVE,
+            data: data
         });
     }
 };

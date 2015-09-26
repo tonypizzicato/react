@@ -1,44 +1,42 @@
 "use strict";
 
-var React        = require('react'),
-    Router       = require('react-router'),
-    mui          = require('material-ui'),
+const React        = require('react'),
+      mui          = require('material-ui'),
 
-    UsersActions = require('../../actions/UsersActions'),
-    UsersStore   = require('../../stores/UsersStore'),
+      UsersActions = require('../../actions/UsersActions'),
+      UsersStore   = require('../../stores/UsersStore'),
 
-    UsersList    = require('../users/UsersList.jsx');
+      UsersList    = require('../users/UsersList.jsx');
 
-var UsersApp = React.createClass({
+class UsersApp extends React.Component {
 
-    mixins: [Router.State],
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
+        this.state = {
             users: []
-        }
-    },
+        };
 
-    componentDidMount: function () {
-        UsersStore.addChangeListener(this._onChange);
-        UsersActions.load();
-    },
-
-    componentWillUnmount: function () {
-        UsersStore.removeChangeListener(this._onChange);
-    },
-
-    _onChange: function () {
-        this.setState({users: UsersStore.getAll()});
-    },
-
-    render: function () {
-        return (
-            <div>
-                <UsersList users={this.state.users} />
-            </div>
-        )
+        this._onChange = this._onChange.bind(this);
     }
-});
+
+    componentDidMount() {
+        UsersStore.addChangeListener(this._onChange);
+
+        UsersActions.load();
+    }
+
+    componentWillUnmount() {
+        UsersStore.removeChangeListener(this._onChange);
+    }
+
+    _onChange() {
+        this.setState({users: UsersStore.getAll()});
+    }
+
+    render() {
+        return <UsersList users={this.state.users}/>;
+    }
+}
 
 module.exports = UsersApp;

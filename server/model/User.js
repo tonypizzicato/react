@@ -12,11 +12,15 @@ var userSchema = new Schema({
     dc: {type: Date, default: Date.now},
     du: {type: Date},
 
-    username: {type: String, required: true, unique: true},
-    email:    {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    vk:       {type: String, required: true},
-    roles:    {type: Array, required: true, default: ['user']}
+    username:  {type: String, required: true},
+    email:     {type: String, required: true, unique: true},
+    password:  {type: String, required: true},
+    phone:     {type: String},
+    vk:        {type: String},
+    avatar:    {type: String},
+    leagueId:  {type: ObjectId},
+    positions: {type: Array, default: []},
+    roles:     {type: Array, required: true, default: ['user']}
 });
 
 userSchema.options.toJSON = {
@@ -37,6 +41,7 @@ userSchema.pre('save', function (next) {
     }
 
     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(SALT_FACTOR));
+    console.log(user.password);
     next();
 });
 

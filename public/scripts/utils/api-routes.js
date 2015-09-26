@@ -3,7 +3,7 @@
 var basePath = 'http://amateurs.io/api/site';
 
 var routes = {
-    'auth': {
+    'auth':       {
         'signup': {
             path:   '/signup',
             method: 'POST'
@@ -15,6 +15,12 @@ var routes = {
         'logout': {
             path:   '/logout',
             method: 'GET'
+        }
+    },
+    'users':      {
+        'save': {
+            path:   '/users/%(_id)s',
+            method: 'PUT'
         }
     },
     'categories': {
@@ -35,7 +41,7 @@ var routes = {
             method: 'DELETE'
         }
     },
-    'news': {
+    'news':       {
         'list':   {
             path:   '/news',
             method: 'GET'
@@ -233,5 +239,5 @@ var routes = {
     }
 };
 
-module.exports.routes = routes;
+module.exports.routes   = routes;
 module.exports.basePath = basePath;

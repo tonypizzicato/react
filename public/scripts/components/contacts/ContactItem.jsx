@@ -1,67 +1,87 @@
-"use strict";
+const cx           = require('classnames'),
+      React        = require('react'),
+      mui          = require('material-ui'),
 
-var React      = require('react'),
-    cx         = React.addons.classSet,
-    mui        = require('material-ui'),
-    Dragon     = require('react-dragon'),
+      Colors       = mui.Styles.Colors,
+      Spacing      = mui.Styles.Spacing,
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
-    IconButton = mui.IconButton;
+      ListItem     = mui.ListItem,
+      Avatar       = mui.Avatar,
+      IconMenu     = mui.IconMenu,
+      IconButton   = mui.IconButton,
+      Icon         = mui.FontIcon,
 
-var ContactItem = React.createClass({
+      MenuItem     = require('material-ui/lib/menus/menu-item'),
+      MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
+      DeleteIcon   = require('material-ui/lib/svg-icons/action/delete'),
 
-    propTypes: function () {
+      Dragon       = require('../Dragon.jsx');
+
+class ContactItem extends React.Component {
+    propTypes() {
         return {
             contact:  React.PropTypes.object,
-            onDelete: React.PropTypes.func,
-            onEdit:   React.PropTypes.func
+            onDelete: React.PropTypes.func.required,
+            onEdit:   React.PropTypes.func.required
         }
-    },
+    }
 
-    render: function () {
-        var visibilityClass = cx({
-            'list-item__visibility':      true,
+    render() {
+        const styles = this.getStyles();
+
+        const visibilityClass = cx({
             'mdfi_action_visibility':     true,
             'mdfi_action_visibility_off': !this.props.contact.show
         });
-        var item = (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <Icon className="list-item__sort mdfi_action_swap_vert" />
-                            <Icon className={visibilityClass} />
-                        </div>
 
-                        <div className="list-item__title list-item__title_type_contacts text_overflow_ellipsis s_display_inline-block s_valign_m">
-                            <span>{this.props.contact.name}&nbsp;</span>
-                            <span className="text_color_muted">{this.props.contact.title}</span>
-                        </div>
+        const iconButtonMenu = (
+            <IconButton touch={true}>
+                <MoreVertIcon color={Colors.grey600}/>
+            </IconButton>
+        );
 
-                        <div className="s_float_r">
-                            <div className="s_display_inline-block s_valign_m text_align_r">
-                            {this.props.contact.state}
-                            </div>
-
-                            <div className="s_display_inline-block s_valign_m">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.contact._id} data-sort="-1" />
-                            </div>
-                            <div className="s_display_inline-block s_valign_m s_float_r">
-                                <IconButton iconClassName="mdfi_action_highlight_remove" onClick={this.props.onDelete} data-id={this.props.contact._id} data-sort="-1" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Paper>
+        const rightIconMenu = (
+            <IconMenu iconButtonElement={iconButtonMenu}>
+                <MenuItem
+                    primaryText="Удалить"
+                    onClick={this.props.onDelete}
+                    data-id={this.props.contact._id}
+                    leftIcon={<DeleteIcon color={Colors.grey600}/>}/>
+            </IconMenu>
         );
 
         return (
             <Dragon key={this.props.contact._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                {item}
+                <ListItem
+                    style={styles.root}
+                    onTouchTap={this.props.onEdit}
+                    data-id={this.props.contact._id}
+                    leftAvatar={<Avatar size={Spacing.desktopGutter * 2} src={this.props.contact.image}></Avatar>}
+                    primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span>{this.props.contact.name}</span>
+                        </p>
+                    }
+                    secondaryText={this.props.contact.title}
+                    rightIconButton={rightIconMenu}
+                    />
             </Dragon>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:           {
+                margin: Spacing.desktopGutter + ' 0'
+            },
+            visibilityIcon: {
+                marginRight: 6,
+                top:         4,
+                color:       this.props.contact.show ? Colors.blueGrey900 : Colors.lightBlack
+            }
+        }
+    }
+}
 
 module.exports = ContactItem;

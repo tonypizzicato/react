@@ -1,35 +1,39 @@
-"use strict";
+const React     = require('react'),
+      mui       = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing   = mui.Styles.Spacing,
 
-    OrderItem            = require('../orders/OrderItem.jsx');
+      OrderItem = require('../orders/OrderItem.jsx');
 
-var OrdersList = React.createClass({
+class OrdersList extends React.Component {
 
-    propTypes: function () {
-        return {
-            orders: React.PropTypes.array
-        }
-    },
+    static propTypes = {
+        orders: React.PropTypes.array
+    };
 
-    render: function () {
+    render() {
         if (!this.props.orders.length) {
             return false;
         }
 
-        var items = this.props.orders.map(function (item) {
-            return (
-                <OrderItem order={item} key={item._id} />
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <div style={this.getStyles().root}>
+                {this.props.orders.map(item => {
+                    return <OrderItem order={item} key={item._id}/>;
+                })}
+            </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                marginTop:     Spacing.desktopGutter,
+                paddingTop:    0,
+                paddingBottom: 0
+            }
+        }
+    }
+}
 
 module.exports = OrdersList;

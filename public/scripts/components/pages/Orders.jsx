@@ -14,59 +14,85 @@ var React           = require('react'),
 
     OrdersList      = require('../orders/OrdersList.jsx');
 
-var OrdersApp = React.createClass({
+class OrdersApp extends React.Component {
 
-    mixins: [Router.State],
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    static defaultProps = {
+        leagues: []
+    };
 
-    getInitialState: function () {
-        return {
-            orders:          [],
-            selectedContact: {}
-        }
-    },
+    state = {
+        activeTab:       0,
+        orders:          [],
+        selectedContact: {}
+    };
 
-    componentDidMount: function () {
+    constructor(props) {
+        super(props);
+
+        this._onChange    = this._onChange.bind(this);
+        this._onTabChange = this._onTabChange.bind(this);
+    }
+
+    componentDidMount() {
         OrdersStore.addChangeListener(this._onChange);
-    },
 
-    componentWillUnmount: function () {
-        OrdersStore.removeChangeListener(this._onChange);
-    },
-
-    componentWillReceiveProps: function (nextProps) {
-        if (nextProps.leagues.length) {
+        if (this.props.leagues.length > 0) {
             OrdersActions.load();
         }
-    },
+    }
 
-    _onChange: function () {
+    componentWillUnmount() {
+        OrdersStore.removeChangeListener(this._onChange);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.leagues.length != nextProps.leagues.length) {
+            OrdersActions.load();
+        }
+    }
+
+    _onTabChange(tab) {
+        this.setState({
+            activeTab: tab.props.tabIndex
+        });
+    }
+
+    _onChange() {
         this.setState({
             order: OrdersStore.getAll()
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var ordersItems = OrdersStore.getByLeague(league._id).filter(function (item) {
-                return item.leagueId == league._id;
-            }.bind(this));
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
 
-            return (
-                <Tab label={league.name} key={league._id} >
-                    <OrdersList orders={ordersItems} />
-                </Tab>
-            );
-        }.bind(this));
+    render() {
         return (
-            <Tabs>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <OrdersList orders={ordersItems}/>
+                        )
+                    }
+
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
     }
-});
+}
 
 module.exports = OrdersApp;

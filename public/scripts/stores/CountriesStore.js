@@ -1,6 +1,6 @@
 "use strict";
 
-var _                  = require('underscore'),
+var _                  = require('lodash'),
     moment             = require('moment'),
     assign             = require('object-assign'),
     EventEmitter       = require('events').EventEmitter,

@@ -1,42 +1,55 @@
-"use strict";
+const React       = require('react'),
+      mui         = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Colors      = mui.Styles.Colors,
 
-    UserItem             = require('../users/UserItem.jsx');
+      List        = mui.List,
+      ListDivider = mui.ListDivider,
 
-var UsersList = React.createClass({
+      UserItem    = require('../users/UserItem.jsx');
 
-    propTypes: function () {
-        return {
-            users: React.PropTypes.array
-        }
-    },
+class UsersList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            users: []
-        }
-    },
+    static propTypes = {
+        users: React.PropTypes.array
+    };
 
-    render: function () {
+    static defaultProps = {
+        users: []
+    };
+
+    render() {
         if (!this.props.users.length) {
             return false;
         }
 
-        var items = this.props.users.map(function (item) {
+        const items = this.props.users.map((item, index) => {
+            const divider = index != this.props.users.length - 1 ? <ListDivider inset={true}/> : undefined;
+
             return (
-                <UserItem user={item} key={item._id} />
-            );
-        }.bind(this));
+                <div key={item._id}>
+                    <UserItem user={item}/>
+                    {divider}
+                </div>
+            )
+        });
 
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
+            <List style={this.getStyles().root}>
                 {items}
-            </ReactTransitionGroup>
-
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = UsersList;

@@ -30,10 +30,10 @@ app.set('port', port);
 app.use(cookieParser());
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false, limit: '10mb'}));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb'}));
 
 app.use(session({
     secret:            'test secret',

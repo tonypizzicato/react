@@ -1,27 +1,37 @@
-"use strict";
+const _                = require('lodash'),
+      $                = require('jquery'),
+      React            = require('react'),
+      Router           = require('react-router'),
+      mui              = require('material-ui'),
 
-var _              = require('underscore'),
-    React          = require('react'),
-    Router         = require('react-router'),
-    mui            = require('material-ui'),
+      RouteHandler     = Router.RouteHandler,
 
-    Link           = Router.Link,
+      Link             = Router.Link,
 
-    Canvas         = mui.AppCanvas,
-    AppBar         = mui.AppBar,
-    Icon           = mui.FontIcon,
+      Colors           = mui.Styles.Colors,
+      Spacing          = mui.Styles.Spacing,
 
-    WithNav        = require('./with-nav.jsx'),
-    Auth           = require('../Auth.jsx').Auth,
+      MenuItem         = mui.MenuItem,
+      Canvas           = mui.AppCanvas,
+      AppBar           = mui.AppBar,
+      Icon             = mui.FontIcon,
+      RefreshIndicator = mui.RefreshIndicator,
+      Snackbar         = mui.Snackbar,
 
-    AuthStore      = require('../../stores/AuthStore'),
+      FullWidth        = require('../FullWidth.jsx'),
+      LeftNav          = require('../LeftNav.jsx'),
+      Auth             = require('../Auth.jsx').Auth,
 
-    LeaguesActions = require('../../actions/LeaguesActions'),
-    LeaguesStore   = require('../../stores/LeaguesStore'),
-    GamesActions   = require('../../actions/GamesActions'),
-    GamesStore     = require('../../stores/GamesStore');
+      AuthStore        = require('../../stores/AuthStore'),
 
-var menuItems = [
+      LeaguesActions   = require('../../actions/LeaguesActions'),
+      LeaguesStore     = require('../../stores/LeaguesStore'),
+      GamesActions     = require('../../actions/GamesActions'),
+      GamesStore       = require('../../stores/GamesStore');
+
+const menuItems = [
+    {route: 'profile', text: 'Профиль'},
+    {type: MenuItem.Types.SUBHEADER, text: 'Ресурсы'},
     {route: 'users', text: 'Пользователи'},
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
@@ -34,19 +44,37 @@ var menuItems = [
     {route: 'orders', text: 'Заявки'}
 ];
 
-var MainApp = React.createClass({
+const ThemeManager = new mui.Styles.ThemeManager();
+
+const MainApp = React.createClass({
 
     mixins: [Router.State],
 
     getInitialState: function () {
         return {
+            loading:  true,
             loggedIn: AuthStore.loggedIn(),
             leagues:  [],
             games:    []
         }
     },
 
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
+    getChildContext: function () {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
+
     componentDidMount: function () {
+        this._showLoader();
+
+        $(document).ajaxError(this._handleAjaxError);
+        $(document).ajaxComplete(this._handleAjaxComplete);
+
         AuthStore.addChangeListener(this._authChange);
         LeaguesStore.addChangeListener(this._leaguesChange);
         GamesStore.addChangeListener(this._gamesChange);
@@ -60,12 +88,34 @@ var MainApp = React.createClass({
         GamesStore.removeChangeListener(this._gamesChange);
     },
 
+    _showLoader: function () {
+        this.setState({loading: true});
+
+        _.delay(this.setState.bind(this, {loading: false}), 1000);
+    },
+
+    _hideLoader: function () {
+        _.delay(this.setState.bind(this, {loading: false}), 400);
+    },
+
+    _handleAjaxError: function () {
+        this._hideLoader();
+        this.refs.snack.show();
+        _.delay(this.refs.snack.dismiss, 2000);
+    },
+
+    _handleAjaxComplete: function () {
+        if (this.state.loading) {
+            this._hideLoader();
+        }
+    },
+
     _authChange: function () {
         this.setState({loggedIn: AuthStore.loggedIn()});
     },
 
     _leaguesChange: function () {
-        var leagues = LeaguesStore.getAll();
+        const leagues = LeaguesStore.getAll();
         this.setState({leagues: leagues});
         leagues.forEach(function (league) {
             GamesActions.load({leagueId: league._id});
@@ -76,32 +126,136 @@ var MainApp = React.createClass({
         this.setState({games: GamesStore.getAll()});
     },
 
-    render: function () {
+    _onLeftIconButtonTouchTap() {
+        this.refs.leftNav.toggle();
+    },
 
-        var loginOrOut = this.state.loggedIn ?
-            <Link to="logout">Выход</Link> :
-            <Link to="login">Вход</Link>;
+    _getContentComponent() {
+        let content;
 
-        var content = '';
         if (this.state.loggedIn) {
-            content = (<WithNav menuItems={menuItems} leagues={this.state.leagues} games={this.state.games}/>)
+            content = <RouteHandler leagues={this.state.leagues} games={this.state.games}/>
         } else {
             content = <Auth />
+        }
+
+        return content;
+    },
+
+    render: function () {
+        const styles = this.getStyles();
+
+        const loginOrOut = this.state.loggedIn ?
+            <Link style={styles.login.label} to="logout">Выход</Link> :
+            <Link style={styles.login.label} to="login">Вход</Link>;
+
+        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.context.router.isActive(item.route)), 'text');
+        if (!appBarTitle) {
+            appBarTitle = 'amateurs.io';
         }
 
         return (
             <div>
                 <Canvas>
-                    <AppBar className="mui-dark-theme" title="Панель управления Amateur" zDepth={0}>
-                        <div className="login">
-                            <Icon className="mdfi_action_account_circle"/>
+                    <div style={styles.loader}>
+                        <RefreshIndicator
+                            left={Spacing.desktopGutterLess}
+                            top={Spacing.desktopGutterMini}
+                            size={Spacing.desktopGutter * 2}
+                            status={this.state.loading ? "loading" : "hide"}
+                            ref="loader"/>
+                    </div>
+                    <AppBar
+                        onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
+                        title={appBarTitle}
+                        zDepth={0}
+                        showMenuIconButton={this.state.loggedIn}
+                        style={{position: 'fixed', top: 0}}
+                        ref="appBar">
+                        <div>
+                            <Icon style={styles.login.icon} className="mdfi_action_account_circle"/>
                             {loginOrOut}
                         </div>
                     </AppBar>
-                    {content}
+
+                    <div style={styles.content} ref="content">
+                        {this._getContentComponent()}
+                    </div>
+
+                    <LeftNav menuItems={menuItems} ref="leftNav"/>
+
+                    <FullWidth style={styles.footer} ref="footer">
+                        <p style={styles.p}>
+                            Hand crafted with love by tony.pizzicato.
+                        </p>
+                    </FullWidth>
+                    <Snackbar
+                        style={styles.snackbar}
+                        message="Ошибка загрузки данных. Попробуйте повторить запрос."
+                        ref="snack"/>
                 </Canvas>
             </div>
         )
+    },
+
+    getStyles: function () {
+        return {
+            content:  {
+                width:         1092,
+                margin:        '0 auto',
+                padding:       Spacing.desktopGutter,
+                paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
+                paddingBottom: Spacing.desktopKeylineIncrement + Spacing.desktopGutter
+            },
+            footer:   {
+                backgroundColor: Colors.grey900,
+                textAlign:       'center',
+                position:        'absolute',
+                left:            0,
+                bottom:          0,
+                height:          '5em',
+                width:           '100%'
+            },
+            p:        {
+                margin:   '0 auto',
+                padding:  0,
+                color:    Colors.lightWhite,
+                maxWidth: 335
+            },
+            loader:   {
+                height:     Spacing.desktopGutterMore * 2,
+                width:      Spacing.desktopGutterMore * 2 + Spacing.desktopGutterMore,
+                position:   'absolute',
+                margin:     '0 auto',
+                left:       '50%',
+                marginLeft: '-' + Spacing.desktopGutterMore,
+                zIndex:     6
+            },
+            login:    {
+                icon:  {
+                    position:    'relative',
+                    fontSize:    Spacing.desktopGutterMore,
+                    top:         Spacing.desktopGutterLess,
+                    marginRight: Spacing.desktopGutterMini,
+                    color:       'white',
+                    zIndex:      5
+                },
+                label: {
+                    position:      'relative',
+                    textTransform: 'uppercase',
+                    fontSize:      16,
+                    color:         '#fff',
+                    top:           Spacing.desktopGutterMini
+                }
+            },
+            snackbar: {
+                top:         0,
+                right:       0,
+                left:        'auto',
+                marginTop:   Spacing.desktopGutterMini,
+                marginRight: Spacing.desktopGutter
+            }
+        };
     }
 });
 

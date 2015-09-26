@@ -1,105 +1,138 @@
-"use strict";
+const _               = require('lodash'),
+      scroll          = require('../../utils/scrollTo'),
+      React           = require('react'),
+      mui             = require('material-ui'),
 
-var $               = require('jquery'),
-    React           = require('react'),
-    Router          = require('react-router'),
-    mui             = require('material-ui'),
+      Spacing         = mui.Styles.Spacing,
 
-    Tabs            = mui.Tabs,
-    Tab             = mui.Tab,
-    DropDownMenu    = mui.DropDownMenu,
+      Tabs            = mui.Tabs,
+      Tab             = mui.Tab,
 
-    EventsConstants = require('../../constants/EventsConstants'),
+      ContactsActions = require('../../actions/ContactsActions'),
+      ContactsStore   = require('../../stores/ContactsStore'),
 
-    ContactsActions = require('../../actions/ContactsActions'),
-    ContactsStore   = require('../../stores/ContactsStore'),
+      ContactForm     = require('../contacts/ContactForm.jsx'),
+      ContactsList    = require('../contacts/ContactsList.jsx');
 
-    ContactForm     = require('../contacts/ContactForm.jsx'),
-    ContactsList    = require('../contacts/ContactsList.jsx');
+class ContactsApp extends React.Component {
 
-var ContactsApp = React.createClass({
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-    mixins: [Router.State],
+    state = {
+        activeTab:       0,
+        contacts:        [],
+        selectedContact: {}
+    };
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
-            contacts:        [],
-            selectedContact: {}
-        }
-    },
+        this._onEdit      = this._onEdit.bind(this);
+        this._onCancel    = this._onCancel.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onDelete    = this._onDelete.bind(this);
+        this._onTabChange = this._onTabChange.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         ContactsStore.addChangeListener(this._onChange);
 
         if (this.props.leagues.length > 0) {
             ContactsActions.load();
         }
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         ContactsStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.leagues.length != nextProps.leagues.length) {
             ContactsActions.load();
         }
-    },
+    }
 
-    _onTabChange: function () {
+    _onTabChange(tab) {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            activeTab:       tab.props.tabIndex,
+            selectedContact: {}
         });
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             contacts:        ContactsStore.getAll(),
-            selectedContact: this.getInitialState().selectedContact
+            selectedContact: {}
         });
-    },
+    }
 
-    _onDelete: function (e) {
+    _onDelete(e) {
         ContactsActions.delete(e.currentTarget.dataset.id);
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
+        const id = e.currentTarget.dataset.id;
+
         this.setState({
-            selectedContact: this.state.contacts.filter(function (contact) {
-                return contact._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedContact: _.findWhere(this.state.contacts, {_id: id})
         });
-    },
 
-    _onCancel: function () {
+        _.defer(() => {
+            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
+        });
+    }
+
+    _onCancel() {
         this.setState({
-            selectedContact: this.getInitialState().selectedContact
+            selectedContact: {}
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var contactsItems = this.state.contacts.filter(function (item) {
-                return item.leagueId == league._id;
-            }.bind(this));
+    shouldComponentUpdate() {
+        return this.props.leagues.length > 0;
+    }
 
-            return (
-                <Tab label={league.name} key={league._id} >
-                    <ContactForm contact={this.state.selectedContact} leagueId={league._id} onCancel={this._onCancel} key={'contact-form-' + league._id} />
-                    <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit} />
-                </Tab>
-            );
-        }.bind(this));
+    render() {
+        const styles = this.getStyles();
+
         return (
-            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map((league, index) => {
+                    const contactsItems = this.state.contacts.filter(item => item.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <ContactForm
+                                    style={styles.form}
+                                    contact={this.state.selectedContact}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}/>
+                                <ContactsList contacts={contactsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
+            </Tabs>
         );
     }
-});
+
+    getStyles() {
+        return {
+            form: {
+                marginBottom: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = ContactsApp;

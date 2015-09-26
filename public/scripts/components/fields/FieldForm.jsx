@@ -1,6 +1,6 @@
 "use strict";
 
-var _                  = require('underscore'),
+var _                  = require('lodash'),
     React              = require('react'),
     mui                = require('material-ui'),
 
@@ -155,13 +155,13 @@ var FieldForm = React.createClass({
             return item.country ? item.country.name : 'Остальные';
         });
 
-        var tournamentsBlock = _.mapObject(tournaments, function (tournaments, country) {
+        var tournamentsBlock = _.mapValues(tournaments, function (tournaments, country) {
             var tournamentsEl = tournaments.map(function (item) {
                 var index = this.props.field.tournaments ? this.props.field.tournaments.indexOf(item._id) : false;
                 return <Checkbox
                     label={item.name}
                     className={item.show ? '' : 'text_color_muted'}
-                    defaultChecked={index !== false}
+                    defaultChecked={index !== -1}
                     ref={'checkbox-' + item._id}
                     key={'checkbox-' + item._id + '-' + item._id}/>
             }.bind(this));
