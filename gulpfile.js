@@ -187,6 +187,16 @@ gulp.task('copy.styles:dist', function () {
 });
 
 /**
+ * Copy fonts to dest task
+ */
+gulp.task('copy.fonts:dist', function () {
+    return gulp.src([
+        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon/**'
+    ])
+        .pipe(gulp.dest(paths.DIST + '/styles/fonts/'));
+});
+
+/**
  * Copy images to dest task
  */
 gulp.task('copy.images:dist', function () {
@@ -252,4 +262,4 @@ gulp.task('js:dist', function () {
 
 gulp.task('build', seq('clean', ['copy.styles', 'copy.fonts', 'less', 'js'], 'watch'));
 
-gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'less:dist', 'js:dist']));
+gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'copy.fonts:dist', 'less:dist', 'js:dist']));
