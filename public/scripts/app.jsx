@@ -1,4 +1,4 @@
-var React                = require('react/addons'),
+var React                = require('react'),
     Router               = require('react-router'),
     injectTapEventPlugin = require("react-tap-event-plugin"),
     mui                  = require('material-ui'),
@@ -12,7 +12,6 @@ var React                = require('react/addons'),
 injectTapEventPlugin();
 
 window.Perf = React.addons.Perf;
-React.addons.Perf.start();
 
 Router.create({
     routes:         AppRoutes,

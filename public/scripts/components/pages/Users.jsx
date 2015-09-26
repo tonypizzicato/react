@@ -1,7 +1,6 @@
 "use strict";
 
 const React        = require('react'),
-      Router       = require('react-router'),
       mui          = require('material-ui'),
 
       UsersActions = require('../../actions/UsersActions'),
@@ -16,7 +15,7 @@ class UsersApp extends React.Component {
 
         this.state = {
             users: []
-        }
+        };
 
         this._onChange = this._onChange.bind(this);
     }
