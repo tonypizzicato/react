@@ -77,7 +77,7 @@ gulp.task('copy.styles', function () {
         paths.VENDOR + '/medium-editor/dist/css/themes/flat.css',
         paths.VENDOR + '/normalize.css/normalize.css'
     ])
-        .pipe(concat('vendor.js'))
+        .pipe(concat('vendor.css'))
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade:  false
@@ -90,7 +90,8 @@ gulp.task('copy.styles', function () {
  */
 gulp.task('copy.fonts', function () {
     return gulp.src([
-        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon/**'
+        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon/**',
+        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon-navigation/**'
     ])
         .pipe(gulp.dest(paths.TMP + '/styles/fonts/'));
 });
@@ -254,7 +255,7 @@ gulp.task('js:dist', function () {
         }))
         .pipe(source('scripts/build.js'))
         .pipe(buffer())
-        .pipe(replace("/images/", "/admin/site/images/"))
+        .pipe(replace("'/images/", "'/admin/site/images/"))
         .pipe(uglify())
         .pipe(gulp.dest(paths.DIST + '/'));
 });
