@@ -210,7 +210,6 @@ gulp.task('copy.views:dist', function () {
     return gulp.src(paths.SERVER + '/views/*')
         .pipe(replace("href=\"/styles/", "href=\"/admin/site/styles/"))
         .pipe(replace("src=\"/scripts/", "src=\"/admin/site/scripts/"))
-        .pipe(replace("src=\"/images/", "src=\"/admin/site/images/"))
         .pipe(gulp.dest(paths.DIST + '/views/'));
 });
 
@@ -224,8 +223,7 @@ gulp.task('js:dist', function () {
         entries:      [src],
         transform:    [[babelify, {optional: ["es7.classProperties"]}], ['envify', {'global': true, '_': 'purge', NODE_ENV: 'production'}]],
         cache:        {},
-        packageCache: {},
-        fullPaths:    true
+        packageCache: {}
     });
 
     bundler.on('time', function (time) {
@@ -240,6 +238,7 @@ gulp.task('js:dist', function () {
         }))
         .pipe(source('scripts/build.js'))
         .pipe(buffer())
+        .pipe(replace("/images/", "/admin/site/images/"))
         .pipe(uglify())
         .pipe(gulp.dest(paths.DIST + '/'));
 });
