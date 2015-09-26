@@ -18,6 +18,8 @@ var babelify     = require('babelify');
 var envify       = require('envify');
 var watchify     = require('watchify');
 var source       = require('vinyl-source-stream');
+var imagemin     = require('gulp-imagemin');
+var pngquant     = require('imagemin-pngquant');
 
 var paths = {
     PUBLIC: 'public',
@@ -185,13 +187,18 @@ gulp.task('copy.styles:dist', function () {
 });
 
 /**
- * Copy fonts to dest task
+ * Copy images to dest task
  */
-gulp.task('copy.fonts:dist', function () {
+gulp.task('copy.images:dist', function () {
     return gulp.src([
-        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon/**'
+        paths.PUBLIC + '/images/**'
     ])
-        .pipe(gulp.dest(paths.TMP + '/styles/fonts/'));
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use:         [pngquant()]
+        }))
+        .pipe(gulp.dest(paths.DIST + '/images/'));
 });
 
 /**
@@ -243,4 +250,4 @@ gulp.task('js:dist', function () {
 
 gulp.task('build', seq('clean', ['copy.styles', 'copy.fonts', 'less', 'js'], 'watch'));
 
-gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.fonts:dist', 'less:dist', 'js:dist']));
+gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'less:dist', 'js:dist']));
