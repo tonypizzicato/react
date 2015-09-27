@@ -34,8 +34,8 @@ class TournamentItem extends React.Component {
         const avatar = this.props.tournament.name ? this.props.tournament.name : this.props.tournament.slug;
 
         const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.tournament.show
+            'visibility':     this.props.tournament.show,
+            'visibility_off': !this.props.tournament.show
         });
 
         return (
@@ -47,7 +47,7 @@ class TournamentItem extends React.Component {
                     leftAvatar={<Avatar>{avatar[0]}</Avatar>}
                     primaryText={
                         <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <Icon className="material-icons" style={styles.visibilityIcon}>{visibilityClass}</Icon>
                             <span style={styles.label.name}>{this.props.tournament.name}</span>
                             <span style={{color: Colors.minBlack}}>{this.props.tournament.slug}</span>
                         </p>

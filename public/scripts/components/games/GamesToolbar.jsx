@@ -254,7 +254,6 @@ class GamesToolbar extends React.Component {
                     paddingLeft: Spacing.desktopGutter,
                     lineHeight:  '56px',
                     fontSize:    15,
-                    paddingLeft: 24,
                     color:       Colors.lightBlack
                 },
                 singleItemStyle: {
@@ -265,7 +264,6 @@ class GamesToolbar extends React.Component {
                     paddingLeft: Spacing.desktopGutter,
                     lineHeight:  '56px',
                     fontSize:    15,
-                    paddingLeft: 24,
                     color:       Colors.lightBlack
                 }
             },
