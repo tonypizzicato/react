@@ -104,7 +104,7 @@ class GamesToolbar extends React.Component {
     }
 
     _onTournamentSelect(e, index) {
-        this.setState(this._updatedTournamentState(state.tournaments[index], index));
+        this.setState(this._updatedTournamentState(this.state.tournaments[index], index));
     }
 
     _updatedCountryState(index) {
@@ -254,7 +254,6 @@ class GamesToolbar extends React.Component {
                     paddingLeft: Spacing.desktopGutter,
                     lineHeight:  '56px',
                     fontSize:    15,
-                    paddingLeft: 24,
                     color:       Colors.lightBlack
                 },
                 singleItemStyle: {
@@ -265,7 +264,6 @@ class GamesToolbar extends React.Component {
                     paddingLeft: Spacing.desktopGutter,
                     lineHeight:  '56px',
                     fontSize:    15,
-                    paddingLeft: 24,
                     color:       Colors.lightBlack
                 }
             },
