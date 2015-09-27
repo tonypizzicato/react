@@ -104,7 +104,7 @@ class GamesToolbar extends React.Component {
     }
 
     _onTournamentSelect(e, index) {
-        this.setState(this._updatedTournamentState(state.tournaments[index], index));
+        this.setState(this._updatedTournamentState(this.state.tournaments[index], index));
     }
 
     _updatedCountryState(index) {
