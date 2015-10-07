@@ -1,19 +1,21 @@
-const _            = require('lodash'),
-      React        = require('react'),
-      mui          = require('material-ui'),
+const _               = require('lodash'),
+      React           = require('react'),
+      mui             = require('material-ui'),
 
-      Spacing      = mui.Styles.Spacing,
+      Spacing         = mui.Styles.Spacing,
 
-      DropDownMenu = mui.DropDownMenu,
-      TextField    = mui.TextField,
-      Checkbox     = mui.Checkbox,
-      Button       = mui.RaisedButton,
-      Avatar       = mui.Avatar,
+      DropDownMenu    = mui.DropDownMenu,
+      TextField       = mui.TextField,
+      Checkbox        = mui.Checkbox,
+      Button          = mui.RaisedButton,
+      Avatar          = mui.Avatar,
 
-      ImageUpload  = require('../ImageUpload.jsx'),
+      ImageUpload     = require('../ImageUpload.jsx'),
 
-      AuthActions  = require('../../actions/AuthActions'),
-      AuthStore    = require('../../stores/AuthStore');
+      EventsConstants = require('../../constants/EventsConstants'),
+
+      AuthActions     = require('../../actions/AuthActions'),
+      AuthStore       = require('../../stores/AuthStore');
 
 
 const positions = {
@@ -36,16 +38,23 @@ class ProfileForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onSave   = this._onSave.bind(this);
-        this._onChange = this._onChange.bind(this);
+        this._onSave            = this._onSave.bind(this);
+        this._onChange          = this._onChange.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
     }
 
     componentWillMount() {
         AuthStore.addChangeListener(this._onChange);
+        AuthStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     }
 
     componentWillUnmount() {
         AuthStore.removeChangeListener(this._onChange);
+        AuthStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+    }
+
+    _onValidationError(validation) {
+        this.setState({validation: validation});
     }
 
     _onChange() {
@@ -127,16 +136,16 @@ class ProfileForm extends React.Component {
                     <div style={styles.checkbox.container}>
                         {Object.keys(positions).map(item => {
                             return (
-                                <Checkbox
-                                    style={styles.checkbox.checkbox}
-                                    name={`position-${item}`}
-                                    value={item}
-                                    defaultChecked={this.props.user.positions.indexOf(item) != -1}
-                                    label={positions[item]}
-                                    ref={`position-${item}`}/>
-                            )
-                        })
-                        }
+                            <Checkbox
+                                style={styles.checkbox.checkbox}
+                                name={`position-${item}`}
+                                value={item}
+                                defaultChecked={this.props.user.positions.indexOf(item) != -1}
+                                label={positions[item]}
+                                ref={`position-${item}`}/>
+                                )
+                            })
+                            }
                     </div>
                 </div>
                 <div style={styles.right}>

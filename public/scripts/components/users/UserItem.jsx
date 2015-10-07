@@ -20,6 +20,8 @@ class UserItem extends React.Component {
     render() {
         const styles = this.getStyles();
 
+        const avatar = this.props.user.avatar ? this.props.user.avatar : this.props.user.username[0];
+
         return (
             <ListItem
                 href={this.props.user.vk}

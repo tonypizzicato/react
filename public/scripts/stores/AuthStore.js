@@ -36,6 +36,10 @@ const Store = _.extend({}, EventEmitter.prototype, {
         this.emit(EventsConstants.EVENT_CHANGE);
     },
 
+    emitEvent: function (type, data) {
+        this.emit(type, data);
+    },
+
     addChangeListener: function (cb) {
         this.on(EventsConstants.EVENT_CHANGE, cb);
     },
@@ -54,6 +58,14 @@ const Store = _.extend({}, EventEmitter.prototype, {
 
     removeUnauthorizedListener: function (cb) {
         this.removeListener(AuthConstants.AUTH_UNAUTHORIZED, cb);
+    },
+
+    addEventListener: function (type, cb) {
+        this.addListener(type, cb);
+    },
+
+    removeEventListener: function (type, cb) {
+        this.removeListener(type, cb);
     },
 
     getUser: function () {

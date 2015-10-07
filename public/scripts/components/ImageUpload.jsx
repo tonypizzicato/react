@@ -50,7 +50,6 @@ class ImageUpload extends React.Component {
         super(props);
 
         this._onImage  = this._onImage.bind(this);
-        this._onClick  = this._onClick.bind(this);
         this._onDelete = this._onDelete.bind(this);
     }
 
@@ -66,12 +65,6 @@ class ImageUpload extends React.Component {
                 isNew:    true
             });
         }.bind(this);
-    }
-
-    _onClick() {
-        _.delay(function () {
-            this.refs.upload.getDOMNode().click();
-        }.bind(this), 300);
     }
 
     getImage() {
@@ -130,12 +123,11 @@ class ImageUpload extends React.Component {
             <div style={styles.root}>
                 {image}
                 {deleteButton}
-                <input style={styles.input} type="file" onChange={this._onImage} ref="upload"/>
 
                 <div style={styles.button.root}>
-                    <Button style={styles.button.button} onClick={this._onClick}>
+                    <Button secondary={true} label={this.props.label} style={styles.button.button}>
                         <Icon style={styles.button.icon} className="mdfi_image_photo"/>
-                        <span style={styles.button.label}>{this.props.label}</span>
+                        <input type="file" ref="upload" style={styles.button.input} onChange={this._onImage}/>
                     </Button>
                     {error}
                 </div>
@@ -162,16 +154,12 @@ class ImageUpload extends React.Component {
             preview:     {
                 width:          '100%',
                 height:         this.state.uploaded ? '100%' : 0,
-                margin:         this.state.uploaded ? `0 auto ${Spacing.desktopGutterMore}px` : 0,
+                margin:         this.state.uploaded ? `0 auto ${Spacing.desktopGutterLess}px` : 0,
                 backgroundSize: 'cover'
             },
             button:      {
                 root:   {
-                    position:      'absolute',
                     width:         '100%',
-                    bottom:        0,
-                    left:          0,
-                    zIndex:        1,
                     paddingBottom: Spacing.desktopGutterMini
                 },
                 button: {
@@ -180,9 +168,15 @@ class ImageUpload extends React.Component {
                 icon:   {
                     top: 6
                 },
-                label:  {
-                    position: 'relative',
-                    padding:  '0 16px'
+                input:  {
+                    position: 'absolute',
+                    cursor:   'pointer',
+                    top:      '0',
+                    bottom:   '0',
+                    right:    '0',
+                    left:     '0',
+                    width:    '100%',
+                    opacity:  '0'
                 }
             },
             error:       {
