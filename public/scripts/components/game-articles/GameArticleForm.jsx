@@ -163,7 +163,7 @@ class GameArticleForm extends React.Component {
             previewImages = (
                 <div style={{overflow: 'hidden', padding: Spacing.desktopGutterMini + 'px 0'}}>
                 <ImageUpload
-                    label="Select home team image (required if match is central)"
+                    label="Выберите фото команды-хозяйки (обязательно для центрального матча)"
                     image={this.props.article.imageHome}
                     errorText={this.state.validation.imageHome ? 'Загрузите изображение для команды хозяев' : null}
                     width="360px"
@@ -173,7 +173,7 @@ class GameArticleForm extends React.Component {
                     ref="imageHome"/>
 
                 <ImageUpload
-                    label="Select away team image (required if match is central)"
+                    label="Выберите фото гостей (обязательно для центрального матча)"
                     image={this.props.article.imageAway}
                     errorText={this.state.validation.imageAway ? 'Загрузите изображение для команды гостей' : null}
                     width="360px"
@@ -182,7 +182,7 @@ class GameArticleForm extends React.Component {
                     key={this.props.article._id + '-image-away-upload'}
                     ref="imageAway"/>
                 </div>
-            )
+            );
             previewToggle =
                 <Toggle
                     style={styles.toggle.toggle}

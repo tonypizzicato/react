@@ -77,7 +77,7 @@ gulp.task('copy.styles', function () {
         paths.VENDOR + '/medium-editor/dist/css/themes/flat.css',
         paths.VENDOR + '/normalize.css/normalize.css'
     ])
-        .pipe(concat('vendor.js'))
+        .pipe(concat('vendor.css'))
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade:  false

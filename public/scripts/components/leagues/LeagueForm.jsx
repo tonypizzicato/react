@@ -36,8 +36,9 @@ class LeagueForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onCancel = this._onCancel.bind(this);
-        this._onSave   = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._onSave            = this._onSave.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
     }
 
     componentDidMount() {
