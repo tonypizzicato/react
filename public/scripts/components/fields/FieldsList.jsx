@@ -6,6 +6,9 @@ const React         = require('react'),
 
       List          = mui.List,
       ListDivider   = mui.ListDivider,
+      SortIcon      = require('material-ui/lib/svg-icons/content/sort'),
+
+      Sortable      = require('../Sortable.jsx'),
 
       FieldItem     = require('./FieldItem.jsx'),
 
@@ -62,11 +65,14 @@ class FieldsList extends React.Component {
 
         return (
             <List style={this.getStyles().root}>
-                {this.props.fields.map((item, i) => {
-                    const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true}/> : undefined;
+                <Sortable
+                    control={SortIcon}
+                    controlPosition="right"
+                >
+                    {this.props.fields.map((item, i) => {
+                        const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true}/> : undefined;
 
-                    return (
-                        <div key={item._id}>
+                        return (
                             <FieldItem
                                 field={item}
                                 onEdit={this.props.onEdit}
@@ -74,10 +80,9 @@ class FieldsList extends React.Component {
                                 onDrop={this._onDrop}
                                 index={i}
                                 key={item._id}/>
-                            {divider}
-                        </div>
-                    );
-                })}
+                            );
+                        })}
+                </Sortable>
             </List>
         );
     }

@@ -1,24 +1,21 @@
-const React      = require('react'),
-      cx         = require('classnames'),
-      mui        = require('material-ui'),
+const React    = require('react'),
+      cx       = require('classnames'),
+      mui      = require('material-ui'),
 
-      Colors     = mui.Styles.Colors,
-      Spacing    = mui.Styles.Spacing,
+      Colors   = mui.Styles.Colors,
+      Spacing  = mui.Styles.Spacing,
 
-      ListItem   = mui.ListItem,
-      Avatar     = mui.Avatar,
-      IconMenu   = mui.IconMenu,
-      IconButton = mui.IconButton,
-      Icon       = mui.FontIcon,
-
-      Dragon     = require('../Dragon.jsx');
+      ListItem = mui.ListItem,
+      Avatar   = mui.Avatar,
+      Icon     = mui.FontIcon;
 
 class FieldItem extends React.Component {
 
     static propTypes = {
-        field:    React.PropTypes.object,
-        onDelete: React.PropTypes.func,
-        onEdit:   React.PropTypes.func
+        field:       React.PropTypes.object,
+        sortControl: React.PropTypes.node,
+        onDelete:    React.PropTypes.func,
+        onEdit:      React.PropTypes.func
     }
 
     render() {
@@ -34,21 +31,20 @@ class FieldItem extends React.Component {
             <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title[0]}</Avatar>;
 
         return (
-            <Dragon key={this.props.field._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    style={styles.root}
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.field._id}
-                    leftAvatar={avatar}
-                    primaryText={
-                            <p>
-                                <Icon style={styles.visibilityIcon} className={visibilityClass} />
-                                <span>{this.props.field.title}</span>
-                            </p>
-                        }
-                    secondaryText={this.props.field.address}
-                />
-            </Dragon>
+            <ListItem
+                style={styles.root}
+                onTouchTap={this.props.onEdit}
+                data-id={this.props.field._id}
+                leftAvatar={avatar}
+                primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span>{this.props.field.title}</span>
+                        </p>
+                    }
+                secondaryText={this.props.field.address}
+                rightIconButton={this.props.sortControl ? this.props.sortControl : null}
+            />
         );
     }
 

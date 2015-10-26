@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React from 'react/addons';
 import {Spring} from 'react-motion';
 
 const reinsert = (arr, from, to) => {
@@ -98,34 +98,33 @@ class Sortable extends React.Component {
             };
         });
 
-        const mapChildren = (items) =>
-            items.map(({scale, y}, i) => {
-                    return (
-                        <div
-                            key={i}
-                            onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
-                            onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
-                            style={{
+        return (
+            <Spring endValue={endValue}>
+                {items =>
+                <div>
+                    {React.Children.map(this.props.children, (child, i) => {
+                        const {y, scale} = items[i];
+
+                        const control = React.createElement(this.props.control, {
+                            onMouseDown: this.handleMouseDown.bind(null, i, y.val),
+                            onTouchStart: this.handleTouchStart.bind(null, i, y.val)
+                        })
+
+                        return React.addons.cloneWithProps(this.props.children[i], {
+                            sortControl: control,
+                            style: {
                                 position: 'absolute',
                                 cursor: 'pointer',
                                 width: '100%',
                                 transform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 WebkitTransform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 zIndex: i === lastPressed ? 99 : i,
-                            }}>
-                            {this.props.children[i]}
-                        </div>
-                    )
-                }
-            )
-
-        return (
-            <Spring endValue={endValue}>
-                {items =>
-                    <div className="demo8">
-                        {mapChildren(items)}
-                    </div>
-                }
+                                },
+                            key: i
+                            })
+                        })}
+                </div>
+                    }
             </Spring>
         );
     }
