@@ -1,40 +1,44 @@
-"use strict";
+const React         = require('react'),
+      mui           = require('material-ui'),
 
-var React                = require('react'),
-    ReactTransitionGroup = React.addons.CSSTransitionGroup,
+      Spacing       = mui.Styles.Spacing,
+      Colors        = mui.Styles.Colors,
 
-    FieldItem            = require('../fields/FieldItem.jsx'),
+      List          = mui.List,
+      ListDivider   = mui.ListDivider,
 
-    FieldsActions        = require('../../actions/FieldsActions');
+      FieldItem     = require('./FieldItem.jsx'),
 
-var FieldsList = React.createClass({
+      FieldsActions = require('../../actions/FieldsActions');
 
-    propTypes: function () {
-        return {
-            fields:   React.PropTypes.array,
-            onEdit:   React.PropTypes.func.required,
-            onDelete: React.PropTypes.func.required
-        }
-    },
+class FieldsList extends React.Component {
 
-    getDefaultProps: function () {
-        return {
-            fields: []
-        }
-    },
+    static propTypes = {
+        fields:   React.PropTypes.array,
+        onEdit:   React.PropTypes.func.required,
+        onDelete: React.PropTypes.func.required
+    };
 
-    getInitialState: function () {
-        return {
-            fields: this.props.fields
-        }
-    },
+    static defaultProps = {
+        fields: []
+    };
 
-    componentWillReceiveProps: function (nextProps) {
+    state = {
+        fields: this.props.fields
+    };
+
+    constructor(props) {
+        super(props);
+
+        this._onDrop = this._onDrop.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
         this.setState({fields: nextProps.fields});
-    },
+    }
 
-    _onDrop: function (from, to) {
-        var items = this.state.fields.slice();
+    _onDrop(from, to) {
+        let items = this.state.fields.slice();
         items.splice(to, 0, items.splice(from, 1)[0]);
 
         this.setState({fields: items});
@@ -43,31 +47,50 @@ var FieldsList = React.createClass({
             this.props.onDrop(items);
         }
 
-        items.forEach(function (item, index) {
+        items.forEach((item, index) => {
             FieldsActions.save({
                 _id:  item._id,
                 sort: index
             }, {silent: true});
-        })
-    },
+        });
+    }
 
-    render: function () {
-        if (!this.state.fields.length) {
+    render() {
+        if (!this.props.fields.length) {
             return false;
         }
 
-        var items = this.state.fields.map(function (item, i) {
-            return (
-                <FieldItem field={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
-            );
-        }.bind(this));
-
         return (
-            <ReactTransitionGroup transitionName="fadeIn">
-                {items}
-            </ReactTransitionGroup>
+            <List style={this.getStyles().root}>
+                {this.props.fields.map((item, i) => {
+                    const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <FieldItem
+                                field={item}
+                                onEdit={this.props.onEdit}
+                                onDelete={this.props.onDelete}
+                                onDrop={this._onDrop}
+                                index={i}
+                                key={item._id}/>
+                            {divider}
+                        </div>
+                    );
+                })}
+            </List>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                paddingTop:    0,
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack
+            }
+        }
+    }
+}
 
 module.exports = FieldsList;

@@ -74,7 +74,7 @@ class ContactForm extends React.Component {
     componentDidUpdate() {
         if (!!this.props.contact.tournaments) {
             this.props.contact.tournaments.forEach(item => {
-                !!this.refs['checkbox-' + item._id] && this.refs['checkbox-' + item].setChecked(true);
+                !!this.refs[`checkbox-${item._id}`] && this.refs[`checkbox-${item._id}`].setChecked(true);
             });
         }
     }
@@ -103,7 +103,7 @@ class ContactForm extends React.Component {
         let tournaments = [];
 
         this.state.tournaments.forEach(item => {
-            if (this.refs['checkbox-' + item._id].isChecked()) {
+            if (this.refs[`checkbox-${item._id}`].isChecked()) {
                 tournaments.push(item._id);
             }
         });
@@ -171,7 +171,7 @@ class ContactForm extends React.Component {
 
         const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
             const tournamentsEl = tournaments.map(item => {
-                const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : false;
+                const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : -1;
 
                 return <Checkbox
                     label={item.name}
@@ -266,6 +266,7 @@ class ContactForm extends React.Component {
                     style={styles.toggle}
                     name="toCall"
                     value="toCall"
+                    labelPosition="right"
                     ref="toCall"
                     defaultToggled={this.props.contact.toCall}
                     label="Для связи"/>

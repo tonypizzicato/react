@@ -50,13 +50,17 @@ class ContactItem extends React.Component {
             </IconMenu>
         );
 
+        const avatar = this.props.contact.image ?
+            <Avatar size={Spacing.desktopGutter * 2} src={this.props.contact.image}/> :
+            <Avatar size={Spacing.desktopGutter * 2}>{this.props.contact.name[0]}</Avatar>;
+
         return (
             <Dragon key={this.props.contact._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
                     style={styles.root}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.contact._id}
-                    leftAvatar={<Avatar size={Spacing.desktopGutter * 2} src={this.props.contact.image}></Avatar>}
+                    leftAvatar={avatar}
                     primaryText={
                         <p>
                             <Icon style={styles.visibilityIcon} className={visibilityClass} />
@@ -77,7 +81,8 @@ class ContactItem extends React.Component {
             },
             visibilityIcon: {
                 marginRight: 6,
-                top:         4,
+                top:         2,
+                fontSize:    18,
                 color:       this.props.contact.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }

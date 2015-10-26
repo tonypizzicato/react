@@ -80,7 +80,6 @@ class ProfileForm extends React.Component {
         AuthActions.saveUser(user);
     }
 
-
     render() {
         const styles = this.getStyles();
 

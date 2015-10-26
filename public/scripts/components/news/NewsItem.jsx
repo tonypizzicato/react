@@ -51,12 +51,11 @@ class NewsItem extends React.Component {
                         }
                 secondaryText={
                             <p>
-                                <span style={{color: Colors.minBlack}}>{this.props.article.state}</span><br/>
                                 <span style={{color: Colors.lightBlack}}>{this.props.article.author}</span>
                             </p>
                         }
                 secondaryTextLines={2}
-                />
+            />
         );
     }
 
@@ -72,7 +71,8 @@ class NewsItem extends React.Component {
             },
             visibilityIcon: {
                 marginRight: 6,
-                top:         4,
+                top:         2,
+                fontSize:    18,
                 color:       this.props.article.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }
