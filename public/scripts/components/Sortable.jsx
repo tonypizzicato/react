@@ -15,9 +15,17 @@ const clamp = (i, min, max) => {
 }
 
 const springConfig = [300, 50];
-const itemsCount   = 4;
 
 class Sortable extends React.Component {
+
+    static propTypes = {
+        itemHeight: React.PropTypes.number
+    };
+
+    static defaultProps = {
+        itemHeight: 100
+    };
+
     state = {
         delta:       0,
         mouse:       0,
@@ -41,6 +49,8 @@ class Sortable extends React.Component {
         window.addEventListener('touchend', this.handleMouseUp);
         window.addEventListener('mousemove', this.handleMouseMove);
         window.addEventListener('mouseup', this.handleMouseUp);
+
+        console.log('mounted');
     }
 
     handleTouchStart(key, pressLocation, e) {
@@ -54,22 +64,30 @@ class Sortable extends React.Component {
         this.handleMouseMove(e.touches[0]);
     }
 
-    handleMouseDown(pos, pressY, {pageY}) {
+    handleMouseDown(pos, pressY, e) {
+        if (e.button !== 0) {
+            return
+        }
+
         console.log('handleMouseDown');
         this.setState({
-            delta:       pageY - pressY,
+            delta:       e.pageY - pressY,
             mouse:       pressY,
             isPressed:   true,
             lastPressed: pos,
         });
     }
 
-    handleMouseMove({pageY}) {
+    handleMouseMove(e) {
+        if (e.button !== 0) {
+            return
+        }
+
         const {isPressed, delta, order, lastPressed} = this.state;
 
         if (isPressed) {
-            const mouse    = pageY - delta;
-            const row      = clamp(Math.round(mouse / 100), 0, itemsCount - 1);
+            const mouse    = e.pageY - delta;
+            const row      = clamp(Math.round(mouse / 100), 0, this.props.children.length - 1);
             const newOrder = reinsert(order, order.indexOf(lastPressed), row);
             this.setState({mouse: mouse, order: newOrder});
             console.log('moved');
@@ -82,6 +100,7 @@ class Sortable extends React.Component {
     }
 
     render() {
+        console.log('rendered');
         const {mouse, isPressed, lastPressed, order} = this.state;
         const endValue = this.props.children.map((child, i) => {
             if (lastPressed === i && isPressed) {
@@ -94,39 +113,46 @@ class Sortable extends React.Component {
             return {
                 scale:  {val: 1, config: springConfig},
                 shadow: {val: 1, config: springConfig},
-                y:      {val: order.indexOf(i) * 100, config: springConfig}
+                y:      {val: order.indexOf(i) * this.props.itemHeight, config: springConfig}
             };
         });
 
         return (
             <Spring endValue={endValue}>
                 {items =>
-                <div>
-                    {React.Children.map(this.props.children, (child, i) => {
-                        const {y, scale} = items[i];
-
-                        const control = React.createElement(this.props.control, {
-                            onMouseDown: this.handleMouseDown.bind(null, i, y.val),
-                            onTouchStart: this.handleTouchStart.bind(null, i, y.val)
-                        })
-
-                        return React.addons.cloneWithProps(this.props.children[i], {
-                            sortControl: control,
-                            style: {
+                <div style={this.getStyles().root}>
+                    {items.map(({scale, y}, i) => {
+                        return (
+                        <div
+                            key={i}
+                            ref={`sort-item-${i}`}
+                            onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
+                            onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
+                            style={{
                                 position: 'absolute',
                                 cursor: 'pointer',
                                 width: '100%',
                                 transform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 WebkitTransform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 zIndex: i === lastPressed ? 99 : i,
-                                },
-                            key: i
-                            })
-                        })}
+                            }}>
+                            {this.props.children[i]}
+                        </div>
+                            )
+                        }
+                        )}
                 </div>
                     }
             </Spring>
         );
+    }
+
+    getStyles() {
+        return {
+            root: {
+                height: this.props.itemHeight * this.props.children.length
+            }
+        }
     }
 }
 

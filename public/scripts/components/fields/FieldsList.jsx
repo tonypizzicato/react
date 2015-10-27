@@ -66,22 +66,24 @@ class FieldsList extends React.Component {
         return (
             <List style={this.getStyles().root}>
                 <Sortable
-                    control={SortIcon}
-                    controlPosition="right"
-                >
+                    itemHeight={100}>
                     {this.props.fields.map((item, i) => {
                         const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true}/> : undefined;
 
                         return (
-                            <FieldItem
-                                field={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}
-                                onDrop={this._onDrop}
-                                index={i}
-                                key={item._id}/>
-                            );
-                        })}
+                            <div>
+                                <FieldItem
+                                    field={item}
+                                    onEdit={this.props.onEdit}
+                                    onDelete={this.props.onDelete}
+                                    onDrop={this._onDrop}
+                                    index={i}
+                                    key={item._id}/>
+
+                                {divider}
+                            </div>
+                        );
+                    })}
                 </Sortable>
             </List>
         );
@@ -92,7 +94,9 @@ class FieldsList extends React.Component {
             root: {
                 paddingTop:    0,
                 paddingBottom: 0,
-                border:        'solid 1px ' + Colors.faintBlack
+                border:        'solid 1px ' + Colors.faintBlack,
+                position:      'relative',
+                overflow:      'hidden'
             }
         }
     }
