@@ -22,6 +22,10 @@ class ContactsList extends React.Component {
         contacts: []
     };
 
+    state = {
+        contacts: this.props.contacts
+    };
+
     constructor(props) {
         super(props);
 
@@ -59,18 +63,18 @@ class ContactsList extends React.Component {
                     const divider = index != this.props.contacts.length - 1 ? <ListDivider inset={true}/> : undefined;
 
                     return (
-                        <div key={item._id}>
-                            <ContactItem
-                                contact={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}
-                                onDrop={this._onDrop}
-                                index={index}
-                                key={item._id}/>
-                            {divider}
-                        </div>
-                    )
-                })}
+                    <div key={item._id}>
+                        <ContactItem
+                            contact={item}
+                            onEdit={this.props.onEdit}
+                            onDelete={this.props.onDelete}
+                            onDrop={this._onDrop}
+                            index={index}
+                            key={item._id}/>
+                        {divider}
+                    </div>
+                        )
+                    })}
             </List>
         );
     }

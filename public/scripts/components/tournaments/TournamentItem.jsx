@@ -44,7 +44,7 @@ class TournamentItem extends React.Component {
                     style={styles.root}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.tournament._id}
-                    leftAvatar={<Avatar>{avatar[0]}</Avatar>}
+                    leftAvatar={<Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>}
                     primaryText={
                         <p>
                             <Icon className="material-icons" style={styles.visibilityIcon}>{visibilityClass}</Icon>
@@ -52,13 +52,7 @@ class TournamentItem extends React.Component {
                             <span style={{color: Colors.minBlack}}>{this.props.tournament.slug}</span>
                         </p>
                     }
-                    secondaryText={
-                        <p>
-                            <span style={{color: Colors.minBlack}}>{this.props.tournament.state}</span><br/>
-                            <span style={{color: Colors.lightBlack}}>{this.props.tournament.country ? this.props.tournament.country.name : '—'}</span>
-                        </p>
-                    }
-                    secondaryTextLines={2}
+                    secondaryText={this.props.tournament.country ? this.props.tournament.country.name : '—'}
                     />
             </Dragon>
         );
@@ -76,7 +70,8 @@ class TournamentItem extends React.Component {
             },
             visibilityIcon: {
                 marginRight: 6,
-                top:         4,
+                top:         2,
+                fontSize:    18,
                 color:       this.props.tournament.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }

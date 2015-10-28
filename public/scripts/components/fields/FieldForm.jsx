@@ -1,99 +1,96 @@
-"use strict";
+const _                  = require('lodash'),
+      React              = require('react'),
+      mui                = require('material-ui'),
 
-var _                  = require('lodash'),
-    React              = require('react'),
-    mui                = require('material-ui'),
+      Spacing            = mui.Styles.Spacing,
 
-    Paper              = mui.Paper,
-    TextField          = mui.TextField,
-    Toggle             = mui.Toggle,
-    Button             = mui.RaisedButton,
-    Checkbox           = mui.Checkbox,
+      TextField          = mui.TextField,
+      Toggle             = mui.Toggle,
+      Button             = mui.RaisedButton,
+      Checkbox           = mui.Checkbox,
 
-    MediumEditor       = require('../MediumEditor.jsx'),
-    ImageUpload        = require('../ImageUpload.jsx'),
+      MediumEditor       = require('../MediumEditor.jsx'),
+      ImageUpload        = require('../ImageUpload.jsx'),
 
-    EventsConstants    = require('../../constants/EventsConstants'),
+      EventsConstants    = require('../../constants/EventsConstants'),
 
-    FieldsActions      = require('../../actions/FieldsActions'),
-    FieldsStore        = require('../../stores/FieldsStore'),
+      FieldsActions      = require('../../actions/FieldsActions'),
+      FieldsStore        = require('../../stores/FieldsStore'),
 
-    TournamentsActions = require('../../actions/TournamentsActions'),
-    TournamentsStore   = require('../../stores/TournamentsStore');
+      TournamentsActions = require('../../actions/TournamentsActions'),
+      TournamentsStore   = require('../../stores/TournamentsStore');
 
-var FieldForm = React.createClass({
+class FieldForm extends React.Component {
 
-    propTypes: function () {
-        return {
-            field:    React.PropTypes.object,
-            leagueId: React.PropTypes.string.required
-        }
-    },
+    static propTypes = {
+        field:    React.PropTypes.object,
+        leagueId: React.PropTypes.string.required
+    };
 
-    getDefaultProps: function () {
-        return {
-            field:    {},
-            leagueId: ''
-        }
-    },
+    static defaultProps = {
+        field:    {},
+        leagueId: ''
+    };
 
-    getInitialState: function () {
-        return {
-            validation:  {},
-            tournaments: []
-        }
-    },
+    state = {
+        validation:  {},
+        tournaments: []
+    };
 
-    componentWillMount: function () {
+    constructor(props) {
+        super(props);
+
+        this._onSave            = this._onSave.bind(this);
+        this._onCancel          = this._onCancel.bind(this);
+        this._clearForm         = this._clearForm.bind(this);
+        this._onTournaments     = this._onTournaments.bind(this);
+        this._onValidationError = this._onValidationError.bind(this);
+    }
+
+    componentWillMount() {
         FieldsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
         TournamentsStore.addChangeListener(this._onTournaments);
 
         TournamentsActions.load();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         FieldsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
         TournamentsStore.removeChangeListener(this._onTournaments);
-    },
+    }
 
-    componentDidUpdate: function () {
+    componentDidUpdate() {
         if (!!this.props.field.tournaments) {
-            this.props.field.tournaments.forEach(function (item) {
-                var id = item._id ? item._id : item;
-                this.refs['checkbox-' + id].setChecked(true);
-            }.bind(this));
+            this.props.field.tournaments.forEach(item => {
+                !!this.refs[`checkbox-${item._id}`] && this.refs[`checkbox-${item._id}`].setChecked(true);
+            });
         }
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (!nextProps.field.hasOwnProperty('_id') && this.refs.form) {
             this._clearForm();
         }
-    },
+    }
 
-    _onTournaments: function () {
-        var tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
-            return !!item.country;
-        });
+    _onTournaments() {
+        const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(item => !!item.country);
 
         this.setState({
             tournaments: tournaments
         });
-    },
+    }
 
-    _onValidationError: function (validation) {
+    _onValidationError(validation) {
         this.setState({validation: validation});
-    },
+    }
 
-    _onSave: function () {
-        var tournaments = [];
-        this.state.tournaments.forEach(function (item) {
-            if (this.refs['checkbox-' + item._id].isChecked()) {
-                tournaments.push(item._id);
-            }
-        }.bind(this));
+    _onSave() {
+        const tournaments = this.state.tournaments
+            .filter(item => this.refs[`checkbox-${item._id}`].isChecked())
+            .map(item => item._id);
 
-        var field = {
+        let field = {
             title:       this.refs.title.getValue(),
             howto:       this.refs.howto.getValue(),
             show:        this.refs.show.isToggled(),
@@ -120,19 +117,19 @@ var FieldForm = React.createClass({
         } else {
             FieldsActions.add(field);
         }
-    },
+    }
 
-    _onCancel: function () {
-        this.setState({validation: this.getInitialState().validation});
+    _onCancel() {
+        this.setState({validation: {}});
 
         this._clearForm();
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    },
+    }
 
-    _clearForm: function () {
+    _clearForm() {
         this.refs.howto.setValue('');
         this.refs.lat.setValue('');
         this.refs.long.setValue('');
@@ -141,30 +138,29 @@ var FieldForm = React.createClass({
         this.refs.show.setToggled(false);
         this.refs.image.setImage(null);
 
-        this.state.tournaments.forEach(function (item) {
-            this.refs['checkbox-' + item._id].setChecked(false);
-        }.bind(this));
-    },
+        this.state.tournaments.forEach(item => this.refs[`checkbox-${item._id}`].setChecked(false));
+    }
 
-    render: function () {
+    render() {
+        const styles = this.getStyles();
+
         if (!this.props.leagueId || !this.state.tournaments.length) {
             return (<h4>Необходимые данные загружаются</h4>);
         }
 
-        var tournaments = _.groupBy(this.state.tournaments, function (item) {
-            return item.country ? item.country.name : 'Остальные';
-        });
+        const tournaments = _.groupBy(this.state.tournaments, item => item.country ? item.country.name : 'Остальные');
 
-        var tournamentsBlock = _.mapValues(tournaments, function (tournaments, country) {
-            var tournamentsEl = tournaments.map(function (item) {
-                var index = this.props.field.tournaments ? this.props.field.tournaments.indexOf(item._id) : false;
+        const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
+            const tournamentsEl = tournaments.map(item => {
+                const index = this.props.field.tournaments ? this.props.field.tournaments.indexOf(item._id) : -1;
+
                 return <Checkbox
                     label={item.name}
                     className={item.show ? '' : 'text_color_muted'}
                     defaultChecked={index !== -1}
                     ref={'checkbox-' + item._id}
                     key={'checkbox-' + item._id + '-' + item._id}/>
-            }.bind(this));
+            });
 
             return (
                 <div className="s_display_inline-block s_mr_24 s_mb_24">
@@ -172,45 +168,45 @@ var FieldForm = React.createClass({
                     {tournamentsEl}
                 </div>);
 
-        }.bind(this));
+        });
 
-        var image = this.props.field.image;
+        let image = this.props.field.image;
         if (image && image.thumb) {
             image = image.thumb.src;
         }
 
         return (
-            <div className="panel panel_type_field-create s_pt_0" key={this.props.field._id ? this.props.field._id : 'field-form'}
+            <div style={styles.root} key={this.props.field._id ? this.props.field._id : 'field-form'}
                  ref="form">
                 <TextField
+                    style={styles.input.full}
                     defaultValue={this.props.field.title}
                     floatingLabelText="Название"
                     disabled={true}
                     ref="title"/>
 
                 <TextField
+                    style={styles.input.full}
                     defaultValue={this.props.field.address}
                     floatingLabelText="Адрес"
                     disabled={true}
                     ref="address"/>
 
-                <div className="s_display_inline-block s_width_half">
-                    <TextField
-                        defaultValue={this.props.field.metro ? this.props.field.metro.name : ''}
-                        floatingLabelText="Станция метро"
-                        hintText="Название станции метро"
-                        disabled={!this.props.field._id}
-                        ref="metro_name"/>
-                </div>
+                <TextField
+                    style={styles.input.half.left}
+                    defaultValue={this.props.field.metro ? this.props.field.metro.name : ''}
+                    floatingLabelText="Станция метро"
+                    hintText="Название станции метро"
+                    disabled={!this.props.field._id}
+                    ref="metro_name"/>
 
-                <div className="s_display_inline-block s_width_half">
-                    <TextField
-                        defaultValue={this.props.field.metro ? this.props.field.metro.color : ''}
-                        hintText="red"
-                        floatingLabelText="Цвет ветки(на английском)"
-                        disabled={!this.props.field._id}
-                        ref="metro_color"/>
-                </div>
+                <TextField
+                    style={styles.input.half.right}
+                    defaultValue={this.props.field.metro ? this.props.field.metro.color : ''}
+                    hintText="red"
+                    floatingLabelText="Цвет ветки(на английском)"
+                    disabled={!this.props.field._id}
+                    ref="metro_color"/>
 
                 <MediumEditor
                     hintText="Как добраться"
@@ -219,27 +215,25 @@ var FieldForm = React.createClass({
                     errorText={this.state.validation.howto ? 'Поле не может быть пустым' : null}
                     ref="howto"/>
 
-                <div className="s_display_inline-block s_width_half">
-                    <TextField
-                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[0] : ''}
-                        floatingLabelText="Lat"
-                        hintText="56,4554"
-                        type="number"
-                        disabled={!this.props.field._id}
-                        errorText={this.state.validation.lat ? 'Поле не может быть пустым' : null}
-                        ref="lat"/>
-                </div>
+                <TextField
+                    style={styles.input.half.left}
+                    defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[0] : ''}
+                    floatingLabelText="Lat"
+                    hintText="56,4554"
+                    type="number"
+                    disabled={!this.props.field._id}
+                    errorText={this.state.validation.lat ? 'Поле не может быть пустым' : null}
+                    ref="lat"/>
 
-                <div className="s_display_inline-block s_width_half">
-                    <TextField
-                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[1] : ''}
-                        hintText="56,4554"
-                        floatingLabelText="Long"
-                        type="number"
-                        disabled={!this.props.field._id}
-                        errorText={this.state.validation.long ? 'Поле не может быть пустым' : null}
-                        ref="long"/>
-                </div>
+                <TextField
+                    style={styles.input.half.right}
+                    defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[1] : ''}
+                    hintText="56,4554"
+                    floatingLabelText="Long"
+                    type="number"
+                    disabled={!this.props.field._id}
+                    errorText={this.state.validation.long ? 'Поле не может быть пустым' : null}
+                    ref="long"/>
 
                 <div className="s_mt_24">
                     {tournamentsBlock}
@@ -250,30 +244,58 @@ var FieldForm = React.createClass({
                     image={image}
                     width="250px"
                     height="250px"
+                    pos={{x: '50%', y: '50%'}}
                     errorText={this.state.validation.image ? 'Загрузите изображение для контакта' : null}
                     key={this.props._id + '-image-upload'}
                     ref="image"/>
 
-                <div className="s_position_relative s_overflow_hidden s_mt_24" key="field-state-radio">
-                    <div className="s_float_l s_width_half">
-                        <div className="s_width_third s_display_inline-block s_mt_24">
-                            <Toggle
-                                name="show"
-                                value="show"
-                                ref="show"
-                                defaultToggled={this.props.field.show}
-                                label="Показывать"/>
-                        </div>
-                    </div>
+                <Toggle
+                    style={styles.toggle}
+                    name="show"
+                    value="show"
+                    ref="show"
+                    labelPosition="right"
+                    defaultToggled={this.props.field.show}
+                    label="Показывать"/>
 
-                    <div className="buttons s_float_r s_width_third">
-                        <Button className="button_type_cancel s_mt_36" label="Отменить" secondary={true} onClick={this._onCancel}/>
-                        <Button className="button_type_save s_float_r s_mt_36" label="Сохранить" primary={true} onClick={this._onSave}/>
-                    </div>
-                </div>
+                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
+
             </div>
         );
     }
-});
+
+    getStyles() {
+        return {
+            root:   {
+                marginBottom: Spacing.desktopGutter,
+                padding:      `0 ${Spacing.desktopGutter}px`
+            },
+            input:  {
+                full: {
+                    width: '100%'
+                },
+                half: {
+                    left:  {
+                        width:       '49%',
+                        marginRight: '2%'
+                    },
+                    right: {
+                        width: '49%'
+                    }
+                }
+            },
+            toggle: {
+                height:       Spacing.desktopGutter,
+                marginTop:    Spacing.desktopGutter,
+                marginBottom: Spacing.desktopGutter,
+                marginRight:  Spacing.desktopGutter
+            },
+            button: {
+                marginRight: Spacing.desktopGutter
+            }
+        }
+    }
+}
 
 module.exports = FieldForm;

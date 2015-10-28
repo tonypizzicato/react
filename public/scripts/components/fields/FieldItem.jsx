@@ -1,64 +1,90 @@
-"use strict";
+const React        = require('react'),
+      cx           = require('classnames'),
+      mui          = require('material-ui'),
 
-var React      = require('react'),
-    cx         = require('classnames'),
-    mui        = require('material-ui'),
+      Colors       = mui.Styles.Colors,
+      Spacing      = mui.Styles.Spacing,
 
-    Dragon     = require('../Dragon.jsx'),
+      ListItem     = mui.ListItem,
+      IconMenu     = mui.IconMenu,
+      IconButton   = mui.IconButton,
+      Icon         = mui.FontIcon,
+      Avatar       = mui.Avatar,
 
-    Paper      = mui.Paper,
-    Icon       = mui.FontIcon,
-    IconButton = mui.IconButton;
+      MenuItem     = require('material-ui/lib/menus/menu-item'),
+      MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
+      EditIcon     = require('material-ui/lib/svg-icons/content/create');
 
-var FieldItem = React.createClass({
+class FieldItem extends React.Component {
 
-    propTypes: function () {
-        return {
-            field:    React.PropTypes.object,
-            onDelete: React.PropTypes.func,
-            onEdit:   React.PropTypes.func
-        }
-    },
+    static propTypes = {
+        field:       React.PropTypes.object,
+        onDelete:    React.PropTypes.func,
+        onEdit:      React.PropTypes.func
+    }
 
-    render: function () {
-        var visibilityClass = cx({
-            'list-item__visibility':      true,
+    render() {
+        const styles = this.getStyles();
+
+        const visibilityClass = cx({
             'mdfi_action_visibility':     true,
             'mdfi_action_visibility_off': !this.props.field.show
         });
 
-        var item = (
-            <Paper>
-                <div className="list-item panel s_pt_0 s_pb_0 s_pr_0 s_pl_0 s_mt_12">
-                    <div className="list-item__header">
-                        <div className="list-item__icon s_display_inline-block s_valign_m">
-                            <Icon className="list-item__sort mdfi_action_swap_vert"/>
-                            <Icon className={visibilityClass}/>
-                        </div>
+        const avatar = this.props.field.image ?
+            <Avatar size={Spacing.desktopGutter * 2} src={this.props.field.image.thumb.src}/> :
+            <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title[0]}</Avatar>;
 
-                        <div
-                            className="list-item__title list-item__title_type_fields text_overflow_ellipsis s_display_inline-block s_valign_m">
-                            <span>{this.props.field.title}&nbsp;</span>
-                            <span className="text_color_muted">{this.props.field.address}</span>
-                        </div>
-
-                        <div className="s_float_r">
-                            <div className="s_display_inline-block s_valign_m">
-                                <IconButton iconClassName="mdfi_editor_mode_edit" onClick={this.props.onEdit} data-id={this.props.field._id}
-                                            data-sort="-1"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Paper>
+        const iconButtonMenu = (
+            <IconButton touch={true}>
+                <MoreVertIcon color={Colors.grey600}/>
+            </IconButton>
         );
 
+        const rightIconMenu = (
+            <IconMenu iconButtonElement={iconButtonMenu}>
+                <MenuItem
+                    primaryText="Редактировать"
+                    onClick={this.props.onEdit}
+                    data-id={this.props.field._id}
+                    leftIcon={<EditIcon color={Colors.grey600}/>}/>
+            </IconMenu>
+        );
         return (
-            <Dragon key={this.props.field._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                {item}
-            </Dragon>
+            <ListItem
+                style={styles.root}
+                data-id={this.props.field._id}
+                leftAvatar={avatar}
+                disabled={true}
+                primaryText={
+                        <p>
+                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                            <span>{this.props.field.title}</span>
+                        </p>
+                    }
+                secondaryText={this.props.field.address}
+                rightIconButton={rightIconMenu}
+            />
         );
     }
-});
+
+    getStyles() {
+        return {
+            root: {
+                boxSizing:  'border-box',
+                margin:     Spacing.desktopGutter + ' 0',
+                userSelect: 'none',
+                //boxShadow:  'rgba(0, 0, 0, 0.2) 0px 1px 2px 0px'
+            },
+
+            visibilityIcon: {
+                marginRight: 6,
+                top:         2,
+                fontSize:    18,
+                color:       this.props.field.show ? Colors.blueGrey900 : Colors.lightBlack
+            }
+        }
+    }
+}
 
 module.exports = FieldItem;

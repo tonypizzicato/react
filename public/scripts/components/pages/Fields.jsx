@@ -1,106 +1,106 @@
-"use strict";
+const React         = require('react'),
+      mui           = require('material-ui'),
 
-var $               = require('jquery'),
-    React           = require('react'),
-    Router          = require('react-router'),
-    mui             = require('material-ui'),
+      Tabs          = mui.Tabs,
+      Tab           = mui.Tab,
 
-    Tabs            = mui.Tabs,
-    Tab             = mui.Tab,
-    DropDownMenu    = mui.DropDownMenu,
+      FieldsActions = require('../../actions/FieldsActions'),
+      FieldsStore   = require('../../stores/FieldsStore'),
 
-    EventsConstants = require('../../constants/EventsConstants'),
+      FieldsList    = require('../fields/FieldsList.jsx'),
+      FieldForm     = require('../fields/FieldForm.jsx');
 
-    FieldsActions   = require('../../actions/FieldsActions'),
-    FieldsStore     = require('../../stores/FieldsStore'),
+class FieldsApp extends React.Component {
 
-    FieldsList      = require('../fields/FieldsList.jsx'),
-    FieldForm       = require('../fields/FieldForm.jsx');
+    static propTypes = {
+        leagues: React.PropTypes.array.required
+    };
 
-var FieldsApp = React.createClass({
+    state = {
+        fields:        [],
+        selectedField: {}
+    };
 
-    mixins: [Router.State],
+    constructor(props) {
+        super(props);
 
-    propTypes: function () {
-        return {
-            leagues: React.PropTypes.array.required
-        }
-    },
+        this._onEdit      = this._onEdit.bind(this);
+        this._onChange    = this._onChange.bind(this);
+        this._onCancel    = this._onCancel.bind(this);
+        this._onTabChange = this._onTabChange.bind(this);
+    }
 
-    getInitialState: function () {
-        return {
-            fields:        [],
-            selectedField: {}
-        }
-    },
-
-    componentDidMount: function () {
+    componentDidMount() {
         FieldsStore.addChangeListener(this._onChange);
 
         if (this.props.leagues.length > 0) {
             FieldsActions.load();
         }
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         FieldsStore.removeChangeListener(this._onChange);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.leagues.length != nextProps.leagues.length) {
             FieldsActions.load();
         }
-    },
+    }
 
-    _onTabChange: function () {
+    _onTabChange(tab) {
         this.setState({
-            selectedField: this.getInitialState().selectedField
+            activeTab:     tab.props.tabIndex,
+            selectedField: {}
         });
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState({
             fields:        FieldsStore.getAll(),
-            selectedField: this.getInitialState().selectedField
+            selectedField: {}
         });
-    },
+    }
 
-    _onDelete: function (e) {
+    _onDelete(e) {
         FieldsActions.delete(e.currentTarget.dataset.id);
-    },
+    }
 
-    _onEdit: function (e) {
+    _onEdit(e) {
         this.setState({
-            selectedField: this.state.fields.filter(function (field) {
-                return field._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedField: this.state.fields.filter(field => field._id == e.currentTarget.dataset.id).pop()
         });
-    },
+    }
 
-    _onCancel: function () {
+    _onCancel() {
         this.setState({
-            selectedField: this.getInitialState().selectedField
+            selectedField: {}
         });
-    },
+    }
 
-    render: function () {
-        var tabItems = this.props.leagues.map(function (league) {
-            var fieldsItems = this.state.fields.filter(function (item) {
-                return item.leagueId == league._id;
-            }.bind(this));
-
-            return (
-                <Tab label={league.name} key={league._id}>
-                    <FieldForm field={this.state.selectedField} leagueId={league._id} onCancel={this._onCancel}
-                               key={'field-form-' + league._id}/>
-                    <FieldsList fields={fieldsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
-                </Tab>
-            );
-        }.bind(this));
+    render() {
         return (
-            <Tabs onChange={this._onTabChange}>{tabItems}</Tabs>
+            <Tabs>
+                {this.props.leagues.map(league => {
+                    const fieldsItems = this.state.fields.filter(item => item.leagueId == league._id);
+
+                    return (
+                    <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                        <FieldForm
+                            field={this.state.selectedField}
+                            leagueId={league._id}
+                            onCancel={this._onCancel}
+                            key={`field-form-${league._id}`}/>
+                        <FieldsList
+                            fields={fieldsItems}
+                            onDelete={this._onDelete}
+                            onEdit={this._onEdit}/>
+                    </Tab>
+                        );
+                    })}
+            </Tabs>
         );
     }
-});
+}
 
 module.exports = FieldsApp;

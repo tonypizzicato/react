@@ -70,7 +70,6 @@ gulp.task('watch', function () {
 gulp.task('copy.styles', function () {
     return gulp.src([
         paths.VENDOR + '/material-design-fonticons/styles/mdfi.css',
-        paths.VENDOR + '/material-design-fonticons/styles/mdfi_navigation.css',
         paths.VENDOR + '/dropzone/dist/dropzone.css',
         paths.VENDOR + '/dropzone/dist/basic.css',
         paths.VENDOR + '/medium-editor/dist/css/medium-editor.css',
@@ -261,6 +260,6 @@ gulp.task('js:dist', function () {
 });
 
 
-gulp.task('build', seq('clean', ['copy.styles', 'copy.fonts', 'less', 'js'], 'watch'));
+gulp.task('default', seq('clean', ['copy.styles', 'copy.fonts', 'less', 'js'], 'watch'));
 
 gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'copy.fonts:dist', 'less:dist', 'js:dist']));

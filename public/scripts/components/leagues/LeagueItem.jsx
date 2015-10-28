@@ -62,7 +62,8 @@ class LeagueItem extends React.Component {
             },
             visibilityIcon: {
                 marginRight: 6,
-                top:         4,
+                top:         2,
+                fontSize:    18,
                 color:       this.props.league.show ? Colors.blueGrey900 : Colors.lightBlack
             }
         }
