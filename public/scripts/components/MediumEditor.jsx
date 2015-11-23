@@ -243,7 +243,7 @@ class Editor extends React.Component {
                     bottom:       8,
                     margin:       0,
                     border:       'none',
-                    borderBottom: 'solid 1px #e0e0e0;'
+                    borderBottom: 'solid 1px #e0e0e0'
                 },
                 onFocused: {
                     transform:  'scaleX(0)',

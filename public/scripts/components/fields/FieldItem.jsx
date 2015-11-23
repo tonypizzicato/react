@@ -18,9 +18,9 @@ const React        = require('react'),
 class FieldItem extends React.Component {
 
     static propTypes = {
-        field:       React.PropTypes.object,
-        onDelete:    React.PropTypes.func,
-        onEdit:      React.PropTypes.func
+        field:    React.PropTypes.object,
+        onDelete: React.PropTypes.func,
+        onEdit:   React.PropTypes.func
     }
 
     render() {
@@ -74,6 +74,7 @@ class FieldItem extends React.Component {
                 boxSizing:  'border-box',
                 margin:     Spacing.desktopGutter + ' 0',
                 userSelect: 'none',
+                height:     '100%'
                 //boxShadow:  'rgba(0, 0, 0, 0.2) 0px 1px 2px 0px'
             },
 

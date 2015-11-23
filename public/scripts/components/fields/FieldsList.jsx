@@ -33,29 +33,30 @@ class FieldsList extends React.Component {
     constructor(props) {
         super(props);
 
-        this._onDrop = this._onDrop.bind(this);
+        this._onSort = this._onSort.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({fields: nextProps.fields});
     }
 
-    _onDrop(from, to) {
-        let items = this.state.fields.slice();
-        items.splice(to, 0, items.splice(from, 1)[0]);
+    _onSort(orderedItems) {
+        let items = [];
+
+        orderedItems.forEach((prev, next) => {
+            items[next] = this.state.fields[prev];
+
+            if (next != prev) {
+                FieldsActions.save({
+                    _id:  items[next]._id,
+                    sort: next
+                }, {silent: true});
+            }
+        });
+
+        this.props.onDrop && this.props.onDrop(items);
 
         this.setState({fields: items});
-
-        if (this.props.onDrop) {
-            this.props.onDrop(items);
-        }
-
-        items.forEach((item, index) => {
-            FieldsActions.save({
-                _id:  item._id,
-                sort: index
-            }, {silent: true});
-        });
     }
 
     render() {
@@ -63,23 +64,23 @@ class FieldsList extends React.Component {
             return false;
         }
 
+        const styles     = this.getStyles();
+        const itemHeight = 76;
+
         return (
-            <List style={this.getStyles().root}>
-                <Sortable
-                    itemHeight={100}>
+            <List style={styles.root}>
+                <Sortable itemHeight={itemHeight} onSort={this._onSort}>
                     {this.props.fields.map((item, i) => {
-                        const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true}/> : undefined;
+                        const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true} style={styles.divider}/> : undefined;
 
                         return (
-                            <div>
+                            <div style={{height: '100%'}} key={item._id}>
                                 <FieldItem
                                     field={item}
                                     onEdit={this.props.onEdit}
                                     onDelete={this.props.onDelete}
-                                    onDrop={this._onDrop}
-                                    index={i}
-                                    key={item._id}/>
-
+                                    onDrop={this._onSort}
+                                    index={i}/>
                                 {divider}
                             </div>
                         );
@@ -91,12 +92,15 @@ class FieldsList extends React.Component {
 
     getStyles() {
         return {
-            root: {
+            root:    {
                 paddingTop:    0,
                 paddingBottom: 0,
                 border:        'solid 1px ' + Colors.faintBlack,
                 position:      'relative',
                 overflow:      'hidden'
+            },
+            divider: {
+                marginLeft: 0
             }
         }
     }

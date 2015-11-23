@@ -19,11 +19,14 @@ const springConfig = [300, 50];
 class Sortable extends React.Component {
 
     static propTypes = {
-        itemHeight: React.PropTypes.number
+        itemHeight: React.PropTypes.number,
+        onSort:     React.PropTypes.func,
+        delay:      React.PropTypes.number
     };
 
     static defaultProps = {
-        itemHeight: 100
+        itemHeight: 100,
+        delay:      400
     };
 
     state = {
@@ -44,23 +47,12 @@ class Sortable extends React.Component {
         this.handleMouseUp    = this.handleMouseUp.bind(this);
     }
 
-    componentDidMount() {
-        window.addEventListener('touchmove', this.handleTouchMove);
-        window.addEventListener('touchend', this.handleMouseUp);
-        window.addEventListener('mousemove', this.handleMouseMove);
-        window.addEventListener('mouseup', this.handleMouseUp);
-
-        console.log('mounted');
-    }
-
     handleTouchStart(key, pressLocation, e) {
-        console.log('handleTouchStart');
         this.handleMouseDown(key, pressLocation, e.touches[0]);
     }
 
     handleTouchMove(e) {
         e.preventDefault();
-        console.log('handleTouchMove');
         this.handleMouseMove(e.touches[0]);
     }
 
@@ -69,12 +61,11 @@ class Sortable extends React.Component {
             return
         }
 
-        console.log('handleMouseDown');
         this.setState({
             delta:       e.pageY - pressY,
             mouse:       pressY,
             isPressed:   true,
-            lastPressed: pos,
+            lastPressed: pos
         });
     }
 
@@ -87,32 +78,35 @@ class Sortable extends React.Component {
 
         if (isPressed) {
             const mouse    = e.pageY - delta;
-            const row      = clamp(Math.round(mouse / 100), 0, this.props.children.length - 1);
+            const row      = clamp(Math.round(mouse / this.props.itemHeight), 0, this.props.children.length - 1);
             const newOrder = reinsert(order, order.indexOf(lastPressed), row);
             this.setState({mouse: mouse, order: newOrder});
-            console.log('moved');
         }
     }
 
     handleMouseUp() {
-        console.log('handleMouseUp');
         this.setState({isPressed: false, delta: 0});
+
+        if (this.props.onSort) {
+            _.delay(() => this.props.onSort(this.state.order), this.props.delay);
+        }
     }
 
     render() {
-        console.log('rendered');
         const {mouse, isPressed, lastPressed, order} = this.state;
         const endValue = this.props.children.map((child, i) => {
             if (lastPressed === i && isPressed) {
                 return {
                     scale:  {val: 1.021, config: springConfig},
                     shadow: {val: 2, config: springConfig},
+                    bg:     {val: .8, config: springConfig},
                     y:      {val: mouse, config: []}
                 };
             }
             return {
                 scale:  {val: 1, config: springConfig},
-                shadow: {val: 1, config: springConfig},
+                shadow: {val: 0, config: springConfig},
+                bg:     {val: 0, config: springConfig},
                 y:      {val: order.indexOf(i) * this.props.itemHeight, config: springConfig}
             };
         });
@@ -120,29 +114,35 @@ class Sortable extends React.Component {
         return (
             <Spring endValue={endValue}>
                 {items =>
-                <div style={this.getStyles().root}>
-                    {items.map(({scale, y}, i) => {
-                        return (
-                        <div
-                            key={i}
-                            ref={`sort-item-${i}`}
-                            onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
-                            onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
-                            style={{
+                    <div style={this.getStyles().root}>
+                        {items.map(({scale, y, shadow, bg}, i) => {
+                            return (<div
+                                key={i}
+                                ref={`sort-item-${i}`}
+                                onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
+                                onTouchMove={this.handleTouchMove}
+                                onMouseMove={this.handleMouseMove}
+                                onMouseUp={this.handleMouseUp}
+                                onTouchEnd={this.handleMouseUp}
+                                onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
+                                style={{
                                 position: 'absolute',
                                 cursor: 'pointer',
+                                height: this.props.itemHeight,
                                 width: '100%',
+                                background: `rgba(255,255,255,${bg.val})`,
+                                WebkitFilter: lastPressed != i ? `blur(${items[lastPressed].shadow.val}px)` : 'none',
+                                filter: lastPressed != i ? `blur(${items[lastPressed].shadow.val}px)` : 'none',
+                                boxShadow: `rgba(0, 0, 0, 0.2) 0 -${2*shadow.val}px ${2*shadow.val}px -${2*shadow.val}px`,
                                 transform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 WebkitTransform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
-                                zIndex: i === lastPressed ? 99 : i,
+                                zIndex: i === lastPressed ? 99 : i
                             }}>
-                            {this.props.children[i]}
-                        </div>
-                            )
-                        }
-                        )}
-                </div>
-                    }
+                                {this.props.children[i]}
+                            </div>)
+                        })}
+                    </div>
+                }
             </Spring>
         );
     }
