@@ -41,21 +41,22 @@ class FieldsList extends React.Component {
     }
 
     _onSort(orderedItems) {
-        let items = this.state.fields.slice();
-        items.splice(to, 0, items.splice(from, 1)[0]);
+        let items = [];
+
+        orderedItems.forEach((prev, next) => {
+            items[next] = this.state.fields[prev];
+
+            if (next != prev) {
+                FieldsActions.save({
+                    _id:  items[next]._id,
+                    sort: next
+                }, {silent: true});
+            }
+        });
+
+        this.props.onDrop && this.props.onDrop(items);
 
         this.setState({fields: items});
-
-        if (this.props.onDrop) {
-            this.props.onDrop(items);
-        }
-
-        items.forEach((item, index) => {
-            FieldsActions.save({
-                _id:  item._id,
-                sort: index
-            }, {silent: true});
-        });
     }
 
     render() {
@@ -73,18 +74,17 @@ class FieldsList extends React.Component {
                         const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true} style={styles.divider}/> : undefined;
 
                         return (
-                        <div style={{height: '100%'}}>
-                            <FieldItem
-                                field={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}
-                                onDrop={this._onSort}
-                                index={i}
-                                key={item._id}/>
-                            {divider}
-                        </div>
-                            );
-                        })}
+                            <div style={{height: '100%'}} key={item._id}>
+                                <FieldItem
+                                    field={item}
+                                    onEdit={this.props.onEdit}
+                                    onDelete={this.props.onDelete}
+                                    onDrop={this._onSort}
+                                    index={i}/>
+                                {divider}
+                            </div>
+                        );
+                    })}
                 </Sortable>
             </List>
         );

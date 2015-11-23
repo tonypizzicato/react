@@ -20,11 +20,13 @@ class Sortable extends React.Component {
 
     static propTypes = {
         itemHeight: React.PropTypes.number,
-        onSort:     React.PropTypes.func
+        onSort:     React.PropTypes.func,
+        delay:      React.PropTypes.number
     };
 
     static defaultProps = {
-        itemHeight: 100
+        itemHeight: 100,
+        delay:      400
     };
 
     state = {
@@ -45,13 +47,6 @@ class Sortable extends React.Component {
         this.handleMouseUp    = this.handleMouseUp.bind(this);
     }
 
-    componentDidMount() {
-        window.addEventListener('touchmove', this.handleTouchMove);
-        window.addEventListener('touchend', this.handleMouseUp);
-        window.addEventListener('mousemove', this.handleMouseMove);
-        window.addEventListener('mouseup', this.handleMouseUp);
-    }
-
     handleTouchStart(key, pressLocation, e) {
         this.handleMouseDown(key, pressLocation, e.touches[0]);
     }
@@ -70,7 +65,7 @@ class Sortable extends React.Component {
             delta:       e.pageY - pressY,
             mouse:       pressY,
             isPressed:   true,
-            lastPressed: pos,
+            lastPressed: pos
         });
     }
 
@@ -93,7 +88,7 @@ class Sortable extends React.Component {
         this.setState({isPressed: false, delta: 0});
 
         if (this.props.onSort) {
-            this.props.onSort(this.state.order);
+            _.delay(() => this.props.onSort(this.state.order), this.props.delay);
         }
     }
 
@@ -119,14 +114,18 @@ class Sortable extends React.Component {
         return (
             <Spring endValue={endValue}>
                 {items =>
-                <div style={this.getStyles().root}>
-                    {items.map(({scale, y, shadow, bg}, i) => {
-                        return (<div
-                            key={i}
-                            ref={`sort-item-${i}`}
-                            onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
-                            onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
-                            style={{
+                    <div style={this.getStyles().root}>
+                        {items.map(({scale, y, shadow, bg}, i) => {
+                            return (<div
+                                key={i}
+                                ref={`sort-item-${i}`}
+                                onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
+                                onTouchMove={this.handleTouchMove}
+                                onMouseMove={this.handleMouseMove}
+                                onMouseUp={this.handleMouseUp}
+                                onTouchEnd={this.handleMouseUp}
+                                onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
+                                style={{
                                 position: 'absolute',
                                 cursor: 'pointer',
                                 height: this.props.itemHeight,
@@ -137,13 +136,13 @@ class Sortable extends React.Component {
                                 boxShadow: `rgba(0, 0, 0, 0.2) 0 -${2*shadow.val}px ${2*shadow.val}px -${2*shadow.val}px`,
                                 transform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
                                 WebkitTransform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
-                                zIndex: i === lastPressed ? 99 : i,
+                                zIndex: i === lastPressed ? 99 : i
                             }}>
-                            {this.props.children[i]}
-                        </div>)
+                                {this.props.children[i]}
+                            </div>)
                         })}
-                </div>
-                    }
+                    </div>
+                }
             </Spring>
         );
     }
