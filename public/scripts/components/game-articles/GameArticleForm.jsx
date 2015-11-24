@@ -23,8 +23,8 @@ const _                   = require('lodash'),
 
 class GameArticleForm extends React.Component {
     static propTypes = {
-        leagueId: React.PropTypes.string.required,
-        type:     React.PropTypes.string.required,
+        leagueId: React.PropTypes.string.isRequired,
+        type:     React.PropTypes.string.isRequired,
         article:  React.PropTypes.object,
         game:     React.PropTypes.object
     };

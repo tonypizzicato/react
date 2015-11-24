@@ -20,8 +20,8 @@ class CountryItem extends React.Component {
 
     static propTypes = {
         country:  React.PropTypes.object,
-        onDelete: React.PropTypes.func.required,
-        onEdit:   React.PropTypes.func.required
+        onDelete: React.PropTypes.func.isRequired,
+        onEdit:   React.PropTypes.func.isRequired
     };
 
     render() {

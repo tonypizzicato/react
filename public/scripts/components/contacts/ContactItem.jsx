@@ -18,11 +18,11 @@ const cx           = require('classnames'),
       Dragon       = require('../Dragon.jsx');
 
 class ContactItem extends React.Component {
-    propTypes() {
+    static propTypes() {
         return {
             contact:  React.PropTypes.object,
-            onDelete: React.PropTypes.func.required,
-            onEdit:   React.PropTypes.func.required
+            onDelete: React.PropTypes.func.isRequired,
+            onEdit:   React.PropTypes.func.isRequired
         }
     }
 

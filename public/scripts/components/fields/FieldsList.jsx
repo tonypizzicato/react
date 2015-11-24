@@ -18,8 +18,8 @@ class FieldsList extends React.Component {
 
     static propTypes = {
         fields:   React.PropTypes.array,
-        onEdit:   React.PropTypes.func.required,
-        onDelete: React.PropTypes.func.required
+        onEdit:   React.PropTypes.func.isRequired,
+        onDelete: React.PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -69,7 +69,7 @@ class FieldsList extends React.Component {
 
         return (
             <List style={styles.root}>
-                <Sortable itemHeight={itemHeight} onSort={this._onSort}>
+                <Sortable itemHeight={itemHeight} onSort={this._onSort} delay={600}>
                     {this.props.fields.map((item, i) => {
                         const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true} style={styles.divider}/> : undefined;
 

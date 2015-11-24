@@ -11,7 +11,7 @@ const _            = require('lodash'),
 class DropzoneComponent extends React.Component {
 
     static propTypes = {
-        url:            React.PropTypes.string.required,
+        url:            React.PropTypes.string.isRequired,
         uploadMultiple: React.PropTypes.bool,
         onUpload:       React.PropTypes.func,
         onChunkUpload:  React.PropTypes.func

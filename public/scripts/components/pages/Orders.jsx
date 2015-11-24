@@ -17,7 +17,7 @@ var React           = require('react'),
 class OrdersApp extends React.Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.required
+        leagues: React.PropTypes.array.isRequired
     };
 
     static defaultProps = {

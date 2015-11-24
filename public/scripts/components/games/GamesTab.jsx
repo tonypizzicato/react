@@ -29,7 +29,7 @@ const _                   = require('lodash'),
 class GamesTab extends React.Component {
 
     static propTypes = {
-        leagueId:    React.PropTypes.string.required,
+        leagueId:    React.PropTypes.string.isRequired,
         countries:   React.PropTypes.array,
         onTabChange: React.PropTypes.func
     };

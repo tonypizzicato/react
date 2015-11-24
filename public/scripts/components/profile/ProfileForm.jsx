@@ -27,7 +27,7 @@ const positions = {
 
 class ProfileForm extends React.Component {
     static propTypes = {
-        leagues: React.PropTypes.array.required,
+        leagues: React.PropTypes.array.isRequired,
         user:    React.PropTypes.object.isRequired
     };
 

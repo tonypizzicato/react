@@ -23,7 +23,7 @@ class ContactForm extends React.Component {
 
     static propTypes = {
         contact:  React.PropTypes.object,
-        leagueId: React.PropTypes.string.required
+        leagueId: React.PropTypes.string.isRequired
     };
 
     static defaultProps = {
@@ -71,19 +71,19 @@ class ContactForm extends React.Component {
         TournamentsStore.removeChangeListener(this._onTournaments);
     }
 
-    componentDidUpdate() {
-        if (!!this.props.contact.tournaments) {
-            this.props.contact.tournaments.forEach(item => {
-                !!this.refs[`checkbox-${item._id}`] && this.refs[`checkbox-${item._id}`].setChecked(true);
-            });
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.contact.hasOwnProperty('_id') && this.refs.form) {
-            this._clearForm();
-        }
-    }
+    //componentDidUpdate() {
+    //    if (!!this.props.contact.tournaments) {
+    //        this.props.contact.tournaments.forEach(item => {
+    //            !!this.refs[`checkbox-${item._id}`] && this.refs[`checkbox-${item._id}`].setChecked(true);
+    //        });
+    //    }
+    //}
+    //
+    //componentWillReceiveProps(nextProps) {
+    //    if (!nextProps.contact.hasOwnProperty('_id') && this.refs.form) {
+    //        this._clearForm();
+    //    }
+    //}
 
     _onTournaments() {
         const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
@@ -170,21 +170,21 @@ class ContactForm extends React.Component {
         const tournaments = _.groupBy(this.state.tournaments, item => item.country ? item.country.name : 'Остальные');
 
         const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
-            const tournamentsEl = tournaments.map(item => {
-                const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : -1;
-
-                return <Checkbox
-                    label={item.name}
-                    className={item.show ? '' : 'text_color_muted'}
-                    defaultChecked={index !== -1}
-                    ref={'checkbox-' + item._id}
-                    key={'checkbox-' + item._id + '-' + item._id}/>
-            });
-
             return (
                 <div className="s_display_inline-block s_mr_24 s_mb_24">
                     <h5>{country}</h5>
-                    {tournamentsEl}
+                    <div>
+                        {tournaments.map(item => {
+                            const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : -1;
+
+                            return <Checkbox
+                                label={item.name}
+                                className={item.show ? '' : 'text_color_muted'}
+                                defaultChecked={index !== -1}
+                                ref={'checkbox-' + item._id}
+                                key={item._id}/>
+                            })}
+                    </div>
                 </div>);
 
         });

@@ -9,7 +9,7 @@ var DropDownMenu = React.createClass({
 
     propTypes: function () {
         return {
-            menuItems:     React.PropTypes.array.required,
+            menuItems:     React.PropTypes.array.isRequired,
             selectedIndex: React.PropTypes.number,
             noDataText:    React.PropTypes.string
         }

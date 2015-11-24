@@ -9,7 +9,7 @@ const React        = require('react'),
 
 class HelpButton extends React.Component {
     static propTypes = {
-        dialog: React.PropTypes.element.required
+        dialog: React.PropTypes.element.isRequired
     };
 
     constructor(props) {

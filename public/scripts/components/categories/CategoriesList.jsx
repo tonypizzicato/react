@@ -17,8 +17,8 @@ class CategoriesList extends React.Component {
 
     static propTypes = {
         categories: React.PropTypes.array,
-        onEdit:     React.PropTypes.func.required,
-        onDelete:   React.PropTypes.func.required
+        onEdit:     React.PropTypes.func.isRequired,
+        onDelete:   React.PropTypes.func.isRequired
     };
 
     static defaultProps = {
