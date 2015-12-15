@@ -1,17 +1,17 @@
 import _ from 'lodash';
-import React from 'react/addons';
-import { Spring } from 'react-motion';
+import React from 'react';
+import {Spring} from 'react-motion';
 
 const reinsert = (arr, from, to) => {
-  const _arr = arr.slice(0);
-  const val  = _arr[from];
-  _arr.splice(from, 1);
-  _arr.splice(to, 0, val);
-  return _arr;
+    const _arr = arr.slice(0);
+    const val  = _arr[from];
+    _arr.splice(from, 1);
+    _arr.splice(to, 0, val);
+    return _arr;
 };
 
 const clamp = (i, min, max) => {
-  return Math.max(Math.min(i, max), min);
+    return Math.max(Math.min(i, max), min);
 };
 
 const springConfig = [300, 50];

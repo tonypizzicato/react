@@ -1,37 +1,33 @@
-const _                = require('lodash'),
-      $                = require('jquery'),
-      React            = require('react'),
-      Router           = require('react-router'),
-      mui              = require('material-ui'),
+const _                       = require('lodash'),
+      $                       = require('jquery'),
+      React                   = require('react'),
+      Router                  = require('react-router'),
+      mui                     = require('material-ui'),
 
-      RouteHandler     = Router.RouteHandler,
+      Link                    = Router.Link,
 
-      Link             = Router.Link,
+      Colors                  = mui.Styles.Colors,
+      Spacing                 = mui.Styles.Spacing,
 
-      Colors           = mui.Styles.Colors,
-      Spacing          = mui.Styles.Spacing,
+      Canvas                  = mui.AppCanvas,
+      AppBar                  = mui.AppBar,
+      Icon                    = mui.FontIcon,
+      RefreshIndicator        = mui.RefreshIndicator,
+      Snackbar                = mui.Snackbar,
 
-      MenuItem         = mui.MenuItem,
-      Canvas           = mui.AppCanvas,
-      AppBar           = mui.AppBar,
-      Icon             = mui.FontIcon,
-      RefreshIndicator = mui.RefreshIndicator,
-      Snackbar         = mui.Snackbar,
+      FullWidth               = require('../FullWidth.jsx'),
+      LeftNav                 = require('../LeftNav.jsx'),
+      Auth                    = require('../Auth.jsx').Auth,
 
-      FullWidth        = require('../FullWidth.jsx'),
-      LeftNav          = require('../LeftNav.jsx'),
-      Auth             = require('../Auth.jsx').Auth,
+      AuthStore               = require('../../stores/AuthStore'),
 
-      AuthStore        = require('../../stores/AuthStore'),
-
-      LeaguesActions   = require('../../actions/LeaguesActions'),
-      LeaguesStore     = require('../../stores/LeaguesStore'),
-      GamesActions     = require('../../actions/GamesActions'),
-      GamesStore       = require('../../stores/GamesStore');
+      LeaguesActions          = require('../../actions/LeaguesActions'),
+      LeaguesStore            = require('../../stores/LeaguesStore'),
+      GamesActions            = require('../../actions/GamesActions'),
+      GamesStore              = require('../../stores/GamesStore');
 
 const menuItems = [
     {route: 'profile', text: 'Профиль'},
-    {type: MenuItem.Types.SUBHEADER, text: 'Ресурсы'},
     {route: 'users', text: 'Пользователи'},
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
@@ -44,8 +40,6 @@ const menuItems = [
     {route: 'orders', text: 'Заявки'}
 ];
 
-const ThemeManager = new mui.Styles.ThemeManager();
-
 const MainApp = React.createClass({
 
     mixins: [Router.State],
@@ -57,16 +51,6 @@ const MainApp = React.createClass({
             leagues:  [],
             games:    []
         }
-    },
-
-    childContextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
-    getChildContext: function () {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
     },
 
     componentDidMount: function () {
@@ -134,7 +118,7 @@ const MainApp = React.createClass({
         let content;
 
         if (this.state.loggedIn) {
-            content = <RouteHandler leagues={this.state.leagues} games={this.state.games}/>
+            content = React.cloneElement(this.props.children, {leagues: this.state.leagues, games: this.state.games});
         } else {
             content = <Auth />
         }
@@ -149,7 +133,7 @@ const MainApp = React.createClass({
             <Link style={styles.login.label} to="logout">Выход</Link> :
             <Link style={styles.login.label} to="login">Вход</Link>;
 
-        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.context.router.isActive(item.route)), 'text');
+        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.props.history.isActive(item.route)), 'text');
         if (!appBarTitle) {
             appBarTitle = 'amateurs.io';
         }
@@ -182,7 +166,7 @@ const MainApp = React.createClass({
                         {this._getContentComponent()}
                     </div>
 
-                    <LeftNav menuItems={menuItems} ref="leftNav"/>
+                    <LeftNav menuItems={menuItems} history={this.props.history} ref="leftNav"/>
 
                     <FullWidth style={styles.footer} ref="footer">
                         <p style={styles.p}>

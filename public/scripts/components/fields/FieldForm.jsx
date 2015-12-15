@@ -2,6 +2,8 @@ const _                  = require('lodash'),
       React              = require('react'),
       mui                = require('material-ui'),
 
+      TransitionGroup    = require('react-addons-css-transition-group'),
+
       Spacing            = mui.Styles.Spacing,
 
       TextField          = mui.TextField,
@@ -19,8 +21,6 @@ const _                  = require('lodash'),
 
       TournamentsActions = require('../../actions/TournamentsActions'),
       TournamentsStore   = require('../../stores/TournamentsStore');
-
-const TransitionGroup = React.addons.CSSTransitionGroup;
 
 class FieldForm extends React.Component {
 

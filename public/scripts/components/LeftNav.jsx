@@ -1,9 +1,10 @@
-const React   = require('react');
-const Router  = require('react-router');
-const mui     = require('material-ui');
-const LeftNav = mui.LeftNav;
-const { Colors, Spacing, Typography } = mui.Styles;
-
+import React from 'react';
+import LeftNav from 'material-ui/lib/left-nav';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import List from 'material-ui/lib/lists/list';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Divider from 'material-ui/lib/divider';
+import {Colors, Spacing, Typography } from 'material-ui/lib/styles/index';
 
 class AppLeftNav extends React.Component {
 
@@ -27,11 +28,9 @@ class AppLeftNav extends React.Component {
             <LeftNav
                 ref="leftNav"
                 docked={false}
-                isInitiallyOpen={false}
-                header={header}
-                menuItems={this.props.menuItems}
-                selectedIndex={this._getSelectedIndex()}
-                onChange={this._onLeftNavChange}/>
+                onChange={this._onLeftNavChange}>
+                {this.props.menuItems.map((item, i) => <MenuItem index={i}>{item.text}</MenuItem>)}
+            </LeftNav>
         );
     }
 
@@ -44,7 +43,7 @@ class AppLeftNav extends React.Component {
 
         for (let i = this.props.menuItems.length - 1; i >= 0; i--) {
             currentItem = this.props.menuItems[i];
-            if (currentItem.route && this.context.router.isActive(currentItem.route)) return i;
+            if (currentItem.route && this.props.history.isActive(currentItem.route)) return i;
         }
     }
 

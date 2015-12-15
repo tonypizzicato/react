@@ -1,12 +1,9 @@
-"use strict";
+import k from 'keymirror';
 
-var keymirror = require('keymirror');
-
-var CategoriesConstants = keymirror({
-    CATEGORIES_LOAD:   null,
-    CATEGORIES_ADD:    null,
-    CATEGORIES_SAVE:   null,
-    CATEGORIES_DELETE: null
+export default k({
+    CATEGORIES_FETCH:         null,
+    CATEGORIES_FETCH_SUCCESS: null,
+    CATEGORIES_ADD:           null,
+    CATEGORIES_SAVE:          null,
+    CATEGORIES_DELETE:        null
 });
-
-module.exports = CategoriesConstants;

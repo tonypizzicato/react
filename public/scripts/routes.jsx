@@ -1,46 +1,40 @@
-"use strict";
+import React from 'react';
+import { Router, Route, IndexRoute } from 'react-router';
 
-var React          = require('react'),
-    Router         = require('react-router'),
+const MainApp        = require('./components/pages/main.jsx'),
+      ProfileApp     = require('./components/pages/Profile.jsx'),
+      LeaguesApp     = require('./components/pages/Leagues.jsx'),
+      CountriesApp   = require('./components/pages/Countries.jsx'),
+      TournamentsApp = require('./components/pages/Tournaments.jsx'),
+      UsersApp       = require('./components/pages/Users.jsx'),
+      CategoriesApp  = require('./components/pages/Categories.jsx'),
+      NewsApp        = require('./components/pages/News.jsx'),
+      GamesApp       = require('./components/pages/Games.jsx'),
+      ContactsApp    = require('./components/pages/Contacts.jsx'),
+      FieldsApp      = require('./components/pages/Fields.jsx'),
+      OrdersApp      = require('./components/pages/Orders.jsx'),
+      Auth           = require('./components/Auth.jsx');
 
-    Route          = Router.Route,
-    DefaultRoute   = Router.DefaultRoute,
+const Routes = (
+    <Route path="/" component={MainApp}>
+        <IndexRoute component={UsersApp}/>
 
-    MainApp        = require('./components/pages/main.jsx'),
-    ProfileApp     = require('./components/pages/Profile.jsx'),
-    LeaguesApp     = require('./components/pages/Leagues.jsx'),
-    CountriesApp   = require('./components/pages/Countries.jsx'),
-    TournamentsApp = require('./components/pages/Tournaments.jsx'),
-    UsersApp       = require('./components/pages/Users.jsx'),
-    CategoriesApp  = require('./components/pages/Categories.jsx'),
-    NewsApp        = require('./components/pages/News.jsx'),
-    GamesApp       = require('./components/pages/Games.jsx'),
-    ContactsApp    = require('./components/pages/Contacts.jsx'),
-    FieldsApp      = require('./components/pages/Fields.jsx'),
-    OrdersApp      = require('./components/pages/Orders.jsx'),
-    Auth           = require('./components/Auth.jsx');
+        <Route path="signup" component={Auth.SignUp}/>
+        <Route path="login" component={Auth.Login}/>
+        <Route path="logout" component={Auth.Logout}/>
+        <Route path="profile" component={ProfileApp}/>
 
-var Routes = (
-    <Route name="root" path="/" handler={MainApp}>
-        <Route name="signup" handler={Auth.SignUp}/>
-        <Route name="login" handler={Auth.Login}/>
-        <Route name="logout" handler={Auth.Logout}/>
-        <Route name="profile" handler={ProfileApp}/>
-
-        <Route name="users" handler={UsersApp}/>
-        <Route name="leagues" handler={LeaguesApp}/>
-        <Route name="countries" handler={CountriesApp}/>
-        <Route name="tournaments" handler={TournamentsApp}/>
-        <Route name="categories" handler={CategoriesApp}/>
-        <Route name="news" handler={NewsApp}/>
-        <Route name="games" handler={GamesApp}/>
-        <Route name="contacts" handler={ContactsApp}/>
-        <Route name="fields" handler={FieldsApp}/>
-        <Route name="orders" handler={OrdersApp}/>
-
-        <DefaultRoute handler={UsersApp}/>
+        <Route path="users" component={UsersApp}/>
+        <Route path="leagues" component={LeaguesApp}/>
+        <Route path="countries" component={CountriesApp}/>
+        <Route path="tournaments" component={TournamentsApp}/>
+        <Route path="categories" component={CategoriesApp}/>
+        <Route path="news" component={NewsApp}/>
+        <Route path="games" component={GamesApp}/>
+        <Route path="contacts" component={ContactsApp}/>
+        <Route path="fields" component={FieldsApp}/>
+        <Route path="orders" component={OrdersApp}/>
     </Route>
 );
 
-
-module.exports = Routes;
+export default Routes;
