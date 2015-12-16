@@ -1,25 +1,25 @@
-const React        = require('react'),
-      mui          = require('material-ui'),
+import cx from 'classnames';
+import React, { Component, PropTypes} from 'react';
 
-      Colors       = mui.Styles.Colors,
-      Spacing      = mui.Styles.Spacing,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      ListItem     = mui.ListItem,
-      Avatar       = mui.Avatar,
-      IconMenu     = mui.IconMenu,
-      IconButton   = mui.IconButton,
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import IconButton from 'material-ui/lib/icon-button';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
 
-      MenuItem     = require('material-ui/lib/menus/menu-item'),
-      MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
-      DeleteIcon   = require('material-ui/lib/svg-icons/action/delete'),
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
 
-      Dragon       = require('../Dragon.jsx');
+import Dragon from '../Dragon.jsx';
 
-class CategoryItem extends React.Component {
+class CategoryItem extends Component {
     static propTypes = {
-        category: React.PropTypes.object,
-        onDelete: React.PropTypes.func.isRequired,
-        onEdit:   React.PropTypes.func.isRequired
+        category: PropTypes.object,
+        onDelete: PropTypes.func.isRequired,
+        onEdit:   PropTypes.func.isRequired
     };
 
     render() {
@@ -51,7 +51,7 @@ class CategoryItem extends React.Component {
                     primaryText={this.props.category.name}
                     secondaryText={this.props.category.title}
                     rightIconButton={rightIconMenu}
-                    />
+                />
             </Dragon>
         );
     }

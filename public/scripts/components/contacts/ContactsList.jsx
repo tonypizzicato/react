@@ -1,21 +1,19 @@
-const React           = require('react'),
-      mui             = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing         = mui.Styles.Spacing,
-      Colors          = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      List            = mui.List,
-      ListDivider     = mui.ListDivider,
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-      ContactItem     = require('../contacts/ContactItem.jsx'),
+import ContactItem from '../contacts/ContactItem.jsx';
+import ContactsActions from '../../actions/ContactsActions';
 
-      ContactsActions = require('../../actions/ContactsActions');
-
-class ContactsList extends React.Component {
+class ContactsList extends Component {
     static propTypes = {
-        contacts: React.PropTypes.array,
-        onEdit:   React.PropTypes.func.isRequired,
-        onDelete: React.PropTypes.func.isRequired
+        contacts: PropTypes.array,
+        onEdit:   PropTypes.func.isRequired,
+        onDelete: PropTypes.func.isRequired
     };
 
     static getDefaultProps = {
@@ -60,21 +58,21 @@ class ContactsList extends React.Component {
         return (
             <List style={this.getStyles().root}>
                 {this.props.contacts.map((item, index) => {
-                    const divider = index != this.props.contacts.length - 1 ? <ListDivider inset={true}/> : undefined;
+                    const divider = index != this.props.contacts.length - 1 ? <Divider inset={true}/> : undefined;
 
                     return (
-                    <div key={item._id}>
-                        <ContactItem
-                            contact={item}
-                            onEdit={this.props.onEdit}
-                            onDelete={this.props.onDelete}
-                            onDrop={this._onDrop}
-                            index={index}
-                            key={item._id}/>
-                        {divider}
-                    </div>
-                        )
-                    })}
+                        <div key={item._id}>
+                            <ContactItem
+                                contact={item}
+                                onEdit={this.props.onEdit}
+                                onDelete={this.props.onDelete}
+                                onDrop={this._onDrop}
+                                index={index}
+                                key={item._id}/>
+                            {divider}
+                        </div>
+                    )
+                })}
             </List>
         );
     }

@@ -1,18 +1,17 @@
-const React      = require('react'),
-      mui        = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Colors     = mui.Styles.Colors,
-      Spacing    = mui.Styles.Spacing,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Card       = mui.Card,
-      CardHeader = mui.CardHeader,
-      CardText   = mui.CardText,
-      Avatar     = mui.Avatar;
+import Card from 'material-ui/lib/card/card';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
+import Avatar from 'material-ui/lib/avatar';
 
-class OrderItem extends React.Component {
+class OrderItem extends Component {
 
     static propTypes = {
-        order: React.PropTypes.object
+        order: PropTypes.object
     };
 
     render() {

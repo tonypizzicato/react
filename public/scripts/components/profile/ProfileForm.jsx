@@ -1,22 +1,20 @@
-const _               = require('lodash'),
-      React           = require('react'),
-      mui             = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing         = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      DropDownMenu    = mui.DropDownMenu,
-      TextField       = mui.TextField,
-      Checkbox        = mui.Checkbox,
-      Button          = mui.RaisedButton,
-      Avatar          = mui.Avatar,
+import TextField from 'material-ui/lib/text-field';
+import DropDownMenu from 'material-ui/lib/drop-down-menu';
+import Button from 'material-ui/lib/raised-button';
+import Checkbox from 'material-ui/lib/checkbox';
+import Avatar from 'material-ui/lib/avatar';
 
-      ImageUpload     = require('../ImageUpload.jsx'),
+import ImageUpload from '../ImageUpload.jsx';
 
-      EventsConstants = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
 
-      AuthActions     = require('../../actions/AuthActions'),
-      AuthStore       = require('../../stores/AuthStore');
-
+import AuthActions from'../../actions/AuthActions';
+import AuthStore from'../../stores/AuthStore';
 
 const positions = {
     photographer: 'Фотограф',
@@ -25,10 +23,10 @@ const positions = {
     lead:         'Руководитель лиги'
 };
 
-class ProfileForm extends React.Component {
+class ProfileForm extends Component {
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired,
-        user:    React.PropTypes.object.isRequired
+        leagues: PropTypes.array.isRequired,
+        user:    PropTypes.object.isRequired
     };
 
     state = {
@@ -135,16 +133,16 @@ class ProfileForm extends React.Component {
                     <div style={styles.checkbox.container}>
                         {Object.keys(positions).map(item => {
                             return (
-                            <Checkbox
-                                style={styles.checkbox.checkbox}
-                                name={`position-${item}`}
-                                value={item}
-                                defaultChecked={this.props.user.positions.indexOf(item) != -1}
-                                label={positions[item]}
-                                ref={`position-${item}`}/>
-                                )
-                            })
-                            }
+                                <Checkbox
+                                    style={styles.checkbox.checkbox}
+                                    name={`position-${item}`}
+                                    value={item}
+                                    defaultChecked={this.props.user.positions.indexOf(item) != -1}
+                                    label={positions[item]}
+                                    key={item}
+                                    ref={`position-${item}`}/>
+                            )
+                        })}
                     </div>
                 </div>
                 <div style={styles.right}>

@@ -1,23 +1,19 @@
-"use strict";
+import React, { Component, PropTypes} from 'react';
 
-const React           = require('react'),
-      mui             = require('material-ui'),
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Spacing         = mui.Styles.Spacing,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import Button from 'material-ui/lib/raised-button';
 
-      TextField       = mui.TextField,
-      Toggle          = mui.Toggle,
-      Button          = mui.RaisedButton,
+import EventsConstants from '../../constants/EventsConstants';
+import LeaguesStore from'../../stores/LeaguesStore';
 
-      EventsConstants = require('../../constants/EventsConstants'),
+class LeagueForm extends Component {
 
-      LeaguesActions  = require('../../actions/LeaguesActions'),
-      LeaguesStore    = require('../../stores/LeaguesStore');
-
-class LeagueForm extends React.Component {
-
-    static propTypes() {
-        league: React.PropTypes.object
+    static propTypes = {
+        league:   PropTypes.object,
+        onSubmit: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -62,7 +58,7 @@ class LeagueForm extends React.Component {
         };
 
         this.setState({validation: {}});
-        LeaguesActions.save(league);
+        this.props.onSubmit(league);
     }
 
     _onCancel() {

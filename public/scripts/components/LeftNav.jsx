@@ -1,72 +1,117 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import LeftNav from 'material-ui/lib/left-nav';
-import MenuItem from 'material-ui/lib/menus/menu-item';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
 import Divider from 'material-ui/lib/divider';
 import {Colors, Spacing, Typography } from 'material-ui/lib/styles/index';
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 
-class AppLeftNav extends React.Component {
+const SelectableList = SelectableContainerEnhance(List);
 
-    constructor() {
-        super();
+class AppLeftNav extends Component {
 
-        this.toggle            = this.toggle.bind(this);
+    static propTypes = {
+        menuItems:     PropTypes.array.isRequired,
+        opened:        PropTypes.bool,
+        onStateChange: PropTypes.func,
+        location:      PropTypes.object,
+        history:       PropTypes.object
+    };
+
+    static defaultProps = {
+        opened: false
+    }
+
+    static contextTypes = {
+        router: PropTypes.func
+    };
+
+    state = {
+        opened: this.props.opened
+    };
+
+    constructor(props) {
+        super(props);
+
         this._getSelectedIndex = this._getSelectedIndex.bind(this);
-        this._onLeftNavChange  = this._onLeftNavChange.bind(this);
+        this._onItemClick      = this._onItemClick.bind(this);
+        this._changeState      = this._changeState.bind(this);
         this._onHeaderClick    = this._onHeaderClick.bind(this);
     }
 
+    _getSelectedIndex() {
+        return this.props.location.pathname.split('/').filter(item => item != '')[0];
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.opened !== null && nextProps.opened != this.state.opened) {
+            this.setState({opened: nextProps.opened});
+        }
+    }
+
+    _changeState(state) {
+        console.log('left nav state changed', state);
+        this.setState({opened: state});
+
+        this.props.onStateChange && this.props.onStateChange(state);
+    }
+
+    _onItemClick(e, route) {
+        this.props.history.push(route);
+
+        this._changeState(false);
+    }
+
+    _onHeaderClick() {
+        this.props.history.push('/');
+
+        this._changeState(false);
+    }
+
     render() {
-        let header = (
-            <div style={this.getStyles()} onTouchTap={this._onHeaderClick}>
-                amateurs.io
-            </div>
-        );
+        const styles = this.getStyles();
 
         return (
-            <LeftNav
-                ref="leftNav"
-                docked={false}
-                onChange={this._onLeftNavChange}>
-                {this.props.menuItems.map((item, i) => <MenuItem index={i}>{item.text}</MenuItem>)}
+            <LeftNav open={this.state.opened} docked={false} onRequestChange={this._changeState}>
+
+                <SelectableList style={styles.root}
+                                selectedItemStyle={styles.item.selected}
+                                valueLink={{
+                                    value: this._getSelectedIndex(),
+                                    requestChange: this._onItemClick
+                                }}>
+                    {this.props.menuItems.map((item, i) => {
+                        if (item.route) {
+                            return <ListItem innerDivStyle={styles.item.root} value={item.route} primaryText={item.text} key={item.route}/>
+                        } else {
+                            return <Divider style={styles.divider} inset={true} key={item.type + i}/>
+                        }
+                    })}
+                </SelectableList>
+
             </LeftNav>
         );
     }
 
-    toggle() {
-        this.refs.leftNav.toggle();
-    }
-
-    _getSelectedIndex() {
-        let currentItem;
-
-        for (let i = this.props.menuItems.length - 1; i >= 0; i--) {
-            currentItem = this.props.menuItems[i];
-            if (currentItem.route && this.props.history.isActive(currentItem.route)) return i;
-        }
-    }
-
-    _onLeftNavChange(e, key, payload) {
-        this.context.router.transitionTo(payload.route);
-    }
-
-    _onHeaderClick() {
-        this.context.router.transitionTo('root');
-        this.refs.leftNav.close();
-    }
-
     getStyles() {
         return {
-            cursor:          'pointer',
-            fontSize:        '24px',
-            color:           Typography.textFullWhite,
-            lineHeight:      Spacing.desktopKeylineIncrement + 'px',
-            fontWeight:      Typography.fontWeightLight,
-            backgroundColor: Colors.cyan500,
-            paddingLeft:     Spacing.desktopGutter,
-            paddingTop:      '0px',
-            marginBottom:    '8px'
+            root:    {
+                paddingTop: Spacing.desktopKeylineIncrement + Spacing.desktopGutterLess
+            },
+            item:    {
+                root: {
+                    fontSize:    13,
+                    paddingLeft: Spacing.desktopGutter
+                },
+                selected: {
+                    color: '#FF4081'
+                }
+            },
+            divider: {
+                marginLeft:   0,
+                marginTop:    Spacing.desktopGutterMini,
+                marginBottom: Spacing.desktopGutterMini
+            }
         };
     }
 }

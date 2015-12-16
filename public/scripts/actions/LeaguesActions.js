@@ -1,20 +1,36 @@
-"use strict";
+import {createAction} from 'redux-actions';
+import LeaguesConstants from '../constants/LeaguesConstants';
 
-var AppDispatcher    = require('../dispatcher/app-dispatcher'),
-    LeaguesConstants = require('../constants/LeaguesConstants');
+import routes from '../utils/api-routes';
+import initApi from '../utils/api';
 
-module.exports = {
-    load: function () {
-        AppDispatcher.dispatch({
-            type: LeaguesConstants.LEAGUES_LOAD
+const api = initApi.init(routes.routes, routes.basePath);
+
+const fetched = createAction(LeaguesConstants.LEAGUES_FETCH_SUCCESS);
+const saved   = createAction(LeaguesConstants.LEAGUES_SAVE_SUCCESS, data => data);
+
+const fetch = () => {
+    return dispatch => {
+        dispatch(createAction(LeaguesConstants.LEAGUES_FETCH)());
+
+        return api.call('leagues:list').done(function (response) {
+            dispatch(fetched(response));
         });
-    },
-
-    save: function (data, options) {
-        AppDispatcher.dispatch({
-            type:    LeaguesConstants.LEAGUES_SAVE,
-            data:    data,
-            options: options
-        })
     }
+};
+
+const save = (data) => {
+    return dispatch => {
+        dispatch(createAction(LeaguesConstants.LEAGUES_SAVE)());
+
+        api.call('leagues:save', data).then(function () {
+            dispatch(saved(data));
+        });
+    }
+};
+
+export default {
+    fetch,
+    fetched,
+    save
 };

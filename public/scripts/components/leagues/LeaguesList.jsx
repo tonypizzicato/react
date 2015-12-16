@@ -17,12 +17,12 @@ class LeaguesList extends React.Component {
 
   static propTypes = {
     leagues: React.PropTypes.array,
-    onSort: PropTypes.func,
+    onSort:  PropTypes.func,
   };
 
   static defaultProps = {
     leagues: [],
-    onSort: _.noop,
+    onSort:  _.noop,
   };
 
   @autobind
@@ -84,6 +84,7 @@ class LeaguesList extends React.Component {
       divider: {
         marginLeft: 0
       }
+
     }
   }
 }

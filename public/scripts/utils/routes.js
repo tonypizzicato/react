@@ -5,25 +5,25 @@ var basePath = 'http://localhost:3000';
 var routes = {
     'auth':  {
         'signup': {
-            path:   '/signup',
+            path:   '/api/admin/signup',
             method: 'POST'
         },
         'login':  {
-            path:   '/login',
+            path:   '/api/admin/login',
             method: 'POST'
         },
         'logout': {
-            path:   '/logout',
+            path:   '/api/admin/logout',
             method: 'GET'
         }
     },
     'users': {
         'list': {
-            path:   '/users',
+            path:   '/api/admin/users',
             method: 'GET'
         },
         'save': {
-            path:   '/users/%(_id)s',
+            path:   '/api/admin/users/%(_id)s',
             method: 'PUT'
         }
     }

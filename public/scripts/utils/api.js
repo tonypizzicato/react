@@ -1,16 +1,14 @@
-"use strict";
+import $ from 'jquery';
+import s from 'underscore.string';
 
-var $ = require('jquery'),
-    s = require('underscore.string');
-
-var Api = function (optRoutes, optBasePath) {
-    this.routes = optRoutes;
+const Api = function (optRoutes, optBasePath) {
+    this.routes   = optRoutes;
     this.basePath = optBasePath;
 };
 
 Api.prototype.call = function (routeName, data, isJson) {
-    var route = this.get(routeName, data);
-    data = data || {};
+    const route = this.get(routeName, data);
+    data        = data || {};
 
     return $.ajax({
         type:        route.method,
@@ -21,10 +19,11 @@ Api.prototype.call = function (routeName, data, isJson) {
 };
 
 Api.prototype.get = function (routeName, params) {
-    var parts = routeName.split(':'),
-        route = JSON.parse(JSON.stringify(this.routes));
-    for (var i in parts) {
-        route = route[parts[i]];
+    const parts = routeName.split(':');
+    let route   = JSON.parse(JSON.stringify(this.routes));
+
+    for (let part of parts) {
+        route = route[part];
         if (!route) {
             throw Error('No existing route for ' + routeName);
         }
@@ -35,8 +34,9 @@ Api.prototype.get = function (routeName, params) {
     return route;
 };
 
-var apis = {};
-var init = function (routes, basePath) {
+const apis = {};
+
+const init = (routes, basePath) => {
     if (!apis.hasOwnProperty(basePath)) {
         apis[basePath] = new Api(routes, basePath);
     }
@@ -44,4 +44,6 @@ var init = function (routes, basePath) {
     return apis[basePath];
 };
 
-module.exports.init = init;
+export default {
+    init
+};

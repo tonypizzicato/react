@@ -1,29 +1,32 @@
-const _                = require('lodash'),
-      React            = require('react'),
-      cx               = require('classnames'),
-      mui              = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing          = mui.Styles.Spacing,
-      Colors           = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Toolbar          = mui.Toolbar,
-      ToolbarGroup     = mui.ToolbarGroup,
+import Toolbar from 'material-ui/lib/toolbar/toolbar';
+import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 
-      Typeahead        = require('react-typeahead').Typeahead,
+import { Typeahead } from 'react-typeahead';
 
-      DropDownMenu     = require('../DropDownMenu.jsx'),
+import DropDownMenu from '../DropDownMenu.jsx';
+import ImageUpload from '../ImageUpload.jsx';
+import VideoUpload from '../VideoUpload.jsx';
+import TagsField from '../TagsField.jsx';
 
-      CountriesStore   = require('../../stores/CountriesStore'),
-      CountriesActions = require('../../actions/CountriesActions'),
+import EventsConstants from '../../constants/EventsConstants';
+import AuthStore from'../../stores/AuthStore';
 
-      GamesStore       = require('../../stores/GamesStore');
+import CountriesActions from'../../actions/CountriesActions';
+import CountriesStore from'../../stores/CountriesStore';
+import GamesStore from'../../stores/GamesStore';
 
-class GamesToolbar extends React.Component {
+class GamesToolbar extends Component {
 
     static propTypes = {
-        leagueId:     React.PropTypes.string.isRequired,
-        games:        React.PropTypes.string.isRequired,
-        onGameSelect: React.PropTypes.func
+        leagueId:     PropTypes.string.isRequired,
+        games:        PropTypes.string.isRequired,
+        onGameSelect: PropTypes.func
     };
 
     static defaultProps = {

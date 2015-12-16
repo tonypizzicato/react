@@ -1,20 +1,19 @@
-const React            = require('react'),
-      mui              = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing          = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      TextField        = mui.TextField,
-      Toggle           = mui.Toggle,
-      RadioButtonGroup = mui.RadioButtonGroup,
-      RadioButton      = mui.RadioButton,
-      Button           = mui.RaisedButton,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import Button from 'material-ui/lib/raised-button';
+import RadioButton from 'material-ui/lib/radio-button-group';
+import RadioButtonGroup from 'material-ui/lib/radio-button';
 
-      EventsConstants  = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
 
-      CountriesActions = require('../../actions/CountriesActions'),
-      CountriesStore   = require('../../stores/CountriesStore');
+import CountriesActions from'../../actions/CountriesActions';
+import CountriesStore from'../../stores/CountriesStore';
 
-class CountryForm extends React.Component {
+class CountryForm extends Component {
 
     static defaultProps = {
         country:  {

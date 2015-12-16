@@ -40,7 +40,6 @@ class LeagueItem extends Component {
       'mdfi_action_visibility_off': !league.show
     });
 
-
     return (
       <p>
         <Icon style={this.styles.visibilityIcon} className={visibilityClass}/>
@@ -59,7 +58,7 @@ class LeagueItem extends Component {
         leftAvatar={this.avatar}
         primaryText={this.primaryText}
         secondaryText={league.slug}
-        rightIconButton={<RightMenu id={league._id} onClick={() => onEdit(league._id)} />}
+        rightIconButton={<RightMenu id={league._id} onClick={() => onEdit(league._id)}/>}
       />
     );
   }

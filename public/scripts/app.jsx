@@ -8,9 +8,12 @@ import AppRoutes from './routes.jsx';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
-import createLogger  from 'redux-logger';
+import thunkMiddleware from 'redux-thunk';
+import createLogger from 'redux-logger';
 
 import reducer from './reducer';
+
+import LeaguesActions from './actions/LeaguesActions';
 
 import Perf from 'react-addons-perf';
 
@@ -23,24 +26,31 @@ injectTapEventPlugin();
 window.Perf = Perf;
 
 const logger = createLogger({
-    stateTransformer: (state) => {
-        let newState = {};
+    duration:          true,
+    predicate:         () => process.env.NODE_ENV !== `production`,
+    actionTransformer: action => {
+        let newAction = {};
 
-        for (var i of Object.keys(state)) {
-            if (Immutable.Iterable.isIterable(state[i])) {
-                newState[i] = state[i].toJS();
-            } else {
-                newState[i] = state[i];
-            }
+        for (let i of Object.keys(action)) {
+            newAction[i] = JSON.stringify(action[i]);
         }
 
-        return newState;
+        return newAction;
+    },
+    stateTransformer:  state => {
+        if (Immutable.Map.isMap(state) || Immutable.List.isList(state)) {
+            state = state.toJS();
+        }
+
+        return state;
     }
 });
 
 const history                   = createHistory();
-const createStoreWithMiddleware = applyMiddleware(logger)(createStore);
+const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, logger)(createStore);
 const store                     = createStoreWithMiddleware(reducer);
+
+store.dispatch(LeaguesActions.fetch());
 
 render(
     <Provider store={store}>

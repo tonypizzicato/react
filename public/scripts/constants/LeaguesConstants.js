@@ -1,10 +1,8 @@
-"use strict";
+import k from 'keymirror';
 
-var keymirror = require('keymirror');
-
-var LeaguesConstants = keymirror({
-    LEAGUES_LOAD:   null,
-    LEAGUES_SAVE:   null
+export default k({
+    LEAGUES_FETCH:         null,
+    LEAGUES_FETCH_SUCCESS: null,
+    LEAGUES_SAVE:          null,
+    LEAGUES_SAVE_SUCCESS:  null
 });
-
-module.exports = LeaguesConstants;

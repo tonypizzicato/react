@@ -1,21 +1,21 @@
-const React       = require('react'),
-      mui         = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing     = mui.Styles.Spacing,
-      Colors      = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      List        = mui.List,
-      ListDivider = mui.ListDivider,
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-      NewsItem    = require('../news/NewsItem.jsx'),
+import Sortable from '../Sortable.jsx';
 
-      NewsActions = require('../../actions/NewsActions');
+import NewsItem from '../news/NewsItem.jsx';
+import NewsActions from '../../actions/NewsActions';
 
-class NewsList extends React.Component {
+class NewsList extends Component {
 
     static propTypes = {
-        news:   React.PropTypes.array,
-        onEdit: React.PropTypes.func.isRequired
+        news:   PropTypes.array,
+        onEdit: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -58,11 +58,12 @@ class NewsList extends React.Component {
         return (
             <List style={this.getStyles().root}>
                 {this.props.news.map((item, i) => {
-                    const divider = i != this.props.news.length - 1 ? <ListDivider inset={true}/> : undefined;
+                    const divider = i != this.props.news.length - 1 ? <Divider inset={true}/> : undefined;
 
                     return (
                         <div key={item._id}>
-                            <NewsItem article={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop} index={i} key={item._id}/>
+                            <NewsItem article={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop}
+                                      index={i} key={item._id}/>
                             {divider}
                         </div>
                     );

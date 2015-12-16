@@ -1,24 +1,21 @@
-const React             = require('react'),
-      mui               = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing           = mui.Styles.Spacing,
-      Colors            = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      List              = mui.List,
-      ListDivider       = mui.ListDivider,
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-      Sortable          = require('../Sortable.jsx'),
+import Sortable from '../Sortable.jsx';
+import CategoryItem from '../categories/CategoryItem.jsx';
+import CategoriesActions from '../../actions/CategoriesActions';
 
-      CategoryItem      = require('../categories/CategoryItem.jsx'),
-
-      CategoriesActions = require('../../actions/CategoriesActions');
-
-class CategoriesList extends React.Component {
+class CategoriesList extends Component {
 
     static propTypes = {
-        categories: React.PropTypes.array,
-        onEdit:     React.PropTypes.func.isRequired,
-        onDelete:   React.PropTypes.func.isRequired
+        categories: PropTypes.array,
+        onEdit:     PropTypes.func.isRequired,
+        onDelete:   PropTypes.func.isRequired
     };
 
     static defaultProps = {

@@ -1,21 +1,21 @@
-const React              = require('react'),
-      mui                = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing            = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      TextField          = mui.TextField,
-      Toggle             = mui.Toggle,
-      RadioButtonGroup   = mui.RadioButtonGroup,
-      RadioButton        = mui.RadioButton,
-      Button             = mui.RaisedButton,
-      DropDownMenu       = mui.DropDownMenu,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import DropDownMenu from 'material-ui/lib/drop-down-menu';
+import Button from 'material-ui/lib/raised-button';
+import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+import RadioButton from 'material-ui/lib/radio-button';
 
-      EventsConstants    = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
 
-      TournamentsActions = require('../../actions/TournamentsActions'),
-      TournamentsStore   = require('../../stores/TournamentsStore');
+import TournamentsActions from'../../actions/TournamentsActions';
+import TournamentsStore from'../../stores/TournamentsStore';
 
-class TournamentForm extends React.Component {
+class TournamentForm extends Component {
 
     static defaultProps = {
         tournament: {

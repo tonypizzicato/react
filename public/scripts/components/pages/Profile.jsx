@@ -1,19 +1,19 @@
-const _           = require('lodash'),
-      React       = require('react'),
-      mui         = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 
-      Spacing     = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Paper       = mui.Paper,
+import Paper from 'material-ui/lib/paper';
 
-      ProfileForm = require('../profile/ProfileForm.jsx'),
+import ProfileForm from '../profile/ProfileForm.jsx';
 
-      AuthStore   = require('../../stores/AuthStore');
+import AuthStore from '../../stores/AuthStore';
 
-class ProfileApp extends React.Component {
+class ProfileApp extends Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues: PropTypes.object.isRequired
     };
 
     constructor(props) {
@@ -35,7 +35,7 @@ class ProfileApp extends React.Component {
 
         return (
             <Paper style={styles.root}>
-                <ProfileForm leagues={this.props.leagues} user={user}/>
+                <ProfileForm leagues={this.props.leagues.items} user={user}/>
             </Paper>
         );
     }
@@ -49,4 +49,4 @@ class ProfileApp extends React.Component {
     }
 }
 
-module.exports = ProfileApp;
+export default connect(state => state.toJS())(ProfileApp);

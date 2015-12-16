@@ -6,15 +6,11 @@ var passport = require('passport'),
 
 var init = function (app) {
 
-    app.get('/', function (req, res) {
-        res.render('index', {user: JSON.stringify(req.user)});
-    });
-
-    app.post('/login', passport.authenticate('local'), function (req, res) {
+    app.post('/api/admin/login', passport.authenticate('local'), function (req, res) {
         res.json(req.user);
     });
 
-    app.post('/signup', function (req, res) {
+    app.post('/api/admin/signup', function (req, res) {
         User.create(req.body, function (err, user) {
             if (err) {
                 res.status(500).json({error: err});
@@ -27,12 +23,12 @@ var init = function (app) {
         })
     });
 
-    app.get('/logout', function (req, res) {
+    app.get('/api/admin/logout', function (req, res) {
         req.logout();
         res.json({});
     });
 
-    app.get('/users', function (req, res) {
+    app.get('/api/admin/users', function (req, res) {
         User.find().select('-avatar').exec(function (err, docs) {
             if (err) {
                 res.status(500).json({error: err});
@@ -43,7 +39,7 @@ var init = function (app) {
         });
     });
 
-    app.put('/users/:id', function (req, res) {
+    app.put('/api/admin/users/:id', function (req, res) {
         User.update({_id: req.params.id}, {$set: req.body}, function (err, count) {
             if (err) {
                 console.log(err);
@@ -57,6 +53,10 @@ var init = function (app) {
                 res.status(404).json({});
             }
         });
+    });
+
+    app.get('*', function (req, res) {
+        res.render('index', {user: JSON.stringify(req.user)});
     });
 };
 

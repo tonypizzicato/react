@@ -1,32 +1,30 @@
-const _                  = require('lodash'),
-      React              = require('react'),
-      mui                = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      TransitionGroup    = require('react-addons-css-transition-group'),
+import TransitionGroup from 'react-addons-css-transition-group';
 
-      Spacing            = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      TextField          = mui.TextField,
-      Toggle             = mui.Toggle,
-      Button             = mui.RaisedButton,
-      Checkbox           = mui.Checkbox,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import Button from 'material-ui/lib/raised-button';
+import Checkbox from 'material-ui/lib/checkbox';
 
-      MediumEditor       = require('../MediumEditor.jsx'),
-      ImageUpload        = require('../ImageUpload.jsx'),
+import MediumEditor from '../MediumEditor.jsx';
+import ImageUpload from '../ImageUpload.jsx';
 
-      EventsConstants    = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
 
-      FieldsActions      = require('../../actions/FieldsActions'),
-      FieldsStore        = require('../../stores/FieldsStore'),
+import FieldsActions from'../../actions/FieldsActions';
+import FieldsStore from'../../stores/FieldsStore';
+import TournamentsActions from'../../actions/TournamentsActions';
+import TournamentsStore from'../../stores/TournamentsStore';
 
-      TournamentsActions = require('../../actions/TournamentsActions'),
-      TournamentsStore   = require('../../stores/TournamentsStore');
-
-class FieldForm extends React.Component {
+class FieldForm extends Component {
 
     static propTypes = {
-        field:    React.PropTypes.object,
-        leagueId: React.PropTypes.string.isRequired
+        field:    PropTypes.object,
+        leagueId: PropTypes.string.isRequired
     };
 
     static defaultProps = {

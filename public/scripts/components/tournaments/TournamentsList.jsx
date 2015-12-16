@@ -64,7 +64,7 @@ class TournamentsList extends Component {
             const divider = i != this.props.tournaments.length - 1 ? <ListDivider inset={true} style={this.styles.divider}/> : undefined;
 
             return (
-              <div style={{height: '100%'}} key={item._id}>
+              <div style={{ height: '100%' }} key={item._id}>
                 <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this.onSort}/>
                 {divider}
               </div>

@@ -1,17 +1,16 @@
-const React       = require('react'),
-      mui         = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Colors      = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
 
-      List        = mui.List,
-      ListDivider = mui.ListDivider,
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-      UserItem    = require('../users/UserItem.jsx');
+import UserItem from '../users/UserItem.jsx';
 
-class UsersList extends React.Component {
+class UsersList extends Component {
 
     static propTypes = {
-        users: React.PropTypes.array
+        users: PropTypes.array
     };
 
     static defaultProps = {
@@ -24,7 +23,7 @@ class UsersList extends React.Component {
         }
 
         const items = this.props.users.map((item, index) => {
-            const divider = index != this.props.users.length - 1 ? <ListDivider inset={true}/> : undefined;
+            const divider = index != this.props.users.length - 1 ? <Divider inset={true}/> : undefined;
 
             return (
                 <div key={item._id}>

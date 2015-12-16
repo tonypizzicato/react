@@ -1,23 +1,19 @@
-"use strict";
+import React, { Component, PropTypes} from 'react';
 
-var React            = require('react'),
-    mui              = require('material-ui'),
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-    Spacing          = mui.Styles.Spacing,
-    Colors           = mui.Styles.Colors,
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-    List             = mui.List,
-    ListDivider      = mui.ListDivider,
+import CountryItem from '../countries/CountryItem.jsx';
+import CountriesActions from '../../actions/CountriesActions';
 
-    CountryItem      = require('../countries/CountryItem.jsx'),
-
-    CountriesActions = require('../../actions/CountriesActions');
-
-class CountriesList extends React.Component {
+class CountriesList extends Component {
 
     static propTypes = {
-        countries: React.PropTypes.array,
-        leagueId:  React.PropTypes.string
+        countries: PropTypes.array,
+        leagueId:  PropTypes.string
     };
 
     static defaultProps = {
@@ -68,7 +64,7 @@ class CountriesList extends React.Component {
         return (
             <List style={this.getStyles().root}>
                 {this.state.countries.map((item, i) => {
-                    const divider = i != this.props.countries.length - 1 ? <ListDivider inset={true}/> : undefined;
+                    const divider = i != this.props.countries.length - 1 ? <Divider inset={true}/> : undefined;
 
                     return (
                         <div key={item._id}>

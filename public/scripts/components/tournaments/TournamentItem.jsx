@@ -48,7 +48,7 @@ class TournamentItem extends Component {
       <p>
         <Icon style={this.styles.visibilityIcon} className={visibilityClass}/>
         <span style={this.styles.label.name}>{tournament.name}</span>
-        <span style={{color: Colors.minBlack}}>{tournament.slug}</span>
+        <span style={{ color: Colors.minBlack }}>{tournament.slug}</span>
       </p>
     )
   }
@@ -63,7 +63,7 @@ class TournamentItem extends Component {
         leftAvatar={this.avatar}
         primaryText={this.primaryText}
         secondaryText={tournament.country ? tournament.country.name : '—'}
-        rightIconButton={<RightMenu id={tournament._id} onClick={() => onEdit(tournament._id)} />}
+        rightIconButton={<RightMenu id={tournament._id} onClick={() => onEdit(tournament._id)}/>}
       />
     );
   }

@@ -1,8 +1,6 @@
-"use strict";
+const basePath = 'http://localhost:9000/api';
 
-var basePath = 'http://localhost:9000/api';
-
-var routes = {
+const routes = {
     'auth':       {
         'signup': {
             path:   '/signup',
@@ -239,5 +237,7 @@ var routes = {
     }
 };
 
-module.exports.routes   = routes;
-module.exports.basePath = basePath;
+export default {
+    routes,
+    basePath
+}

@@ -12,6 +12,7 @@ import LeaguesList from '../leagues/LeaguesList.jsx';
 
 class LeaguesApp extends Component {
 
+
   static propTypes = {
     leagues: PropTypes.array.isRequired
   };
@@ -48,6 +49,16 @@ class LeaguesApp extends Component {
   }
 
   @autobind
+  onSubmit(league) {
+    const actionName = this.state.addMode ? 'add' : 'save';
+
+    this.props.dispatch(LeaguesActions[actionName](league))
+      .then(() => this.props.dispatch(LeaguesActions.fetch()))
+      .then(this._onCancel);
+  }
+
+
+  @autobind
   onSort() {
     // LeaguesActions.load();
   }
@@ -62,11 +73,12 @@ class LeaguesApp extends Component {
   render() {
     return (
       <div>
-        <LeagueForm league={this.state.selectedLeague} onCancel={this.onCancel} key={this.state.selectedLeague._id + '-league-form'}/>
+        <LeagueForm league={this.state.selectedLeague} onSubmit={this.onSubmit} onCancel={this.onCancel} key={this.state.selectedLeague._id + '-league-form'}/>
         <LeaguesList leagues={this.props.leagues} onEdit={this.onEdit} onSort={this.onSort} key="leagues-list"/>
       </div>
     );
   }
+
 }
 
-module.exports = LeaguesApp;
+export default connect(state => state.toJS())(LeaguesApp);

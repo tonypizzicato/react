@@ -1,14 +1,13 @@
-const React     = require('react'),
-      mui       = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing   = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      OrderItem = require('../orders/OrderItem.jsx');
+import OrderItem from '../orders/OrderItem.jsx';
 
-class OrdersList extends React.Component {
+class OrdersList extends Component {
 
     static propTypes = {
-        orders: React.PropTypes.array
+        orders: PropTypes.array
     };
 
     render() {

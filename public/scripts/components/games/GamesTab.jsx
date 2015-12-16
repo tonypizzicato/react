@@ -1,37 +1,36 @@
-const _                   = require('lodash'),
-      React               = require('react'),
-      mui                 = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing             = mui.Styles.Spacing,
-      Colors              = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Tabs                = mui.Tabs,
-      Tab                 = mui.Tab,
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-      Toolbar             = require('./GamesToolbar.jsx'),
-      GameArticleForm     = require('../game-articles/GameArticleForm.jsx'),
+import HelpButton from '../HelpButton.jsx';
+import Dropzone from '../Dropzone.jsx';
+import Photos from '../Photos.jsx';
 
-      HelpButton          = require('../HelpButton.jsx'),
-      Dropzone            = require('../Dropzone.jsx'),
-      Photos              = require('../Photos.jsx'),
+import HelpPhotoDialog from '../help/HelpPhotoDialog.jsx';
+import HelpReviewDialog from '../help/HelpReviewDialog.jsx';
 
-      HelpPhotoDialog     = require('../help/HelpPhotoDialog.jsx'),
-      HelpReviewDialog    = require('../help/HelpReviewDialog.jsx'),
+import Toolbar from './GamesToolbar.jsx';
+import GameArticleForm from '../game-articles/GameArticleForm.jsx';
 
-      AuthStore           = require('../../stores/AuthStore'),
+import EventsConstants from '../../constants/EventsConstants';
+import AuthStore from'../../stores/AuthStore';
 
-      PhotosStore         = require('../../stores/PhotosStore'),
-      PhotosActions       = require('../../actions/PhotosActions'),
+import GameArticlesActions from'../../actions/GameArticlesActions';
+import GameArticlesStore from'../../stores/GameArticlesStore';
+import PhotosActions from'../../actions/PhotosActions';
+import PhotosStore from'../../stores/PhotosStore';
 
-      GameArticlesStore   = require('../../stores/GameArticlesStore'),
-      GameArticlesActions = require('../../actions/GameArticlesActions');
-
-class GamesTab extends React.Component {
+class GamesTab extends Component {
 
     static propTypes = {
-        leagueId:    React.PropTypes.string.isRequired,
-        countries:   React.PropTypes.array,
-        onTabChange: React.PropTypes.func
+        leagueId:    PropTypes.string.isRequired,
+        countries:   PropTypes.array,
+        onTabChange: PropTypes.func
     };
 
     static defaultProps = {

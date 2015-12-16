@@ -1,16 +1,15 @@
-const React      = require('react'),
-      mui        = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Colors     = mui.Styles.Colors,
-      Spacing    = mui.Styles.Spacing,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      ListItem   = mui.ListItem,
-      Avatar     = mui.Avatar,
-      IconButton = mui.IconButton;
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import IconButton from 'material-ui/lib/icon-button';
 
-class UserItem extends React.Component {
-    static propTypes    = {
-        users: React.PropTypes.array
+class UserItem extends Component {
+    static propTypes = {
+        users: PropTypes.array
     };
 
     static defaultProps = {
@@ -28,14 +27,14 @@ class UserItem extends React.Component {
                 target="_blank"
                 leftAvatar={<Avatar style={{top: Spacing.desktopGutter}}>{this.props.user.username[0]}</Avatar>}
                 primaryText={this.props.user.username}
+                secondaryTextLines={2}
                 secondaryText={
                   <p>
                     <span style={styles.secondary.primary}>{this.props.user.email}</span>
                     <br/>
                     <span style={styles.secondary.secondary}>{this.props.user.vk}</span>
                   </p>
-                }
-                secondaryTextLines={2}/>
+                }/>
         );
     }
 

@@ -1,26 +1,24 @@
-const React    = require('react'),
-      cx       = require('classnames'),
-      mui      = require('material-ui'),
-      date     = require('../../utils/date'),
+import cx from 'classnames';
+import date from '../../utils/date';
+import React, { Component, PropTypes} from 'react';
 
-      Colors   = mui.Styles.Colors,
-      Spacing  = mui.Styles.Spacing,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Dragon   = require('../Dragon.jsx'),
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Icon from 'material-ui/lib/font-icon';
 
-      ListItem = mui.ListItem,
-      Avatar   = mui.Avatar,
-      Icon     = mui.FontIcon;
+import Dragon from '../Dragon.jsx';
 
-
-class NewsItem extends React.Component {
+class NewsItem extends Component {
 
     static propTypes = {
-        index:    React.PropTypes.number.isRequired,
-        article:  React.PropTypes.object.isRequired,
-        onDelete: React.PropTypes.func.isRequired,
-        onEdit:   React.PropTypes.func.isRequired,
-        onDrop:   React.PropTypes.func.isRequired
+        index:    PropTypes.number.isRequired,
+        article:  PropTypes.object.isRequired,
+        onDelete: PropTypes.func.isRequired,
+        onEdit:   PropTypes.func.isRequired,
+        onDrop:   PropTypes.func.isRequired
     };
 
     static defaultProps = {

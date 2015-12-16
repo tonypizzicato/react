@@ -46,7 +46,6 @@ app.use(session({
 app.use(morgan('combined'));
 
 auth.init(app);
-routes.init(app);
 
 app.set('view engine', 'hbs');
 
@@ -76,6 +75,8 @@ if (app.get('env') === 'production') {
 
 app.set('views', __dirname + viewsDir);
 app.set('public', __dirname + clientDir);
+
+routes.init(app);
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

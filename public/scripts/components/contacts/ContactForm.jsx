@@ -1,29 +1,27 @@
-const _                  = require('lodash'),
-      React              = require('react'),
-      mui                = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing            = mui.Styles.Spacing,
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      TextField          = mui.TextField,
-      Toggle             = mui.Toggle,
-      Button             = mui.RaisedButton,
-      Checkbox           = mui.Checkbox,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import Button from 'material-ui/lib/raised-button';
+import Checkbox from 'material-ui/lib/checkbox';
 
-      ImageUpload        = require('../ImageUpload.jsx'),
+import ImageUpload from '../ImageUpload.jsx';
 
-      EventsConstants    = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
 
-      ContactsActions    = require('../../actions/ContactsActions'),
-      ContactsStore      = require('../../stores/ContactsStore'),
+import ContactsActions from'../../actions/ContactsActions';
+import ContactsStore from'../../stores/ContactsStore';
+import TournamentsActions from'../../actions/TournamentsActions';
+import TournamentsStore from'../../stores/TournamentsStore';
 
-      TournamentsActions = require('../../actions/TournamentsActions'),
-      TournamentsStore   = require('../../stores/TournamentsStore');
-
-class ContactForm extends React.Component {
+class ContactForm extends Component {
 
     static propTypes = {
-        contact:  React.PropTypes.object,
-        leagueId: React.PropTypes.string.isRequired
+        contact:  PropTypes.object,
+        leagueId: PropTypes.string.isRequired
     };
 
     static defaultProps = {
@@ -183,7 +181,7 @@ class ContactForm extends React.Component {
                                 defaultChecked={index !== -1}
                                 ref={'checkbox-' + item._id}
                                 key={item._id}/>
-                            })}
+                        })}
                     </div>
                 </div>);
 

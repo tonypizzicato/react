@@ -1,25 +1,24 @@
-const React         = require('react'),
-      mui           = require('material-ui'),
+import React, { Component, PropTypes} from 'react';
 
-      Spacing       = mui.Styles.Spacing,
-      Colors        = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      List          = mui.List,
-      ListDivider   = mui.ListDivider,
-      SortIcon      = require('material-ui/lib/svg-icons/content/sort'),
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
 
-      Sortable      = require('../Sortable.jsx'),
+import SortIcon from 'material-ui/lib/svg-icons/content/sort';
 
-      FieldItem     = require('./FieldItem.jsx'),
+import Sortable from '../Sortable.jsx';
 
-      FieldsActions = require('../../actions/FieldsActions');
+import FieldItem from '../fields/FieldItem.jsx';
+import FieldsActions from '../../actions/FieldsActions';
 
-class FieldsList extends React.Component {
+class FieldsList extends Component {
 
     static propTypes = {
-        fields:   React.PropTypes.array,
-        onEdit:   React.PropTypes.func.isRequired,
-        onDelete: React.PropTypes.func.isRequired
+        fields:   PropTypes.array,
+        onEdit:   PropTypes.func.isRequired,
+        onDelete: PropTypes.func.isRequired
     };
 
     static defaultProps = {

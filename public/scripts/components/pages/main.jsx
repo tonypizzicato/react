@@ -1,132 +1,138 @@
-const _                       = require('lodash'),
-      $                       = require('jquery'),
-      React                   = require('react'),
-      Router                  = require('react-router'),
-      mui                     = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
 
-      Link                    = Router.Link,
+import _ from 'lodash';
+import $ from 'jquery';
+import mui from 'material-ui';
 
-      Colors                  = mui.Styles.Colors,
-      Spacing                 = mui.Styles.Spacing,
+import Link from 'react-router/lib/Link';
 
-      Canvas                  = mui.AppCanvas,
-      AppBar                  = mui.AppBar,
-      Icon                    = mui.FontIcon,
-      RefreshIndicator        = mui.RefreshIndicator,
-      Snackbar                = mui.Snackbar,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      FullWidth               = require('../FullWidth.jsx'),
-      LeftNav                 = require('../LeftNav.jsx'),
-      Auth                    = require('../Auth.jsx').Auth,
+import Canvas from 'material-ui/lib/app-canvas';
+import AppBar from 'material-ui/lib/app-bar';
+import Icon from 'material-ui/lib/font-icon';
+import RefreshIndicator from 'material-ui/lib/refresh-indicator';
+import Snackbar from 'material-ui/lib/snackbar';
 
-      AuthStore               = require('../../stores/AuthStore'),
+import FullWidth from '../FullWidth.jsx';
+import LeftNav from '../LeftNav.jsx';
+import Auth from '../Auth.jsx';
 
-      LeaguesActions          = require('../../actions/LeaguesActions'),
-      LeaguesStore            = require('../../stores/LeaguesStore'),
-      GamesActions            = require('../../actions/GamesActions'),
-      GamesStore              = require('../../stores/GamesStore');
+import AuthStore from '../../stores/AuthStore';
+
+import GamesActions from '../../actions/GamesActions';
+import GamesStore from '../../stores/GamesStore';
 
 const menuItems = [
     {route: 'profile', text: 'Профиль'},
-    {route: 'users', text: 'Пользователи'},
+    {type: 'divider'},
     {route: 'leagues', text: 'Лиги'},
     {route: 'countries', text: 'Страны'},
     {route: 'tournaments', text: 'Туриниры'},
+    {route: 'games', text: 'Игры'},
+    {type: 'divider'},
     {route: 'categories', text: 'Категории'},
     {route: 'news', text: 'Новости'},
-    {route: 'games', text: 'Игры'},
-    {route: 'contacts', text: 'Контакты'},
     {route: 'fields', text: 'Поля'},
+    {type: 'divider'},
+    {route: 'users', text: 'Пользователи'},
+    {route: 'contacts', text: 'Контакты'},
     {route: 'orders', text: 'Заявки'}
 ];
 
-const MainApp = React.createClass({
+class MainApp extends Component {
 
-    mixins: [Router.State],
+    state = {
+        loading:   true,
+        navOpened: false,
+        loggedIn:  AuthStore.loggedIn(),
+        games:     []
+    };
 
-    getInitialState: function () {
-        return {
-            loading:  true,
-            loggedIn: AuthStore.loggedIn(),
-            leagues:  [],
-            games:    []
-        }
-    },
+    constructor(props) {
+        super(props);
 
-    componentDidMount: function () {
+        this._showLoader         = this._showLoader.bind(this);
+        this._hideLoader         = this._hideLoader.bind(this);
+        this._handleAjaxError    = this._handleAjaxError.bind(this);
+        this._handleAjaxComplete = this._handleAjaxComplete.bind(this);
+
+        this._authChange  = this._authChange.bind(this);
+        this._gamesChange = this._gamesChange.bind(this);
+
+        this._onLeftIconButtonTouchTap = this._onLeftIconButtonTouchTap.bind(this);
+        this._onNavStateChanged        = this._onNavStateChanged.bind(this);
+    }
+
+    componentDidMount() {
         this._showLoader();
 
         $(document).ajaxError(this._handleAjaxError);
         $(document).ajaxComplete(this._handleAjaxComplete);
 
         AuthStore.addChangeListener(this._authChange);
-        LeaguesStore.addChangeListener(this._leaguesChange);
         GamesStore.addChangeListener(this._gamesChange);
+    }
 
-        LeaguesActions.load();
-    },
-
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         AuthStore.removeChangeListener(this._authChange);
-        LeaguesStore.removeChangeListener(this._leaguesChange);
         GamesStore.removeChangeListener(this._gamesChange);
-    },
+    }
 
-    _showLoader: function () {
+    _showLoader() {
         this.setState({loading: true});
 
         _.delay(this.setState.bind(this, {loading: false}), 1000);
-    },
+    }
 
-    _hideLoader: function () {
+    _hideLoader() {
         _.delay(this.setState.bind(this, {loading: false}), 400);
-    },
+    }
 
-    _handleAjaxError: function () {
+    _handleAjaxError() {
         this._hideLoader();
         this.refs.snack.show();
         _.delay(this.refs.snack.dismiss, 2000);
-    },
+    }
 
-    _handleAjaxComplete: function () {
+    _handleAjaxComplete() {
         if (this.state.loading) {
             this._hideLoader();
         }
-    },
+    }
 
-    _authChange: function () {
+    _authChange() {
         this.setState({loggedIn: AuthStore.loggedIn()});
-    },
+    }
 
-    _leaguesChange: function () {
-        const leagues = LeaguesStore.getAll();
-        this.setState({leagues: leagues});
-        leagues.forEach(function (league) {
-            GamesActions.load({leagueId: league._id});
-        });
-    },
-
-    _gamesChange: function () {
+    _gamesChange() {
         this.setState({games: GamesStore.getAll()});
-    },
+    }
 
     _onLeftIconButtonTouchTap() {
-        this.refs.leftNav.toggle();
-    },
+        this.setState({navOpened: !this.state.navOpened});
+    }
+
+    _onNavStateChanged(state) {
+        console.log('main component nav state changed', state);
+
+        this.setState({navOpened: state});
+    }
 
     _getContentComponent() {
         let content;
 
         if (this.state.loggedIn) {
-            content = React.cloneElement(this.props.children, {leagues: this.state.leagues, games: this.state.games});
+            content = this.props.children;
         } else {
-            content = <Auth />
+            content = <Auth.Auth />
         }
 
         return content;
-    },
+    }
 
-    render: function () {
+    render() {
         const styles = this.getStyles();
 
         const loginOrOut = this.state.loggedIn ?
@@ -153,8 +159,8 @@ const MainApp = React.createClass({
                         onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
                         title={appBarTitle}
                         zDepth={0}
-                        showMenuIconButton={this.state.loggedIn}
-                        style={{position: 'fixed', top: 0, zIndex: 100, background: 'rgba(0, 188, 212, .9)'}}
+                        showMenuIconButton={true}
+                        style={{position: 'fixed', top: 0, zIndex: 1400, background: 'rgba(0, 188, 212, .9)'}}
                         ref="appBar">
                         <div>
                             <Icon style={styles.login.icon} className="mdfi_action_account_circle"/>
@@ -166,7 +172,11 @@ const MainApp = React.createClass({
                         {this._getContentComponent()}
                     </div>
 
-                    <LeftNav menuItems={menuItems} history={this.props.history} ref="leftNav"/>
+                    <LeftNav opened={this.state.navOpened}
+                             menuItems={menuItems}
+                             onStateChange={this._onNavStateChanged}
+                             location={this.props.location}
+                             history={this.props.history}/>
 
                     <FullWidth style={styles.footer} ref="footer">
                         <p style={styles.p}>
@@ -180,9 +190,9 @@ const MainApp = React.createClass({
                 </Canvas>
             </div>
         )
-    },
+    }
 
-    getStyles: function () {
+    getStyles() {
         return {
             content:  {
                 maxWidth:      1092,
@@ -242,6 +252,6 @@ const MainApp = React.createClass({
             }
         };
     }
-});
+}
 
-module.exports = MainApp;
+export default MainApp;

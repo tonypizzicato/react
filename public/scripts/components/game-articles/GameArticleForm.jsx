@@ -1,32 +1,30 @@
-const _                   = require('lodash'),
-      React               = require('react'),
-      mui                 = require('material-ui'),
+import _ from 'lodash';
+import React, { Component, PropTypes} from 'react';
 
-      Spacing             = mui.Styles.Spacing,
-      Colors              = mui.Styles.Colors,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Button              = mui.RaisedButton,
-      Toggle              = mui.Toggle,
-      TextField           = mui.TextField,
-      IconButton          = mui.IconButton,
+import TextField from 'material-ui/lib/text-field';
+import Toggle from 'material-ui/lib/toggle';
+import Button from 'material-ui/lib/raised-button';
+import IconButton from 'material-ui/lib/icon-button';
 
-      MediumEditor        = require('../MediumEditor.jsx'),
-      ImageUpload         = require('../ImageUpload.jsx'),
-      VideoUpload         = require('../VideoUpload.jsx'),
+import MediumEditor from '../MediumEditor.jsx';
+import ImageUpload from '../ImageUpload.jsx';
+import VideoUpload from '../VideoUpload.jsx';
 
-      EventsConstants     = require('../../constants/EventsConstants'),
+import EventsConstants from '../../constants/EventsConstants';
+import AuthStore from'../../stores/AuthStore';
 
-      AuthStore           = require('../../stores/AuthStore'),
+import GameArticlesActions from'../../actions/GameArticlesActions';
+import GameArticlesStore from'../../stores/GameArticlesStore';
 
-      GameArticlesStore   = require('../../stores/GameArticlesStore'),
-      GameArticlesActions = require('../../actions/GameArticlesActions');
-
-class GameArticleForm extends React.Component {
+class GameArticleForm extends Component {
     static propTypes = {
-        leagueId: React.PropTypes.string.isRequired,
-        type:     React.PropTypes.string.isRequired,
-        article:  React.PropTypes.object,
-        game:     React.PropTypes.object
+        leagueId: PropTypes.string.isRequired,
+        type:     PropTypes.string.isRequired,
+        article:  PropTypes.object,
+        game:     PropTypes.object
     };
 
     static defaultProps = {
@@ -162,25 +160,25 @@ class GameArticleForm extends React.Component {
         if (this.props.type == 'preview') {
             previewImages = (
                 <div style={{overflow: 'hidden', padding: Spacing.desktopGutterMini + 'px 0'}}>
-                <ImageUpload
-                    label="Выберите фото команды-хозяйки (обязательно для центрального матча)"
-                    image={this.props.article.imageHome}
-                    errorText={this.state.validation.imageHome ? 'Загрузите изображение для команды хозяев' : null}
-                    width="360px"
-                    height="300px"
-                    className={this.state.central ? '' : 's_display_none'}
-                    key={this.props.article._id + '-image-home-upload'}
-                    ref="imageHome"/>
+                    <ImageUpload
+                        label="Выберите фото команды-хозяйки (обязательно для центрального матча)"
+                        image={this.props.article.imageHome}
+                        errorText={this.state.validation.imageHome ? 'Загрузите изображение для команды хозяев' : null}
+                        width="360px"
+                        height="300px"
+                        className={this.state.central ? '' : 's_display_none'}
+                        key={this.props.article._id + '-image-home-upload'}
+                        ref="imageHome"/>
 
-                <ImageUpload
-                    label="Выберите фото гостей (обязательно для центрального матча)"
-                    image={this.props.article.imageAway}
-                    errorText={this.state.validation.imageAway ? 'Загрузите изображение для команды гостей' : null}
-                    width="360px"
-                    height="300px"
-                    className={this.state.central ? '' : 's_display_none'}
-                    key={this.props.article._id + '-image-away-upload'}
-                    ref="imageAway"/>
+                    <ImageUpload
+                        label="Выберите фото гостей (обязательно для центрального матча)"
+                        image={this.props.article.imageAway}
+                        errorText={this.state.validation.imageAway ? 'Загрузите изображение для команды гостей' : null}
+                        width="360px"
+                        height="300px"
+                        className={this.state.central ? '' : 's_display_none'}
+                        key={this.props.article._id + '-image-away-upload'}
+                        ref="imageAway"/>
                 </div>
             );
             previewToggle =

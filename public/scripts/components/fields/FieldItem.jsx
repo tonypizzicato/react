@@ -1,26 +1,25 @@
-const React        = require('react'),
-      cx           = require('classnames'),
-      mui          = require('material-ui'),
+import cx from 'classnames';
+import React, { Component, PropTypes} from 'react';
 
-      Colors       = mui.Styles.Colors,
-      Spacing      = mui.Styles.Spacing,
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      ListItem     = mui.ListItem,
-      IconMenu     = mui.IconMenu,
-      IconButton   = mui.IconButton,
-      Icon         = mui.FontIcon,
-      Avatar       = mui.Avatar,
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import IconButton from 'material-ui/lib/icon-button';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
+import Icon from 'material-ui/lib/font-icon';
 
-      MenuItem     = require('material-ui/lib/menus/menu-item'),
-      MoreVertIcon = require('material-ui/lib/svg-icons/navigation/more-vert'),
-      EditIcon     = require('material-ui/lib/svg-icons/content/create');
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
+import EditIcon from 'material-ui/lib/svg-icons/content/create';
 
-class FieldItem extends React.Component {
+class FieldItem extends Component {
 
     static propTypes = {
-        field:    React.PropTypes.object,
-        onDelete: React.PropTypes.func,
-        onEdit:   React.PropTypes.func
+        field:    PropTypes.object,
+        onDelete: PropTypes.func,
+        onEdit:   PropTypes.func
     }
 
     render() {
