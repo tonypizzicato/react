@@ -6,10 +6,15 @@ import { handleActions } from 'redux-actions';
 
 import LeaguesConstants from './constants/LeaguesConstants';
 import CategoriesConstants from './constants/CategoriesConstants';
+import {COUNTRIES_FETCH, COUNTRIES_FETCH_SUCCESS, COUNTRIES_FETCH_FAILURE} from './actions/CountriesActions';
 
 const INITIAL_STATE = Map({
-    router:     { routes: [], params: {}, location: {query: {q: ''}}, components: [], },
+    router:     {routes: [], params: {}, location: {query: {q: ''}}, components: []},
     leagues:    Map({
+        isFetching: false,
+        items:      List()
+    }),
+    countries:  Map({
         isFetching: false,
         items:      List()
     }),
@@ -21,7 +26,8 @@ const INITIAL_STATE = Map({
 
 export default (state = INITIAL_STATE, action) => {
     return Map({
-        router:  routerStateReducer(state.get('router'), action),
+        router: routerStateReducer(state.get('router'), action),
+
         leagues: handleActions({
             [LeaguesConstants.LEAGUES_FETCH]:         (state, action) => state.set('isFetching', true),
             [LeaguesConstants.LEAGUES_FETCH_SUCCESS]: (state, action) => {
@@ -33,6 +39,13 @@ export default (state = INITIAL_STATE, action) => {
                 return idx == -1 ? state : state.updateIn(['items', idx], league => league.merge(action.payload));
             }
         }, state.get('leagues'))(state.get('leagues'), action),
+
+        countries: handleActions({
+            [COUNTRIES_FETCH]:         state => state.set('isFetching'),
+            [COUNTRIES_FETCH_SUCCESS]: (state, action) => {
+                return state.merge({'isFetching': false, items: action.payload})
+            }
+        }, state.get('countries'))(state.get('countries'), action),
 
         categories: handleActions({
             [CategoriesConstants.CATEGORIES_FETCH]:         (state, action) => state.set('isFetching', true),

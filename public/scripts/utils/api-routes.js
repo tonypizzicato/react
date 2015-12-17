@@ -1,236 +1,236 @@
 const basePath = 'http://localhost:9000/api';
 
 const routes = {
-    'auth':       {
-        'signup': {
+    auth:       {
+        signup: {
             path:   '/signup',
             method: 'POST'
         },
-        'login':  {
+        login:  {
             path:   '/login',
             method: 'POST'
         },
-        'logout': {
+        logout: {
             path:   '/logout',
             method: 'GET'
         }
     },
-    'users':      {
-        'save': {
+    users:      {
+        save: {
             path:   '/users/%(_id)s',
             method: 'PUT'
         }
     },
-    'categories': {
-        'list':   {
+    categories: {
+        list:   {
             path:   '/categories',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/categories',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/categories/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/categories/%(_id)s',
             method: 'DELETE'
         }
     },
-    'news':       {
-        'list':   {
+    news:       {
+        list:   {
             path:   '/news',
             method: 'GET'
         },
-        'item':   {
+        item:   {
             path:   '/news/%(_id)s',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/news',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/news/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/news/%(_id)s',
             method: 'DELETE'
         }
     },
 
-    'leagues': {
-        'list': {
+    leagues: {
+        list: {
             path:   '/leagues',
             method: 'GET'
         },
-        'item': {
+        item: {
             path:   '/leagues/%(_id)s',
             method: 'GET'
         },
-        'save': {
+        save: {
             path:   '/leagues/%(_id)s',
             method: 'PUT'
         }
     },
 
-    'tournaments': {
-        'list':   {
+    tournaments: {
+        list:   {
             path:   '/tournaments',
             method: 'GET'
         },
-        'item':   {
+        item:   {
             path:   '/tournaments/%(_id)s',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/tournaments',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/tournaments/%(_id)s',
             method: 'PUT'
         }
     },
 
-    'countries': {
-        'list':   {
+    countries: {
+        list:   {
             path:   '/countries',
             method: 'GET'
         },
-        'item':   {
+        item:   {
             path:   '/countries/%(_id)s',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/countries',
             method: 'POST'
         },
-        'delete': {
+        delete: {
             path:   '/countries/%(_id)s',
             method: 'DELETE'
         },
-        'save':   {
+        save:   {
             path:   '/countries/%(_id)s',
             method: 'PUT'
         }
     },
 
-    'games': {
-        'list': {
+    games: {
+        list: {
             path:   '/games',
             method: 'GET'
         },
-        'item': {
+        item: {
             path:   '/games/%(_id)s',
             method: 'GET'
         }
     },
 
-    'previews': {
-        'list':   {
+    previews: {
+        list:   {
             path:   '/previews',
             method: 'GET'
         },
-        'item':   {
+        item:   {
             path:   '/previews/%(_id)s',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/previews',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/previews/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/previews/%(_id)s',
             method: 'DELETE'
         }
     },
 
     'game-articles': {
-        'list':   {
+        list:   {
             path:   '/game-articles',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/game-articles',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/game-articles/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/game-articles/%(_id)s',
             method: 'DELETE'
         }
     },
 
-    'images': {
-        'list':   {
+    images: {
+        list:   {
             path:   '/%(type)s/%(postId)s/images/',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/%(type)s/%(postId)s/images',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'DELETE'
         }
     },
 
-    'contacts': {
-        'list':   {
+    contacts: {
+        list:   {
             path:   '/contacts',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/contacts',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/contacts/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/contacts/%(_id)s',
             method: 'DELETE'
         }
     },
 
-    'fields': {
-        'list':   {
+    fields: {
+        list:   {
             path:   '/fields',
             method: 'GET'
         },
-        'create': {
+        create: {
             path:   '/fields',
             method: 'POST'
         },
-        'save':   {
+        save:   {
             path:   '/fields/%(_id)s',
             method: 'PUT'
         },
-        'delete': {
+        delete: {
             path:   '/fields/%(_id)s',
             method: 'DELETE'
         }
     },
 
-    'orders': {
-        'list': {
+    orders: {
+        list: {
             path:   '/orders',
             method: 'GET'
         }

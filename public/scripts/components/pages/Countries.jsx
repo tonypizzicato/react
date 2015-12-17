@@ -1,26 +1,26 @@
-const _                = require('lodash'),
-      scroll           = require('../../utils/scrollTo'),
-      React            = require('react'),
-      mui              = require('material-ui'),
+import _ from 'lodash';
+import scroll from '../../utils/scrollTo';
 
-      Tabs             = mui.Tabs,
-      Tab              = mui.Tab,
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-      CountriesActions = require('../../actions/CountriesActions'),
-      CountriesStore   = require('../../stores/CountriesStore'),
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-      CountryForm      = require('../countries/CountryForm.jsx'),
-      CountriesList    = require('../countries/CountriesList.jsx');
+import CountryForm from '../countries/CountryForm.jsx';
+import CountriesList from '../countries/CountriesList.jsx';
 
-class CountriesApp extends React.Component {
+import CountriesActions from '../../actions/CountriesActions';
+
+class CountriesApp extends Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues:   PropTypes.object.isRequired,
+        countries: PropTypes.object.isRequired
     };
 
     state = {
         activeTab:       0,
-        countries:       [],
         selectedCountry: {}
     };
 
@@ -35,14 +35,8 @@ class CountriesApp extends React.Component {
     }
 
     componentDidMount() {
-        CountriesStore.addChangeListener(this._onChange);
-
         // Load entities
-        CountriesActions.load();
-    }
-
-    componentWillUnmount() {
-        CountriesStore.removeChangeListener(this._onChange);
+        this.props.dispatch(CountriesActions.fetch());
     }
 
     _onTabChange(tab) {
@@ -54,7 +48,6 @@ class CountriesApp extends React.Component {
 
     _onChange() {
         this.setState({
-            countries:       CountriesStore.getAll(),
             selectedCountry: {}
         });
     }
@@ -67,7 +60,7 @@ class CountriesApp extends React.Component {
         const id = e.currentTarget.dataset.id;
 
         this.setState({
-            selectedCountry: _.findWhere(this.state.countries, {_id: id})
+            selectedCountry: _.findWhere(this.props.countries.items, {_id: id})
         });
 
         _.defer(() => {
@@ -84,8 +77,8 @@ class CountriesApp extends React.Component {
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map((league, index) => {
-                    const countriesItems = this.state.countries.filter(country => country.leagueId == league._id);
+                {this.props.leagues.items.map((league, index) => {
+                    const countriesItems = this.props.countries.items.filter(country => country.leagueId == league._id);
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -94,12 +87,14 @@ class CountriesApp extends React.Component {
                                 <CountryForm
                                     country={this.state.selectedCountry}
                                     leagueId={league._id}
-                                    onCancel={this._onCancel}/>
+                                    onCancel={this._onCancel}
+                                    key={`${this.state.selectedCountry._id}-form`}/>
                                 <CountriesList
                                     countries={countriesItems}
                                     leagueId={league._id}
                                     onDelete={this._onDelete}
-                                    onEdit={this._onEdit}/>
+                                    onEdit={this._onEdit}
+                                    key={`${this.state.selectedCountry._id}-list`}/>
                             </div>
                         )
                     }
@@ -115,4 +110,4 @@ class CountriesApp extends React.Component {
     }
 }
 
-module.exports = CountriesApp;
+export default connect(state => state.toJS())(CountriesApp);

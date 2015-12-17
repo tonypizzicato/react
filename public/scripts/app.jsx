@@ -9,6 +9,7 @@ import { ReduxRouter, reduxReactRouter } from 'redux-router';
 
 import thunkMiddleware from 'redux-thunk';
 import createLogger from './utils/createLogger';
+import fetchMiddleware from './middleware/fetchMiddleware';
 
 import reducer from './reducer';
 
@@ -27,7 +28,7 @@ injectTapEventPlugin();
 window.Perf = Perf;
 
 const store = compose(
-    applyMiddleware(thunkMiddleware, createLogger()),
+    applyMiddleware(thunkMiddleware, fetchMiddleware, createLogger()),
     reduxReactRouter({
         routes,
         createHistory,
