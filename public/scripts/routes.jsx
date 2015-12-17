@@ -1,5 +1,6 @@
 import React from 'react';
-import { Router, Route, IndexRoute } from 'react-router';
+import Route from 'react-router/lib/Route';
+import IndexRoute from 'react-router/lib/IndexRoute';
 
 const MainApp        = require('./components/pages/main.jsx'),
       ProfileApp     = require('./components/pages/Profile.jsx'),
@@ -15,7 +16,7 @@ const MainApp        = require('./components/pages/main.jsx'),
       OrdersApp      = require('./components/pages/Orders.jsx'),
       Auth           = require('./components/Auth.jsx');
 
-const Routes = (
+export default (
     <Route path="/" component={MainApp}>
         <IndexRoute component={UsersApp}/>
 
@@ -36,5 +37,3 @@ const Routes = (
         <Route path="orders" component={OrdersApp}/>
     </Route>
 );
-
-export default Routes;

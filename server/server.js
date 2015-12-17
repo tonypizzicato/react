@@ -50,6 +50,11 @@ auth.init(app);
 app.set('view engine', 'hbs');
 
 
+app.get('/', function (req, res) {
+    res.render('index', {user: JSON.stringify(req.user)});
+});
+
+
 var clientDir, viewsDir;
 /**
  * Development Settings

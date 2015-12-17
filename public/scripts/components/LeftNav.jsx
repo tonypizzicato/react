@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import connect from 'react-redux/lib/components/connect';
+import { pushState } from 'redux-router/lib/actionCreators';
+
 import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
@@ -22,10 +25,6 @@ class AppLeftNav extends Component {
         opened: false
     }
 
-    static contextTypes = {
-        router: PropTypes.func
-    };
-
     state = {
         opened: this.props.opened
     };
@@ -36,7 +35,6 @@ class AppLeftNav extends Component {
         this._getSelectedIndex = this._getSelectedIndex.bind(this);
         this._onItemClick      = this._onItemClick.bind(this);
         this._changeState      = this._changeState.bind(this);
-        this._onHeaderClick    = this._onHeaderClick.bind(this);
     }
 
     _getSelectedIndex() {
@@ -57,13 +55,7 @@ class AppLeftNav extends Component {
     }
 
     _onItemClick(e, route) {
-        this.props.history.push(route);
-
-        this._changeState(false);
-    }
-
-    _onHeaderClick() {
-        this.props.history.push('/');
+        this.props.pushState(null, route);
 
         this._changeState(false);
     }
@@ -116,8 +108,8 @@ class AppLeftNav extends Component {
     }
 }
 
-AppLeftNav.contextTypes = {
-    router: React.PropTypes.func
-};
-
-module.exports = AppLeftNav;
+export default connect(state => {
+    return {
+        q: state.get('router').location.query.q
+    }
+}, { pushState })(AppLeftNav)

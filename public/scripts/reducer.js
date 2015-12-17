@@ -1,11 +1,14 @@
 import _ from 'lodash';
 import Immutable, {Map, List} from 'immutable';
-import {handleActions} from 'redux-actions';
+
+import routerStateReducer from 'redux-router/lib/routerStateReducer';
+import { handleActions } from 'redux-actions';
 
 import LeaguesConstants from './constants/LeaguesConstants';
 import CategoriesConstants from './constants/CategoriesConstants';
 
 const INITIAL_STATE = Map({
+    router:     { routes: [], params: {}, location: {query: {q: ''}}, components: [], },
     leagues:    Map({
         isFetching: false,
         items:      List()
@@ -18,6 +21,7 @@ const INITIAL_STATE = Map({
 
 export default (state = INITIAL_STATE, action) => {
     return Map({
+        router:  routerStateReducer(state.get('router'), action),
         leagues: handleActions({
             [LeaguesConstants.LEAGUES_FETCH]:         (state, action) => state.set('isFetching', true),
             [LeaguesConstants.LEAGUES_FETCH_SUCCESS]: (state, action) => {

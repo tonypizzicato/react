@@ -1,17 +1,18 @@
-import Immutable from 'immutable';
 import React from 'react';
 import { render } from 'react-dom';
-import Router from 'react-router';
-import { createHistory } from 'history';
+import createHistory from 'history/lib/createBrowserHistory';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import AppRoutes from './routes.jsx';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
+import { ReduxRouter, reduxReactRouter } from 'redux-router';
+
 import thunkMiddleware from 'redux-thunk';
-import createLogger from 'redux-logger';
+import createLogger from './utils/createLogger';
 
 import reducer from './reducer';
+
+import routes from './routes.jsx';
 
 import LeaguesActions from './actions/LeaguesActions';
 
@@ -25,37 +26,21 @@ injectTapEventPlugin();
 
 window.Perf = Perf;
 
-const logger = createLogger({
-    duration:          true,
-    predicate:         () => process.env.NODE_ENV !== `production`,
-    actionTransformer: action => {
-        let newAction = {};
-
-        for (let i of Object.keys(action)) {
-            newAction[i] = JSON.stringify(action[i]);
-        }
-
-        return newAction;
-    },
-    stateTransformer:  state => {
-        if (Immutable.Map.isMap(state) || Immutable.List.isList(state)) {
-            state = state.toJS();
-        }
-
-        return state;
-    }
-});
-
-const history                   = createHistory();
-const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, logger)(createStore);
-const store                     = createStoreWithMiddleware(reducer);
+const store = compose(
+    applyMiddleware(thunkMiddleware, createLogger()),
+    reduxReactRouter({
+        routes,
+        createHistory,
+        routerStateSelector: state => state.get('router')
+    })
+)(createStore)(reducer);
 
 store.dispatch(LeaguesActions.fetch());
 
 render(
     <Provider store={store}>
-        <Router history={history} onUpdate={() => window.scrollTo(0, 0)}>
-            {AppRoutes}
-        </Router>
-    </Provider>, document.getElementById('app-content')
+        <ReduxRouter routes={routes}/>
+    </Provider>,
+    document.getElementById('app-content'),
+    () => document.body.removeChild(document.getElementById('pre-react'))
 );
