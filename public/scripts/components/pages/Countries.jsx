@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import scroll from '../../utils/scrollTo';
+import scrollTop from '../../utils/scrollTop';
 
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
@@ -21,7 +21,8 @@ class CountriesApp extends Component {
 
     state = {
         activeTab:       0,
-        selectedCountry: {}
+        selectedCountry: {},
+        addMode:         true
     };
 
     constructor(props) {
@@ -31,6 +32,7 @@ class CountriesApp extends Component {
         this._onChange    = this._onChange.bind(this);
         this._onDelete    = this._onDelete.bind(this);
         this._onEdit      = this._onEdit.bind(this);
+        this._onSubmit    = this._onSubmit.bind(this);
         this._onCancel    = this._onCancel.bind(this);
     }
 
@@ -42,30 +44,41 @@ class CountriesApp extends Component {
     _onTabChange(tab) {
         this.setState({
             activeTab:       tab.props.tabIndex,
+            addMode:         true,
             selectedCountry: {}
         });
     }
 
     _onChange() {
         this.setState({
-            selectedCountry: {}
+            selectedCountry: {},
+            addMode:         true,
         });
     }
 
     _onDelete(e) {
-        CountriesActions.delete(e.currentTarget.dataset.id);
+        const id = e.currentTarget.dataset.id;
+
+        this.props.dispatch(CountriesActions.remove(id))
+            .then(() => this.props.dispatch(CountriesActions.fetch()));
     }
 
     _onEdit(e) {
         const id = e.currentTarget.dataset.id;
 
         this.setState({
-            selectedCountry: _.findWhere(this.props.countries.items, {_id: id})
+            selectedCountry: _.findWhere(this.props.countries.items, {_id: id}),
+            addMode:         false,
         });
 
-        _.defer(() => {
-            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
-        });
+        scrollTop();
+    }
+
+    _onSubmit(country) {
+        const actionName = this.state.addMode ? 'add' : 'save';
+
+        this.props.dispatch(CountriesActions[actionName](country))
+            .then(() => this.props.dispatch(CountriesActions.fetch()));
     }
 
     _onCancel() {
@@ -87,6 +100,7 @@ class CountriesApp extends Component {
                                 <CountryForm
                                     country={this.state.selectedCountry}
                                     leagueId={league._id}
+                                    onSubmit={this._onSubmit}
                                     onCancel={this._onCancel}
                                     key={`${this.state.selectedCountry._id}-form`}/>
                                 <CountriesList

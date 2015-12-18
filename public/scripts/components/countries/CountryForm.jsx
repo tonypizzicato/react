@@ -11,19 +11,23 @@ import RadioButton from 'material-ui/lib/radio-button';
 import EventsConstants from '../../constants/EventsConstants';
 
 import CountriesActions from'../../actions/CountriesActions';
-import CountriesStore from'../../stores/CountriesStore';
 
 class CountryForm extends Component {
 
+    static propTypes = {
+        leagueId: PropTypes.string.isRequired,
+        country:  PropTypes.object,
+        onSubmit: PropTypes.func
+    }
+
     static defaultProps = {
-        country:  {
+        country: {
             name:  '',
             slug:  '',
             vk:    '',
             state: 'CREATED',
             show:  false
-        },
-        leagueId: null
+        }
     };
 
     state = {
@@ -34,16 +38,8 @@ class CountryForm extends Component {
         super(props);
 
         this._onValidationError = this._onValidationError.bind(this);
-        this._onSave            = this._onSave.bind(this);
+        this._onSubmit          = this._onSubmit.bind(this);
         this._onCancel          = this._onCancel.bind(this);
-    }
-
-    componentDidMount() {
-        CountriesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
-
-    componentWillUnmount() {
-        CountriesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -56,7 +52,13 @@ class CountryForm extends Component {
         this.setState({validation: validation});
     }
 
-    _onSave() {
+    _onSubmit() {
+        this.setState({validation: {}});
+
+        if (!this.props.onSubmit) {
+            return;
+        }
+
         let country = {
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
@@ -66,13 +68,11 @@ class CountryForm extends Component {
             show:     this.refs.show.isToggled()
         };
 
-        this.setState({validation: {}});
         if (this.props.country._id) {
-            country._id = this.props.country._id;
-            CountriesActions.save(country);
-        } else {
-            CountriesActions.add(country);
+            Object.assign({}, country, {_id: this.props.country._id});
         }
+
+        this.props.onSubmit(country);
     }
 
     _onCancel() {
@@ -146,7 +146,7 @@ class CountryForm extends Component {
                     defaultToggled={this.props.country.show}
                     label="Показывать"/>
                 <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
-                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSubmit}/>
             </div>
         );
     }

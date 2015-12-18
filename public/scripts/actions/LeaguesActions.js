@@ -1,36 +1,41 @@
 import {createAction} from 'redux-actions';
-import LeaguesConstants from '../constants/LeaguesConstants';
 
-import routes from '../utils/api-routes';
-import initApi from '../utils/api';
+import { routes, basePath } from '../utils/api-routes';
+import api from '../utils/api';
+import { API_CALL } from '../middleware/fetchMiddleware';
 
-const api = initApi.init(routes.routes, routes.basePath);
+const API = api.init(routes, basePath);
 
-const fetched = createAction(LeaguesConstants.LEAGUES_FETCH_SUCCESS);
-const saved   = createAction(LeaguesConstants.LEAGUES_SAVE_SUCCESS, data => data);
+export const LEAGUES_FETCH         = 'LEAGUES_FETCH';
+export const LEAGUES_FETCH_SUCCESS = 'LEAGUES_FETCH_SUCCESS';
+export const LEAGUES_FETCH_FAILURE = 'LEAGUES_FETCH_FAILURE';
 
-const fetch = () => {
-    return dispatch => {
-        dispatch(createAction(LeaguesConstants.LEAGUES_FETCH)());
-
-        return api.call('leagues:list').done(function (response) {
-            dispatch(fetched(response));
-        });
+function fetch() {
+    return {
+        [API_CALL]: {
+            types:    [LEAGUES_FETCH, LEAGUES_FETCH_SUCCESS, LEAGUES_FETCH_FAILURE],
+            endpoint: API.getRoute('leagues:list').path,
+            method:   API.getRoute('leagues:list').method
+        }
     }
-};
+}
 
-const save = (data) => {
-    return dispatch => {
-        dispatch(createAction(LeaguesConstants.LEAGUES_SAVE)());
+export const LEAGUES_SAVE         = 'LEAGUES_SAVE';
+export const LEAGUES_SAVE_SUCCESS = 'LEAGUES_SAVE_SUCCESS';
+export const LEAGUES_SAVE_FAILURE = 'LEAGUES_SAVE_FAILURE';
 
-        api.call('leagues:save', data).then(function () {
-            dispatch(saved(data));
-        });
+function save(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [LEAGUES_SAVE, LEAGUES_SAVE_SUCCESS, LEAGUES_SAVE_FAILURE],
+            endpoint: API.getRoute('leagues:save', data).path,
+            method:   API.getRoute('leagues:save', data).method
+        }
     }
-};
+}
 
 export default {
     fetch,
-    fetched,
     save
 };

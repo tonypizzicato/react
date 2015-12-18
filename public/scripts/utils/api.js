@@ -18,7 +18,13 @@ Api.prototype.call = function (routeName, data, isJson) {
     });
 };
 
+const _cachedRoutes = {};
+
 Api.prototype.get = function (routeName, params) {
+    if (_cachedRoutes[routeName]) {
+        return _cachedRoutes[routeName];
+    }
+
     const parts = routeName.split(':');
     let route   = JSON.parse(JSON.stringify(this.routes));
 
@@ -31,12 +37,18 @@ Api.prototype.get = function (routeName, params) {
 
     route.path = this.basePath + s.sprintf(route.path, params);
 
+    if (!params) {
+        _cachedRoutes[routeName] = route;
+    }
+
     return route;
 };
 
+Api.prototype.getRoute = Api.prototype.get;
+
 const apis = {};
 
-const init = (routes, basePath) => {
+function init(routes, basePath) {
     if (!apis.hasOwnProperty(basePath)) {
         apis[basePath] = new Api(routes, basePath);
     }
@@ -46,4 +58,4 @@ const init = (routes, basePath) => {
 
 export default {
     init
-};
+}

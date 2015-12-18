@@ -16,10 +16,18 @@ function checkStatus(response) {
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-function callApi(endpoint, method = 'get') {
+function callApi(endpoint, method = 'get', body = {}) {
     const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint;
 
-    return fetch(fullUrl, {method: method})
+    const params = {method};
+    if (['post', 'put'].indexOf(method.toLowerCase()) > -1) {
+        params.body    = JSON.stringify(body);
+        params.headers = {
+            'Accept':       'application/json',
+            'Content-Type': 'application/json'
+        }
+    }
+    return fetch(fullUrl, params)
         .then(checkStatus)
         .then(response => response.json().then(json => ({json, response})))
         .then(({ json, response }) => {
@@ -28,9 +36,6 @@ function callApi(endpoint, method = 'get') {
             }
 
             return json;
-        })
-        .catch(function (error) {
-            console.log('request failed', error)
         });
 }
 
@@ -59,10 +64,12 @@ export default store => next => action => {
 
     next(createAction(requestType)());
 
-    return callApi(endpoint, method).then(
+    return callApi(endpoint, method, action.payload).then(
         response => {
             return next(createAction(successType)(response))
         },
-        error => next(createAction(failureType)(error.message || 'Something bad happened'))
+        error => {
+            return next(createAction(failureType)(error.message || 'Something bad happened'))
+        }
     );
 }

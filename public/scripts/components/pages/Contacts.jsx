@@ -1,5 +1,5 @@
 const _               = require('lodash'),
-      scroll          = require('../../utils/scrollTo'),
+      scrollTop       = require('../../utils/scrollTop'),
       React           = require('react'),
       mui             = require('material-ui'),
 
@@ -79,9 +79,7 @@ class ContactsApp extends React.Component {
             selectedContact: _.findWhere(this.state.contacts, {_id: id})
         });
 
-        _.defer(() => {
-            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
-        });
+        scrollTop();
     }
 
     _onCancel() {

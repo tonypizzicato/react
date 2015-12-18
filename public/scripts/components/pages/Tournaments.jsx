@@ -1,6 +1,6 @@
 var $                  = require('jquery'),
     _                  = require('lodash'),
-    scroll             = require('../../utils/scrollTo'),
+    scrollTop          = require('../../utils/scrollTop'),
     React              = require('react'),
     mui                = require('material-ui'),
 
@@ -9,7 +9,7 @@ var $                  = require('jquery'),
 
     EventsConstants    = require('../../constants/EventsConstants'),
     CountriesActions   = require('../../actions/CountriesActions'),
-    CountriesStore     = require('../../stores/CountriesStore'),
+    //CountriesStore     = require('../../stores/CountriesStore'),
     TournamentsActions = require('../../actions/TournamentsActions'),
     TournamentStore    = require('../../stores/TournamentsStore'),
 
@@ -54,7 +54,7 @@ class TournamentApp extends React.Component {
             }
 
             this.setState({
-                countries:          CountriesStore.getAll(),
+                countries:          [],//CountriesStore.getAll(),
                 tournaments:        TournamentStore.getAll(),
                 selectedTournament: {}
             });
@@ -62,7 +62,7 @@ class TournamentApp extends React.Component {
 
         TournamentStore.addChangeListener(this._onChange);
 
-        CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
+        //CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
 
         if (this.props.leagues.length) {
@@ -76,7 +76,7 @@ class TournamentApp extends React.Component {
 
         TournamentStore.removeChangeListener(this._onChange);
 
-        CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
+        //CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
         TournamentStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
     }
 
@@ -115,9 +115,7 @@ class TournamentApp extends React.Component {
             selectedTournament: _.findWhere(this.state.tournaments, {_id: id})
         });
 
-        _.defer(() => {
-            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
-        });
+        scrollTop();
     }
 
     _onCancel() {

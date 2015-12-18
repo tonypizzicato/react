@@ -1,5 +1,5 @@
 const _                 = require('lodash'),
-      scroll             = require('../../utils/scrollTo'),
+      scrollTop         = require('../../utils/scrollTop'),
       React             = require('react'),
 
       CategoriesActions = require('../../actions/CategoriesActions'),
@@ -49,9 +49,7 @@ class CategoriesApp extends React.Component {
             selectedCategory: _.findWhere(this.state.categories, {_id: e.currentTarget.dataset.id})
         });
 
-        _.defer(() => {
-            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
-        });
+        scrollTop();
     }
 
     _onCancel() {

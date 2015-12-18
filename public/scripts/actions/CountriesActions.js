@@ -1,65 +1,73 @@
 import {createAction} from 'redux-actions';
-import CountriesConstants from '../constants/CountriesConstants';
 
-import { routes } from '../utils/api-routes';
+import { routes, basePath } from '../utils/api-routes';
+import api from '../utils/api';
 import { API_CALL } from '../middleware/fetchMiddleware';
+
+const API = api.init(routes, basePath);
 
 export const COUNTRIES_FETCH         = 'COUNTRIES_FETCH';
 export const COUNTRIES_FETCH_SUCCESS = 'COUNTRIES_FETCH_SUCCESS';
 export const COUNTRIES_FETCH_FAILURE = 'COUNTRIES_FETCH_FAILURE';
 
-
-console.log(routes);
-
 function fetch() {
     return {
         [API_CALL]: {
             types:    [COUNTRIES_FETCH, COUNTRIES_FETCH_SUCCESS, COUNTRIES_FETCH_FAILURE],
-            endpoint: routes.countries.list.path,
-            method:   routes.countries.list.method
+            endpoint: API.getRoute('countries:list').path,
+            method:   API.getRoute('countries:list').method
+        }
+    }
+}
+
+export const COUNTRIES_ADD         = 'COUNTRIES_ADD';
+export const COUNTRIES_ADD_SUCCESS = 'COUNTRIES_ADD_SUCCESS';
+export const COUNTRIES_ADD_FAILURE = 'COUNTRIES_ADD_FAILURE';
+
+function add(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [COUNTRIES_ADD, COUNTRIES_ADD_SUCCESS, COUNTRIES_ADD_FAILURE],
+            endpoint: API.getRoute('countries:add').path,
+            method:   API.getRoute('countries:add').method
+        }
+    }
+}
+
+export const COUNTRIES_SAVE         = 'COUNTRIES_SAVE';
+export const COUNTRIES_SAVE_SUCCESS = 'COUNTRIES_SAVE_SUCCESS';
+export const COUNTRIES_SAVE_FAILURE = 'COUNTRIES_SAVE_FAILURE';
+
+function save(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [COUNTRIES_SAVE, COUNTRIES_SAVE_SUCCESS, COUNTRIES_SAVE_FAILURE],
+            endpoint: API.getRoute('countries:save', data).path,
+            method:   API.getRoute('countries:save', data).method
+        }
+    }
+}
+
+export const COUNTRIES_REMOVE         = 'COUNTRIES_REMOVE';
+export const COUNTRIES_REMOVE_SUCCESS = 'COUNTRIES_REMOVE_SUCCESS';
+export const COUNTRIES_REMOVE_FAILURE = 'COUNTRIES_REMOVE_FAILURE';
+
+function remove(id) {
+    return {
+        payload:    id,
+        [API_CALL]: {
+            types:    [COUNTRIES_REMOVE, COUNTRIES_REMOVE_SUCCESS, COUNTRIES_REMOVE_FAILURE],
+            endpoint: API.getRoute('countries:remove', {_id: id}).path,
+            method:   API.getRoute('countries:remove', {_id: id}).method
         }
     }
 }
 
 export default {
-    fetch
+    fetch,
+    add,
+    save,
+    remove
 };
-
-
-//"use strict";
-//
-//var AppDispatcher      = require('../dispatcher/app-dispatcher'),
-//    CountriesConstants = require('../constants/CountriesConstants');
-//
-//var CountriesActions = {
-//    load: function () {
-//        AppDispatcher.dispatch({
-//            type: CountriesConstants.COUNTRIES_LOAD
-//        });
-//    },
-//
-//    add: function (data) {
-//        AppDispatcher.dispatch({
-//            type: CountriesConstants.COUNTRIES_ADD,
-//            data: data
-//        })
-//    },
-//
-//    save: function (data) {
-//        AppDispatcher.dispatch({
-//            type: CountriesConstants.COUNTRIES_SAVE,
-//            data: data
-//        })
-//    },
-//
-//    delete: function (id) {
-//        AppDispatcher.dispatch({
-//            type: CountriesConstants.COUNTRIES_DELETE,
-//            data: {
-//                _id: id
-//            }
-//        });
-//    }
-//};
-//
-//module.exports = CountriesActions;

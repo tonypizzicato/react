@@ -18,7 +18,7 @@ import EventsConstants from '../../constants/EventsConstants';
 import AuthStore from'../../stores/AuthStore';
 
 import CountriesActions from'../../actions/CountriesActions';
-import CountriesStore from'../../stores/CountriesStore';
+//import CountriesStore from'../../stores/CountriesStore';
 import GamesStore from'../../stores/GamesStore';
 
 class GamesToolbar extends Component {
@@ -58,7 +58,7 @@ class GamesToolbar extends Component {
     componentDidMount() {
         this.setState({mounted: true});
 
-        CountriesStore.addChangeListener(this._onCountriesLoad);
+        //CountriesStore.addChangeListener(this._onCountriesLoad);
         GamesStore.addChangeListener(this._onGamesLoad);
 
         if (!this.state.gamesLoading) {
@@ -70,14 +70,14 @@ class GamesToolbar extends Component {
     componentWillUnmount() {
         this.setState({mounted: false});
 
-        CountriesStore.removeChangeListener(this._onCountriesLoad);
+        //CountriesStore.removeChangeListener(this._onCountriesLoad);
         GamesStore.removeChangeListener(this._onGamesLoad);
     }
 
     _onCountriesLoad() {
-        const countries = CountriesStore.getByLeague(this.props.leagueId).map(item => {
-            return {text: item.name, _id: item._id, tournaments: item.tournaments};
-        });
+        //const countries = CountriesStore.getByLeague(this.props.leagueId).map(item => {
+        //    return {text: item.name, _id: item._id, tournaments: item.tournaments};
+        //});
 
         this.setState({countries: countries, gamesLoading: false});
 

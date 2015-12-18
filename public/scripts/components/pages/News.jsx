@@ -13,7 +13,7 @@ const _                 = require('lodash'),
       NewsStore         = require('../../stores/NewsStore'),
       NewsActions       = require('../../actions/NewsActions'),
 
-      CountriesStore    = require('../../stores/CountriesStore'),
+      //CountriesStore    = require('../../stores/CountriesStore'),
       CountriesActions  = require('../../actions/CountriesActions'),
 
       NewsForm          = require('../news/NewsForm.jsx'),
@@ -47,7 +47,7 @@ class NewsApp extends React.Component {
     componentDidMount() {
         CategoriesStore.addChangeListener(this._onChange);
         NewsStore.addChangeListener(this._onChange);
-        CountriesStore.addChangeListener(this._onChange);
+        //CountriesStore.addChangeListener(this._onChange);
 
         CategoriesActions.load();
         NewsActions.load();
@@ -57,7 +57,7 @@ class NewsApp extends React.Component {
     componentWillUnmount() {
         CategoriesStore.removeChangeListener(this._onChange);
         NewsStore.removeChangeListener(this._onChange);
-        CountriesStore.removeChangeListener(this._onChange);
+        //CountriesStore.removeChangeListener(this._onChange);
     }
 
     _onTabChange(tab) {
@@ -70,7 +70,7 @@ class NewsApp extends React.Component {
     _onChange() {
         this.setState({
             news:            NewsStore.getAll(),
-            countries:       CountriesStore.getAll(),
+            countries:       [],//CountriesStore.getAll(),
             categories:      CategoriesStore.getAll(),
             selectedArticle: {}
         });

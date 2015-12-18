@@ -26,7 +26,7 @@ const routes = {
             path:   '/categories',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/categories',
             method: 'POST'
         },
@@ -34,7 +34,7 @@ const routes = {
             path:   '/categories/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/categories/%(_id)s',
             method: 'DELETE'
         }
@@ -48,7 +48,7 @@ const routes = {
             path:   '/news/%(_id)s',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/news',
             method: 'POST'
         },
@@ -56,7 +56,7 @@ const routes = {
             path:   '/news/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/news/%(_id)s',
             method: 'DELETE'
         }
@@ -86,7 +86,7 @@ const routes = {
             path:   '/tournaments/%(_id)s',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/tournaments',
             method: 'POST'
         },
@@ -105,11 +105,11 @@ const routes = {
             path:   '/countries/%(_id)s',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/countries',
             method: 'POST'
         },
-        delete: {
+        remove: {
             path:   '/countries/%(_id)s',
             method: 'DELETE'
         },
@@ -139,7 +139,7 @@ const routes = {
             path:   '/previews/%(_id)s',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/previews',
             method: 'POST'
         },
@@ -147,7 +147,7 @@ const routes = {
             path:   '/previews/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/previews/%(_id)s',
             method: 'DELETE'
         }
@@ -158,7 +158,7 @@ const routes = {
             path:   '/game-articles',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/game-articles',
             method: 'POST'
         },
@@ -166,7 +166,7 @@ const routes = {
             path:   '/game-articles/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/game-articles/%(_id)s',
             method: 'DELETE'
         }
@@ -177,7 +177,7 @@ const routes = {
             path:   '/%(type)s/%(postId)s/images/',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/%(type)s/%(postId)s/images',
             method: 'POST'
         },
@@ -185,7 +185,7 @@ const routes = {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/%(type)s/%(postId)s/images/%(_id)s',
             method: 'DELETE'
         }
@@ -196,7 +196,7 @@ const routes = {
             path:   '/contacts',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/contacts',
             method: 'POST'
         },
@@ -204,7 +204,7 @@ const routes = {
             path:   '/contacts/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/contacts/%(_id)s',
             method: 'DELETE'
         }
@@ -215,7 +215,7 @@ const routes = {
             path:   '/fields',
             method: 'GET'
         },
-        create: {
+        add: {
             path:   '/fields',
             method: 'POST'
         },
@@ -223,7 +223,7 @@ const routes = {
             path:   '/fields/%(_id)s',
             method: 'PUT'
         },
-        delete: {
+        remove: {
             path:   '/fields/%(_id)s',
             method: 'DELETE'
         }

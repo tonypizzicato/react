@@ -23,6 +23,7 @@ import LeftNav from '../LeftNav.jsx';
 import Auth from '../Auth.jsx';
 import Loader from '../Loader.jsx';
 
+import UiActions from '../../actions/UiActions';
 import AuthStore from '../../stores/AuthStore';
 
 import GamesActions from '../../actions/GamesActions';
@@ -57,11 +58,6 @@ class MainApp extends Component {
     constructor(props) {
         super(props);
 
-        this._showLoader         = this._showLoader.bind(this);
-        this._hideLoader         = this._hideLoader.bind(this);
-        this._handleAjaxError    = this._handleAjaxError.bind(this);
-        this._handleAjaxComplete = this._handleAjaxComplete.bind(this);
-
         this._authChange  = this._authChange.bind(this);
         this._gamesChange = this._gamesChange.bind(this);
 
@@ -70,11 +66,6 @@ class MainApp extends Component {
     }
 
     componentDidMount() {
-        this._showLoader();
-
-        $(document).ajaxError(this._handleAjaxError);
-        $(document).ajaxComplete(this._handleAjaxComplete);
-
         AuthStore.addChangeListener(this._authChange);
         GamesStore.addChangeListener(this._gamesChange);
     }
@@ -84,25 +75,11 @@ class MainApp extends Component {
         GamesStore.removeChangeListener(this._gamesChange);
     }
 
-    _showLoader() {
-        this.setState({loading: true});
+    componentWillReceiveProps(nextProps) {
+        if (!this.props.lastServerError && nextProps.lastServerError) {
+            this.refs["snack"].show();
 
-        _.delay(this.setState.bind(this, {loading: false}), 1000);
-    }
-
-    _hideLoader() {
-        _.delay(this.setState.bind(this, {loading: false}), 400);
-    }
-
-    _handleAjaxError() {
-        this._hideLoader();
-        this.refs.snack.show();
-        _.delay(this.refs.snack.dismiss, 2000);
-    }
-
-    _handleAjaxComplete() {
-        if (this.state.loading) {
-            this._hideLoader();
+            _.defer(() => this.props.dispatch(UiActions.errorHandled()));
         }
     }
 
@@ -137,14 +114,13 @@ class MainApp extends Component {
     render() {
         const styles = this.getStyles();
 
+        const { fetchesCount, lastServerError, history, location } = this.props;
+
         const loginOrOut = this.state.loggedIn ?
             <Link style={styles.login.label} to="logout">Выход</Link> :
             <Link style={styles.login.label} to="login">Вход</Link>;
 
-        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.props.history.isActive(item.route)), 'text');
-        if (!appBarTitle) {
-            appBarTitle = 'amateurs.io';
-        }
+        const appBarTitle = this.getAppBarTitle();
 
         return (
             <div>
@@ -160,7 +136,7 @@ class MainApp extends Component {
                             <AccountIcon style={styles.login.icon}/>
                             {loginOrOut}
                         </div>
-                        <Loader active={this.props.fetchesCount > 0}/>
+                        <Loader active={fetchesCount > 0}/>
                     </AppBar>
 
                     <div style={styles.content} ref="content">
@@ -170,21 +146,28 @@ class MainApp extends Component {
                     <LeftNav opened={this.state.navOpened}
                              menuItems={menuItems}
                              onStateChange={this._onNavStateChanged}
-                             location={this.props.location}
-                             history={this.props.history}/>
+                             location={location}
+                             history={history}/>
 
                     <FullWidth style={styles.footer} ref="footer">
                         <p style={styles.p}>
                             Hand crafted with love by tony.pizzicato.
                         </p>
                     </FullWidth>
-                    <Snackbar
-                        style={styles.snackbar}
-                        message="Ошибка загрузки данных. Попробуйте повторить запрос."
-                        ref="snack"/>
+                    <Snackbar message="Ууупс! Ошибка на сервере. Сорян." autoHideDuration={2000} ref="snack"/>
                 </Canvas>
             </div>
         )
+    }
+
+    getAppBarTitle() {
+        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.props.history.isActive(item.route)), 'text');
+
+        if (!appBarTitle) {
+            appBarTitle = 'amateurs.io';
+        }
+
+        return appBarTitle;
     }
 
     getStyles() {
