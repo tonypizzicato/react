@@ -1,10 +1,13 @@
+import now from 'performance-now';
+
 function scrollTo(Y, duration, easingFunction, callback) {
 
-    var start = Date.now(),
+    var start = now(),
         elem  = document.documentElement.scrollTop ? document.documentElement : document.body,
-        from  = elem.scrollTop;
+        from  = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
     if (from === Y) {
+        console.log(from);
         callback && callback();
         return;
     }
@@ -15,7 +18,7 @@ function scrollTo(Y, duration, easingFunction, callback) {
 
     function scroll(timestamp) {
 
-        var currentTime = Date.now(),
+        var currentTime = now(),
             time        = min(1, ((currentTime - start) / duration)),
             easedT      = easingFunction(time);
 
@@ -107,7 +110,7 @@ var easing = {
 
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function (callback, element) {
-            var currTime   = new Date().getTime();
+            var currTime   = now();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
             var id         = window.setTimeout(function () {
                     callback(currTime + timeToCall);

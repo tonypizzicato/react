@@ -53,11 +53,11 @@ class LeagueItem extends Component {
 
     return (
       <ListItem
-        style={this.styles.root}
-        disabled={true}
-        leftAvatar={this.avatar}
+        onTouchTap={this.props.onEdit}
+        data-id={this.props.league._id}
+        leftAvatar={<Avatar>{avatar[0]}</Avatar>}
         primaryText={this.primaryText}
-        secondaryText={league.slug}
+        secondaryText={this.props.league.slug}
         rightIconButton={<RightMenu id={league._id} onClick={() => onEdit(league._id)}/>}
       />
     );

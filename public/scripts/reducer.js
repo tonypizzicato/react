@@ -9,19 +9,21 @@ import CategoriesConstants from './constants/CategoriesConstants';
 import {COUNTRIES_FETCH, COUNTRIES_FETCH_SUCCESS, COUNTRIES_FETCH_FAILURE} from './actions/CountriesActions';
 
 const INITIAL_STATE = Map({
-    router:     {routes: [], params: {}, location: {query: {q: ''}}, components: []},
-    leagues:    Map({
+    router:       {routes: [], params: {}, location: {query: {q: ''}}, components: []},
+    leagues:      Map({
         isFetching: false,
         items:      List()
     }),
-    countries:  Map({
+    countries:    Map({
         isFetching: false,
         items:      List()
     }),
-    categories: Map({
+    categories:   Map({
         isFetching: false,
         items:      List()
-    })
+    }),
+    isFetching:   false,
+    fetchesCount: 0
 });
 
 export default (state = INITIAL_STATE, action) => {
@@ -50,6 +52,16 @@ export default (state = INITIAL_STATE, action) => {
         categories: handleActions({
             [CategoriesConstants.CATEGORIES_FETCH]:         (state, action) => state.set('isFetching', true),
             [CategoriesConstants.CATEGORIES_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
-        }, state.get('categories'))(state.get('categories'), action)
+        }, state.get('categories'))(state.get('categories'), action),
+
+        fetchesCount: handleActions({
+            [LeaguesConstants.LEAGUES_FETCH]:       state => state + 1,
+            [CategoriesConstants.CATEGORIES_FETCH]: state => state + 1,
+            [COUNTRIES_FETCH]:                      state => state + 1,
+
+            [LeaguesConstants.LEAGUES_FETCH_SUCCESS]:       state => state - 1,
+            [CategoriesConstants.CATEGORIES_FETCH_SUCCESS]: state => state - 1,
+            [COUNTRIES_FETCH_SUCCESS]:                      state => state - 1
+        }, state.get('fetchesCount'))(state.get('fetchesCount'), action)
     });
 };

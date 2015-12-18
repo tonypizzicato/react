@@ -14,10 +14,6 @@ function checkStatus(response) {
     }
 }
 
-function parseJSON(response) {
-    return response.json()
-}
-
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 function callApi(endpoint, method = 'get') {
@@ -25,7 +21,14 @@ function callApi(endpoint, method = 'get') {
 
     return fetch(fullUrl, {method: method})
         .then(checkStatus)
-        .then(response => ({json, response: parseJSON(response)}))
+        .then(response => response.json().then(json => ({json, response})))
+        .then(({ json, response }) => {
+            if (!response.ok) {
+                return Promise.reject(json);
+            }
+
+            return json;
+        })
         .catch(function (error) {
             console.log('request failed', error)
         });
@@ -57,9 +60,9 @@ export default store => next => action => {
     next(createAction(requestType)());
 
     return callApi(endpoint, method).then(
-        response => next(createAction(successType)(response)),
+        response => {
+            return next(createAction(successType)(response))
+        },
         error => next(createAction(failureType)(error.message || 'Something bad happened'))
-    )
-
-    return true;
+    );
 }

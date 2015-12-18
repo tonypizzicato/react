@@ -1,8 +1,8 @@
-import React, { Component, PropTypes } from 'react';
-
 import _ from 'lodash';
 import $ from 'jquery';
-import mui from 'material-ui';
+
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 import Link from 'react-router/lib/Link';
 
@@ -14,10 +14,14 @@ import AppBar from 'material-ui/lib/app-bar';
 import Icon from 'material-ui/lib/font-icon';
 import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 import Snackbar from 'material-ui/lib/snackbar';
+import Indicator from 'material-ui/lib/refresh-indicator';
+
+import AccountIcon from 'material-ui/lib/svg-icons/action/account-circle';
 
 import FullWidth from '../FullWidth.jsx';
 import LeftNav from '../LeftNav.jsx';
 import Auth from '../Auth.jsx';
+import Loader from '../Loader.jsx';
 
 import AuthStore from '../../stores/AuthStore';
 
@@ -115,8 +119,6 @@ class MainApp extends Component {
     }
 
     _onNavStateChanged(state) {
-        console.log('main component nav state changed', state);
-
         this.setState({navOpened: state});
     }
 
@@ -147,25 +149,18 @@ class MainApp extends Component {
         return (
             <div>
                 <Canvas>
-                    <div style={styles.loader}>
-                        <RefreshIndicator
-                            left={Spacing.desktopGutterLess}
-                            top={Spacing.desktopGutterMini}
-                            size={Spacing.desktopGutter * 2}
-                            status={this.state.loading ? "loading" : "hide"}
-                            ref="loader"/>
-                    </div>
                     <AppBar
                         onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
                         title={appBarTitle}
                         zDepth={0}
                         showMenuIconButton={true}
-                        style={{position: 'fixed', top: 0, zIndex: 1400, background: 'rgba(0, 188, 212, .9)'}}
+                        style={styles.appBar}
                         ref="appBar">
-                        <div>
-                            <Icon style={styles.login.icon} className="mdfi_action_account_circle"/>
+                        <div style={styles.login.wrapper}>
+                            <AccountIcon style={styles.login.icon}/>
                             {loginOrOut}
                         </div>
+                        <Loader active={this.props.fetchesCount > 0}/>
                     </AppBar>
 
                     <div style={styles.content} ref="content">
@@ -202,6 +197,12 @@ class MainApp extends Component {
                 paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
                 paddingBottom: Spacing.desktopKeylineIncrement + Spacing.desktopGutter
             },
+            appBar:   {
+                position:   'fixed',
+                top:        0,
+                zIndex:     1400,
+                background: 'rgba(0, 188, 212, .96)'
+            },
             footer:   {
                 backgroundColor: Colors.grey900,
                 textAlign:       'center',
@@ -217,30 +218,22 @@ class MainApp extends Component {
                 color:    Colors.lightWhite,
                 maxWidth: 335
             },
-            loader:   {
-                height:     Spacing.desktopGutterMore * 2,
-                width:      Spacing.desktopGutterMore * 2 + Spacing.desktopGutterMore,
-                position:   'absolute',
-                margin:     '0 auto',
-                left:       '50%',
-                marginLeft: '-' + Spacing.desktopGutterMore,
-                zIndex:     6
-            },
             login:    {
-                icon:  {
-                    position:    'relative',
-                    fontSize:    Spacing.desktopGutterMore,
-                    top:         Spacing.desktopGutterLess,
-                    marginRight: Spacing.desktopGutterMini,
-                    color:       'white',
-                    zIndex:      5
+                wrapper: {
+                    lineHeight: `${Spacing.desktopKeylineIncrement}px`
                 },
-                label: {
+                icon:    {
+                    verticalAlign: 'top',
+                    marginRight:   Spacing.desktopGutterMini,
+                    fill:          'white',
+                    width:         Spacing.desktopGutterMore,
+                    height:        Spacing.desktopKeylineIncrement
+                },
+                label:   {
                     position:      'relative',
                     textTransform: 'uppercase',
-                    fontSize:      16,
-                    color:         '#fff',
-                    top:           Spacing.desktopGutterMini
+                    fontSize:      Spacing.desktopGutterLess,
+                    color:         '#fff'
                 }
             },
             snackbar: {
@@ -254,4 +247,4 @@ class MainApp extends Component {
     }
 }
 
-export default MainApp;
+export default connect(state => state.toJS())(MainApp);

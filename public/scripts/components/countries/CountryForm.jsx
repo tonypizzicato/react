@@ -5,8 +5,8 @@ import Spacing from 'material-ui/lib/styles/spacing';
 import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 import Button from 'material-ui/lib/raised-button';
-import RadioButton from 'material-ui/lib/radio-button-group';
-import RadioButtonGroup from 'material-ui/lib/radio-button';
+import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+import RadioButton from 'material-ui/lib/radio-button';
 
 import EventsConstants from '../../constants/EventsConstants';
 
@@ -19,6 +19,7 @@ class CountryForm extends Component {
         country:  {
             name:  '',
             slug:  '',
+            vk:    '',
             state: 'CREATED',
             show:  false
         },
@@ -96,7 +97,7 @@ class CountryForm extends Component {
         const styles = this.getStyles();
 
         return (
-            <div style={styles.root} key={`${this.props.country._id}-country-form`}>
+            <div style={styles.root}>
                 <TextField
                     style={styles.input}
                     defaultValue={this.props.country.name}
@@ -119,6 +120,7 @@ class CountryForm extends Component {
                     hintText="Введите адрес страны Вконтакте"
                     floatingLabelText="VK"
                     ref="vk"/>
+
                 <RadioButtonGroup
                     style={styles.radioGroup}
                     name="state"
@@ -156,7 +158,7 @@ class CountryForm extends Component {
                 padding:      `0 ${Spacing.desktopGutter}px`
             },
             input:      {
-                width: '100%',
+                width: '100%'
             },
             radioGroup: {
                 margin: `${Spacing.desktopGutter}px 0 0`

@@ -36,12 +36,12 @@ const store = compose(
     })
 )(createStore)(reducer);
 
-store.dispatch(LeaguesActions.fetch());
-
-render(
-    <Provider store={store}>
-        <ReduxRouter routes={routes}/>
-    </Provider>,
-    document.getElementById('app-content'),
-    () => document.body.removeChild(document.getElementById('pre-react'))
-);
+store.dispatch(LeaguesActions.fetch()).then(() => {
+    render(
+        <Provider store={store}>
+            <ReduxRouter routes={routes}/>
+        </Provider>,
+        document.getElementById('app-content'),
+        () => document.body.removeChild(document.getElementById('pre-react'))
+    );
+});

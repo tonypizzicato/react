@@ -48,7 +48,6 @@ class AppLeftNav extends Component {
     }
 
     _changeState(state) {
-        console.log('left nav state changed', state);
         this.setState({opened: state});
 
         this.props.onStateChange && this.props.onStateChange(state);

@@ -13,6 +13,8 @@ import Icon from 'material-ui/lib/font-icon';
 
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
+import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
 import Dragon from '../Dragon.jsx';
 
@@ -26,11 +28,6 @@ class CountryItem extends Component {
 
     render() {
         const styles = this.getStyles();
-
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.country.show
-        });
 
         const iconButtonMenu = (
             <IconButton touch={true}>
@@ -51,34 +48,34 @@ class CountryItem extends Component {
         return (
             <Dragon key={this.props.country._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
                 <ListItem
-                    style={styles.root}
                     onTouchTap={this.props.onEdit}
                     data-id={this.props.country._id}
                     leftAvatar={<Avatar>{this.props.country.name[0]}</Avatar>}
                     primaryText={
-                        <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+                        <p style={styles.text}>
+                            {React.createElement(this.props.country.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
                             <span style={{color: Colors.darkBlack, marginRight: Spacing.desktopGutterMini}}>{this.props.country.name}</span>
                             <span style={{color: Colors.minBlack}}>{this.props.country.slug}</span>
                         </p>
                         }
                     secondaryText={this.props.country.state}
                     rightIconButton={rightIconMenu}
-                    />
+                />
             </Dragon>
         );
     }
 
     getStyles() {
         return {
-            root:           {
-                margin: Spacing.desktopGutter + ' 0'
+            text:           {
+                margin: 0
             },
             visibilityIcon: {
+                position:    'relative',
                 marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.country.show ? Colors.blueGrey900 : Colors.lightBlack
+                top:         3,
+                height:      18,
+                fill:        this.props.country.show ? Colors.darkBlack : Colors.lightBlack
             }
         }
     }

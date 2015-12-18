@@ -458,66 +458,70 @@ input:-webkit-autofill {
 }
 
 @keyframes loader-before {
-  0% {
-    left:  0;
-    width: 0;
-  }
-  50% {
-    left:  25%;
-    width: 75%
-  }
-  75% {
-    left:  100%;
-    width: 0
-  }
+    0% {
+        left:  0;
+        width: 0;
+    }
+    50% {
+        left:  25%;
+        width: 75%
+    }
+    75% {
+        left:  100%;
+        width: 0
+    }
 }
 
 @keyframes loader-after {
-  0%,
-  50% {
-    left:  0;
-    width: 0
-  }
-  75% {
-    left:  0;
-    width: 25%
-  }
-  100% {
-    left:  100%;
-    width: 0
-  }
+    0%,
+    50% {
+        left:  0;
+        width: 0
+    }
+    75% {
+        left:  0;
+        width: 25%
+    }
+    100% {
+        left:  100%;
+        width: 0
+    }
 }
 
-#loader {
-  display:          block;
-  position:         absolute;
-  bottom:           0;
-  left:             0;
-  height:           4px;
-  width:            100%;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, .7), rgba(255, 255, 255, .7)), linear-gradient(to right, #3F51B5, #3F51B5);
+.progress {
+    display:          none;
+    position:         absolute;
+    bottom:           0;
+    left:             0;
+    height:           4px;
+    width:            100%;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, .7), rgba(255, 255, 255, .7)), linear-gradient(to right, #3F51B5, #3F51B5);
 
-  &:after, &:before {
-    content:                   "";
-    position:                  absolute;
-    top:                       0;
-    bottom:                    0;
-    width:                     0;
-    background-color:          #3F51B5;
-    animation-duration:        2s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
+    &.progress_active_yes {
+        display: block;
+    }
 
-  &:before {
-    left:           0;
-    animation-name: loader-before;
-  }
+    &:after, &:before {
+        content:                   "";
+        position:                  absolute;
+        top:                       0;
+        bottom:                    0;
+        width:                     0;
+        background-color:          #3F51B5;
+        animation-duration:        2s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
 
-  &:after {
-    right:          0;
-    animation-name: loader-after;
-  }
+    &:before {
+        left:           0;
+        animation-name: loader-before;
+    }
+
+    &:after {
+        right:          0;
+        animation-name: loader-after;
+    }
 }
 
 @import "_s";
