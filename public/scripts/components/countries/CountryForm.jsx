@@ -8,8 +8,6 @@ import Button from 'material-ui/lib/raised-button';
 import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 import RadioButton from 'material-ui/lib/radio-button';
 
-import EventsConstants from '../../constants/EventsConstants';
-
 import CountriesActions from'../../actions/CountriesActions';
 
 class CountryForm extends Component {
@@ -18,7 +16,7 @@ class CountryForm extends Component {
         leagueId: PropTypes.string.isRequired,
         country:  PropTypes.object,
         onSubmit: PropTypes.func
-    }
+    };
 
     static defaultProps = {
         country: {
@@ -42,12 +40,6 @@ class CountryForm extends Component {
         this._onCancel          = this._onCancel.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.country.hasOwnProperty('_id')) {
-            this._clearForm();
-        }
-    }
-
     _onValidationError(validation) {
         this.setState({validation: validation});
     }
@@ -69,28 +61,18 @@ class CountryForm extends Component {
         };
 
         if (this.props.country._id) {
-            Object.assign({}, country, {_id: this.props.country._id});
+            Object.assign(country, {_id: this.props.country._id});
         }
 
         this.props.onSubmit(country);
     }
 
     _onCancel() {
-        this._clearForm();
+        this.setState({validation: {}});
 
         if (this.props.onCancel) {
             this.props.onCancel();
         }
-    }
-
-    _clearForm() {
-        this.setState({validation: {}});
-
-        this.refs.name.setValue('');
-        this.refs.slug.setValue('');
-        this.refs.vk.setValue('');
-        this.refs.state.setSelectedValue('CREATED');
-        this.refs.show.setToggled(false);
     }
 
     render() {

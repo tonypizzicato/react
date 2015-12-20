@@ -29,7 +29,6 @@ class CountriesApp extends Component {
         super(props);
 
         this._onTabChange = this._onTabChange.bind(this);
-        this._onChange    = this._onChange.bind(this);
         this._onDelete    = this._onDelete.bind(this);
         this._onEdit      = this._onEdit.bind(this);
         this._onSubmit    = this._onSubmit.bind(this);
@@ -37,7 +36,6 @@ class CountriesApp extends Component {
     }
 
     componentDidMount() {
-        // Load entities
         this.props.dispatch(CountriesActions.fetch());
     }
 
@@ -46,13 +44,6 @@ class CountriesApp extends Component {
             activeTab:       tab.props.tabIndex,
             addMode:         true,
             selectedCountry: {}
-        });
-    }
-
-    _onChange() {
-        this.setState({
-            selectedCountry: {},
-            addMode:         true,
         });
     }
 
@@ -68,7 +59,7 @@ class CountriesApp extends Component {
 
         this.setState({
             selectedCountry: _.findWhere(this.props.countries.items, {_id: id}),
-            addMode:         false,
+            addMode:         false
         });
 
         scrollTop();
@@ -78,12 +69,14 @@ class CountriesApp extends Component {
         const actionName = this.state.addMode ? 'add' : 'save';
 
         this.props.dispatch(CountriesActions[actionName](country))
-            .then(() => this.props.dispatch(CountriesActions.fetch()));
+            .then(() => this.props.dispatch(CountriesActions.fetch()))
+            .then(this._onCancel);
     }
 
     _onCancel() {
         this.setState({
-            selectedCountry: {}
+            selectedCountry: {},
+            addMode:         true
         });
     }
 
@@ -124,4 +117,11 @@ class CountriesApp extends Component {
     }
 }
 
-export default connect(state => state.toJS())(CountriesApp);
+const mapState = state => {
+    return {
+        countries: state.get('countries').toJS(),
+        leagues:   state.get('leagues').toJS()
+    }
+};
+
+export default connect(mapState)(CountriesApp);

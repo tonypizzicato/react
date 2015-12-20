@@ -1,3 +1,4 @@
+require('whatwg-fetch');
 import createAction from 'redux-actions/lib/createAction';
 
 export const API_CALL = Symbol('API Call');
@@ -8,8 +9,9 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response
     } else {
-        var error      = new Error(response.statusText)
-        error.response = response
+        const error    = new Error(response.statusText);
+        error.response = response;
+
         throw error
     }
 }
@@ -27,6 +29,7 @@ function callApi(endpoint, method = 'get', body = {}) {
             'Content-Type': 'application/json'
         }
     }
+
     return fetch(fullUrl, params)
         .then(checkStatus)
         .then(response => response.json().then(json => ({json, response})))

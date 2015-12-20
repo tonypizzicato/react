@@ -218,13 +218,6 @@ class MainApp extends Component {
                     fontSize:      Spacing.desktopGutterLess,
                     color:         '#fff'
                 }
-            },
-            snackbar: {
-                top:         0,
-                right:       0,
-                left:        'auto',
-                marginTop:   Spacing.desktopGutterMini,
-                marginRight: Spacing.desktopGutter
             }
         };
     }

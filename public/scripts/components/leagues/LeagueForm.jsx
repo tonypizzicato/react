@@ -6,9 +6,6 @@ import TextField from 'material-ui/lib/text-field';
 import Toggle from 'material-ui/lib/toggle';
 import Button from 'material-ui/lib/raised-button';
 
-import EventsConstants from '../../constants/EventsConstants';
-import LeaguesStore from'../../stores/LeaguesStore';
-
 class LeagueForm extends Component {
 
     static propTypes = {
@@ -33,23 +30,21 @@ class LeagueForm extends Component {
         super(props);
 
         this._onCancel          = this._onCancel.bind(this);
-        this._onSave            = this._onSave.bind(this);
+        this._onSubmit            = this._onSubmit.bind(this);
         this._onValidationError = this._onValidationError.bind(this);
-    }
-
-    componentDidMount() {
-        LeaguesStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
-
-    componentWillUnmount() {
-        LeaguesStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     }
 
     _onValidationError(validation) {
         this.setState({validation: validation});
     }
 
-    _onSave() {
+    _onSubmit() {
+        this.setState({validation: {}});
+
+        if (!this.props.onSubmit) {
+            return;
+        }
+
         const league = {
             _id:  this.props.league._id,
             name: this.refs.name.getValue(),
@@ -57,7 +52,10 @@ class LeagueForm extends Component {
             show: this.refs.show.isToggled()
         };
 
-        this.setState({validation: {}});
+        if (this.props.league._id) {
+            Object.assign(league, {_id: this.props.league._id});
+        }
+
         this.props.onSubmit(league);
     }
 
@@ -113,7 +111,7 @@ class LeagueForm extends Component {
                     label="Сохранить"
                     primary={true}
                     disabled={!this.props.league.name}
-                    onClick={this._onSave}/>
+                    onClick={this._onSubmit}/>
             </div>
         );
     }

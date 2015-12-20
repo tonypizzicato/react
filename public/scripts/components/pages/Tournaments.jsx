@@ -1,99 +1,44 @@
-var $                  = require('jquery'),
-    _                  = require('lodash'),
-    scrollTop          = require('../../utils/scrollTop'),
-    React              = require('react'),
-    mui                = require('material-ui'),
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-    Tabs               = mui.Tabs,
-    Tab                = mui.Tab,
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-    EventsConstants    = require('../../constants/EventsConstants'),
-    CountriesActions   = require('../../actions/CountriesActions'),
-    //CountriesStore     = require('../../stores/CountriesStore'),
-    TournamentsActions = require('../../actions/TournamentsActions'),
-    TournamentStore    = require('../../stores/TournamentsStore'),
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-    TournamentForm     = require('../tournaments/TournamentForm.jsx'),
-    TournamentsList    = require('../tournaments/TournamentsList.jsx');
+import TournamentForm from '../tournaments/TournamentForm.jsx';
+import TournamentsList from '../tournaments/TournamentsList.jsx';
 
-var _calls = [],
-    _deferred;
+import CountriesActions from '../../actions/CountriesActions';
+import TournamentsActions from '../../actions/TournamentsActions';
 
 class TournamentApp extends React.Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues:     React.PropTypes.object.isRequired,
+        countries:   React.PropTypes.object.isRequired,
+        tournaments: React.PropTypes.object.isRequired
     };
 
     state = {
         activeTab:          0,
-        countries:          [],
-        tournaments:        [],
-        selectedTournament: {},
-        mounted:            false
+        selectedTournament: {}
     };
 
     constructor(props) {
         super(props);
 
         this._onTabChange = this._onTabChange.bind(this);
-        this._onChange    = this._onChange.bind(this);
         this._onEdit      = this._onEdit.bind(this);
+        this._onSubmit    = this._onSubmit.bind(this);
         this._onCancel    = this._onCancel.bind(this);
     }
 
     componentDidMount() {
-        this.state.mounted = true;
-
-        _calls    = [];
-        _deferred = new $.Deferred();
-
-        _deferred.then(function () {
-            if (!this.state.mounted) {
-                return;
-            }
-
-            this.setState({
-                countries:          [],//CountriesStore.getAll(),
-                tournaments:        TournamentStore.getAll(),
-                selectedTournament: {}
-            });
-        }.bind(this));
-
-        TournamentStore.addChangeListener(this._onChange);
-
-        //CountriesStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
-        TournamentStore.addListener(EventsConstants.EVENT_CALL, this._onCall);
-
-        if (this.props.leagues.length) {
-            CountriesActions.load();
-            TournamentsActions.load();
-        }
-    }
-
-    componentWillUnmount() {
-        this.state.mounted = false;
-
-        TournamentStore.removeChangeListener(this._onChange);
-
-        //CountriesStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
-        TournamentStore.removeListener(EventsConstants.EVENT_CALL, this._onCall);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.leagues.length !== this.props.leagues.length) {
-            CountriesActions.load();
-            TournamentsActions.load();
-        }
-    }
-
-    _onCall(call) {
-        _calls.push(call);
-
-        if (_calls.length == 2) {
-            $.when(_calls[0], _calls[1]).done(function () {
-                _deferred.resolve();
-            }.bind(this));
+        if (this.props.leagues.items.length) {
+            this.props.dispatch(CountriesActions.fetch());
+            this.props.dispatch(TournamentsActions.fetch());
         }
     }
 
@@ -104,18 +49,18 @@ class TournamentApp extends React.Component {
         });
     }
 
-    _onChange() {
+    _onEdit(e) {
         this.setState({
-            selectedTournament: {}
-        });
-    }
-
-    _onEdit(id) {
-        this.setState({
-            selectedTournament: _.findWhere(this.state.tournaments, {_id: id})
+            selectedTournament: _.findWhere(this.props.tournaments.items, { _id: e.currentTarget.dataset.id })
         });
 
         scrollTop();
+    }
+
+    _onSubmit(tournament) {
+        this.props.dispatch(TournamentsActions.save(tournament))
+            .then(() => this.props.dispatch(TournamentsActions.fetch()))
+            .then(this._onCancel);
     }
 
     _onCancel() {
@@ -124,16 +69,12 @@ class TournamentApp extends React.Component {
         });
     }
 
-    shouldComponentUpdate() {
-        return this.props.leagues.length > 0;
-    }
-
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map((league, index) => {
-                    const tournamentsItems = this.state.tournaments.filter(tournament => tournament.leagueId == league._id);
-                    const countries        = this.state.countries.filter(country => country.leagueId == league._id);
+                {this.props.leagues.items.map((league, index) => {
+                    const tournamentsItems = this.props.tournaments.items.filter(tournament => tournament.leagueId == league._id);
+                    const countries        = this.props.countries.items.filter(country => country.leagueId == league._id);
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -143,6 +84,7 @@ class TournamentApp extends React.Component {
                                     tournament={this.state.selectedTournament}
                                     countries={countries}
                                     leagueId={league._id}
+                                    onSubmit={this._onSubmit}
                                     onCancel={this._onCancel}/>
                                 <TournamentsList
                                     tournaments={tournamentsItems}
@@ -161,4 +103,12 @@ class TournamentApp extends React.Component {
     }
 }
 
-module.exports = TournamentApp;
+const mapState = (state) => {
+    return {
+        leagues:     state.get('leagues').toJS(),
+        countries:   state.get('countries').toJS(),
+        tournaments: state.get('tournaments').toJS()
+    }
+};
+
+export default connect(mapState)(TournamentApp);

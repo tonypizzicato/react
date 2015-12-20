@@ -22,11 +22,11 @@ const routes = {
         }
     },
     categories: {
-        list:   {
+        fetch:  {
             path:   '/categories',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/categories',
             method: 'POST'
         },
@@ -48,7 +48,7 @@ const routes = {
             path:   '/news/%(_id)s',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/news',
             method: 'POST'
         },
@@ -67,10 +67,6 @@ const routes = {
             path:   '/leagues',
             method: 'GET'
         },
-        item: {
-            path:   '/leagues/%(_id)s',
-            method: 'GET'
-        },
         save: {
             path:   '/leagues/%(_id)s',
             method: 'PUT'
@@ -78,44 +74,36 @@ const routes = {
     },
 
     tournaments: {
-        list:   {
+        fetch: {
             path:   '/tournaments',
             method: 'GET'
         },
-        item:   {
-            path:   '/tournaments/%(_id)s',
-            method: 'GET'
-        },
-        add: {
+        add:   {
             path:   '/tournaments',
             method: 'POST'
         },
-        save:   {
+        save:  {
             path:   '/tournaments/%(_id)s',
             method: 'PUT'
         }
     },
 
     countries: {
-        list:   {
+        fetch:  {
             path:   '/countries',
             method: 'GET'
         },
-        item:   {
-            path:   '/countries/%(_id)s',
-            method: 'GET'
-        },
-        add: {
+        add:    {
             path:   '/countries',
             method: 'POST'
-        },
-        remove: {
-            path:   '/countries/%(_id)s',
-            method: 'DELETE'
         },
         save:   {
             path:   '/countries/%(_id)s',
             method: 'PUT'
+        },
+        remove: {
+            path:   '/countries/%(_id)s',
+            method: 'DELETE'
         }
     },
 
@@ -139,7 +127,7 @@ const routes = {
             path:   '/previews/%(_id)s',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/previews',
             method: 'POST'
         },
@@ -158,7 +146,7 @@ const routes = {
             path:   '/game-articles',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/game-articles',
             method: 'POST'
         },
@@ -177,7 +165,7 @@ const routes = {
             path:   '/%(type)s/%(postId)s/images/',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/%(type)s/%(postId)s/images',
             method: 'POST'
         },
@@ -196,7 +184,7 @@ const routes = {
             path:   '/contacts',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/contacts',
             method: 'POST'
         },
@@ -215,7 +203,7 @@ const routes = {
             path:   '/fields',
             method: 'GET'
         },
-        add: {
+        add:    {
             path:   '/fields',
             method: 'POST'
         },

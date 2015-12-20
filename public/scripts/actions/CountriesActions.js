@@ -14,8 +14,8 @@ function fetch() {
     return {
         [API_CALL]: {
             types:    [COUNTRIES_FETCH, COUNTRIES_FETCH_SUCCESS, COUNTRIES_FETCH_FAILURE],
-            endpoint: API.getRoute('countries:list').path,
-            method:   API.getRoute('countries:list').method
+            endpoint: API.getRoute('countries:fetch').path,
+            method:   API.getRoute('countries:fetch').method
         }
     }
 }

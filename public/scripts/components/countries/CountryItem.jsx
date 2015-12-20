@@ -16,8 +16,6 @@ import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
 import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
 import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
-import Dragon from '../Dragon.jsx';
-
 class CountryItem extends Component {
 
     static propTypes = {
@@ -46,22 +44,20 @@ class CountryItem extends Component {
         );
 
         return (
-            <Dragon key={this.props.country._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.country._id}
-                    leftAvatar={<Avatar>{this.props.country.name[0]}</Avatar>}
-                    primaryText={
-                        <p style={styles.text}>
-                            {React.createElement(this.props.country.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
-                            <span style={{color: Colors.darkBlack, marginRight: Spacing.desktopGutterMini}}>{this.props.country.name}</span>
-                            <span style={{color: Colors.minBlack}}>{this.props.country.slug}</span>
-                        </p>
-                        }
-                    secondaryText={this.props.country.state}
-                    rightIconButton={rightIconMenu}
-                />
-            </Dragon>
+            <ListItem
+                onTouchTap={this.props.onEdit}
+                data-id={this.props.country._id}
+                leftAvatar={<Avatar>{this.props.country.name[0]}</Avatar>}
+                primaryText={
+                    <p style={styles.text}>
+                        {React.createElement(this.props.country.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
+                        <span style={styles.label.primary}>{this.props.country.name}</span>
+                        <span style={styles.label.secondary}>{this.props.country.slug}</span>
+                    </p>
+                    }
+                secondaryText={this.props.country.state}
+                rightIconButton={rightIconMenu}
+            />
         );
     }
 
@@ -69,6 +65,15 @@ class CountryItem extends Component {
         return {
             text:           {
                 margin: 0
+            },
+            label:          {
+                primary: {
+                    color:       Colors.darkBlack,
+                    marginRight: Spacing.desktopGutterMini
+                },
+                secondary: {
+                    color: Colors.minBlack
+                }
             },
             visibilityIcon: {
                 position:    'relative',
@@ -81,4 +86,4 @@ class CountryItem extends Component {
     }
 }
 
-module.exports = CountryItem;
+export default CountryItem;

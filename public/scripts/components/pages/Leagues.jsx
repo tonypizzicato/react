@@ -31,8 +31,12 @@ class LeaguesApp extends Component {
     }
 
     @autobind
-    handleSave(data) {
-        this.props.dispatch(LeaguesActions.save(data));
+    handleSave(league) {
+        const actionName = this.state.addMode ? 'add' : 'save';
+
+        this.props.dispatch(LeaguesActions[actionName](league))
+            .then(() => this.props.dispatch(LeaguesActions.fetch()))
+            .then(this._onCancel);
     }
 
     @autobind
@@ -58,4 +62,10 @@ class LeaguesApp extends Component {
     }
 }
 
-export default connect(state => state.toJS())(LeaguesApp);
+const mapProps = state => {
+    return {
+        leagues: state.get('leagues').toJS()
+    }
+};
+
+export default connect(mapProps)(LeaguesApp);

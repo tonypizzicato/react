@@ -13,8 +13,6 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
 
-import Dragon from '../Dragon.jsx';
-
 class CategoryItem extends Component {
     static propTypes = {
         category: PropTypes.object,
@@ -42,17 +40,15 @@ class CategoryItem extends Component {
         );
 
         return (
-            <Dragon key={this.props.category._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    style={styles.root}
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.category._id}
-                    leftAvatar={<Avatar>{this.props.category.name[0]}</Avatar>}
-                    primaryText={this.props.category.name}
-                    secondaryText={this.props.category.title}
-                    rightIconButton={rightIconMenu}
-                />
-            </Dragon>
+            <ListItem
+                style={styles.root}
+                onTouchTap={this.props.onEdit}
+                data-id={this.props.category._id}
+                leftAvatar={<Avatar>{this.props.category.name[0]}</Avatar>}
+                primaryText={this.props.category.name}
+                secondaryText={this.props.category.title}
+                rightIconButton={rightIconMenu}
+            />
         );
     }
 

@@ -7,14 +7,11 @@ const _                 = require('lodash'),
       Tabs              = mui.Tabs,
       Tab               = mui.Tab,
 
-      CategoriesStore   = require('../../stores/CategoriesStore'),
       CategoriesActions = require('../../actions/CategoriesActions'),
+      CountriesActions  = require('../../actions/CountriesActions'),
 
       NewsStore         = require('../../stores/NewsStore'),
       NewsActions       = require('../../actions/NewsActions'),
-
-      //CountriesStore    = require('../../stores/CountriesStore'),
-      CountriesActions  = require('../../actions/CountriesActions'),
 
       NewsForm          = require('../news/NewsForm.jsx'),
       NewsList          = require('../news/NewsList.jsx');
@@ -45,17 +42,17 @@ class NewsApp extends React.Component {
     }
 
     componentDidMount() {
-        CategoriesStore.addChangeListener(this._onChange);
+        //CategoriesStore.addChangeListener(this._onChange);
         NewsStore.addChangeListener(this._onChange);
         //CountriesStore.addChangeListener(this._onChange);
 
-        CategoriesActions.load();
+        //CategoriesActions.load();
         NewsActions.load();
-        CountriesActions.load();
+        //CountriesActions.load();
     }
 
     componentWillUnmount() {
-        CategoriesStore.removeChangeListener(this._onChange);
+        //CategoriesStore.removeChangeListener(this._onChange);
         NewsStore.removeChangeListener(this._onChange);
         //CountriesStore.removeChangeListener(this._onChange);
     }
@@ -70,8 +67,8 @@ class NewsApp extends React.Component {
     _onChange() {
         this.setState({
             news:            NewsStore.getAll(),
-            countries:       [],//CountriesStore.getAll(),
-            categories:      CategoriesStore.getAll(),
+            countries:       [], //CountriesStore.getAll(),
+            categories:      [], //CategoriesStore.getAll(),
             selectedArticle: {}
         });
     }

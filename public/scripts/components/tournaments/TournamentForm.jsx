@@ -13,7 +13,6 @@ import RadioButton from 'material-ui/lib/radio-button';
 import EventsConstants from '../../constants/EventsConstants';
 
 import TournamentsActions from'../../actions/TournamentsActions';
-import TournamentsStore from'../../stores/TournamentsStore';
 
 class TournamentForm extends Component {
 
@@ -36,42 +35,39 @@ class TournamentForm extends Component {
     constructor(props) {
         super(props);
 
-        this._onSave            = this._onSave.bind(this);
+        this._onSubmit          = this._onSubmit.bind(this);
         this._onCancel          = this._onCancel.bind(this);
         this._onCountryChange   = this._onCountryChange.bind(this);
         this._onValidationError = this._onValidationError.bind(this);
-    }
-
-    componentDidMount() {
-        TournamentsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
-
-    componentWillUnmount() {
-        TournamentsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
     }
 
     _onValidationError(validation) {
         this.setState({validation: validation});
     }
 
-    _onCountryChange(e, index, item) {
-        this.setState({country: item});
+    _onCountryChange(e, index) {
+        this.setState({country: this.props.countries[index]});
     }
 
-    _onSave() {
-        var tournament = {
+    _onSubmit() {
+        this.setState({validation: {}});
+
+        if (!this.props.onSubmit) {
+            return;
+        }
+
+        const tournament = {
             _id:      this.props.tournament._id,
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
             vk:       this.refs.vk.getValue(),
             state:    this.refs.state.getSelectedValue(),
-            country:  this.props.countries[this.refs.country.state.selectedIndex],
+            country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
             leagueId: this.props.leagueId,
             show:     this.refs.show.isToggled()
         };
 
-        this.setState({validation: {}});
-        TournamentsActions.save(tournament);
+        this.props.onSubmit(tournament);
     }
 
     _onCancel() {
@@ -180,7 +176,7 @@ class TournamentForm extends Component {
                 <Button style={styles.button} label="Отменить" secondary={true} disabled={!this.props.tournament.name}
                         onClick={this._onCancel}/>
                 <Button style={styles.button} label="Сохранить" primary={true} disabled={!this.props.tournament.name}
-                        onClick={this._onSave}/>
+                        onClick={this._onSubmit}/>
             </div>
         );
     }
