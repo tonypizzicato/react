@@ -9,6 +9,9 @@ import {
 
 import RightMenu from '../ListItemRightMenu.jsx';
 
+import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
+
 const { Colors, Spacing } = Styles;
 
 class LeagueItem extends Component {

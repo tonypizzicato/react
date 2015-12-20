@@ -20,6 +20,11 @@ import { TOURNAMENTS_FETCH, TOURNAMENTS_FETCH_SUCCESS, TOURNAMENTS_FETCH_FAILURE
 import { TOURNAMENTS_ADD, TOURNAMENTS_ADD_SUCCESS, TOURNAMENTS_ADD_FAILURE } from './actions/TournamentsActions';
 import { TOURNAMENTS_SAVE, TOURNAMENTS_SAVE_SUCCESS, TOURNAMENTS_SAVE_FAILURE } from './actions/TournamentsActions';
 
+import { NEWS_FETCH, NEWS_FETCH_SUCCESS, NEWS_FETCH_FAILURE } from './actions/NewsActions';
+import { NEWS_ADD, NEWS_ADD_SUCCESS, NEWS_ADD_FAILURE } from './actions/NewsActions';
+import { NEWS_SAVE, NEWS_SAVE_SUCCESS, NEWS_SAVE_FAILURE } from './actions/NewsActions';
+import { NEWS_REMOVE, NEWS_REMOVE_SUCCESS, NEWS_REMOVE_FAILURE } from './actions/NewsActions';
+
 import { UI_ERROR_HANDLED } from './actions/UiActions';
 
 /**
@@ -37,12 +42,17 @@ const INITIAL_STATE = Map({
         error:      null,
         items:      List()
     }),
+    tournaments:     Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
     categories:      Map({
         isFetching: false,
         error:      null,
         items:      List()
     }),
-    tournaments:     Map({
+    news:            Map({
         isFetching: false,
         error:      null,
         items:      List()
@@ -83,6 +93,11 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
         }, state.get('tournaments'))(state.get('tournaments'), action),
 
+        news: handleActions({
+            [NEWS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [NEWS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('news'))(state.get('news'), action),
+
         fetchesCount: handleActions({
             [LEAGUES_FETCH]: state => state + 1,
             [LEAGUES_SAVE]:  state => state + 1,
@@ -100,6 +115,11 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH]: state => state + 1,
             [TOURNAMENTS_ADD]:   state => state + 1,
             [TOURNAMENTS_SAVE]:  state => state + 1,
+
+            [NEWS_FETCH]:  state => state + 1,
+            [NEWS_ADD]:    state => state + 1,
+            [NEWS_SAVE]:   state => state + 1,
+            [NEWS_REMOVE]: state => state + 1,
 
             [LEAGUES_FETCH_SUCCESS]: state => state - 1,
             [LEAGUES_FETCH_FAILURE]: state => state - 1,
@@ -129,7 +149,16 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_ADD_SUCCESS]:   state => state - 1,
             [TOURNAMENTS_ADD_FAILURE]:   state => state - 1,
             [TOURNAMENTS_SAVE_SUCCESS]:  state => state - 1,
-            [TOURNAMENTS_SAVE_FAILURE]:  state => state - 1
+            [TOURNAMENTS_SAVE_FAILURE]:  state => state - 1,
+
+            [NEWS_FETCH_SUCCESS]:  state => state - 1,
+            [NEWS_FETCH_FAILURE]:  state => state - 1,
+            [NEWS_ADD_SUCCESS]:    state => state - 1,
+            [NEWS_ADD_FAILURE]:    state => state - 1,
+            [NEWS_SAVE_SUCCESS]:   state => state - 1,
+            [NEWS_SAVE_FAILURE]:   state => state - 1,
+            [NEWS_REMOVE_SUCCESS]: state => state - 1,
+            [NEWS_REMOVE_FAILURE]: state => state - 1
 
         }, state.get('fetchesCount'))(state.get('fetchesCount'), action),
 
@@ -150,6 +179,11 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH_FAILURE]: (state, action) => action.payload,
             [TOURNAMENTS_ADD_FAILURE]:   (state, action) => action.payload,
             [TOURNAMENTS_SAVE_FAILURE]:  (state, action) => action.payload,
+
+            [NEWS_FETCH_FAILURE]:  (state, action) => action.payload,
+            [NEWS_ADD_FAILURE]:    (state, action) => action.payload,
+            [NEWS_SAVE_FAILURE]:   (state, action) => action.payload,
+            [NEWS_REMOVE_FAILURE]: (state, action) => action.payload,
 
             [UI_ERROR_HANDLED]: (state, action) => null
         }, state.get('lastServerError'))(state.get('lastServerError'), action)

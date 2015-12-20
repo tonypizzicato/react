@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+
 import {
     Styles,
     ListItem,
@@ -21,8 +22,7 @@ class TournamentItem extends Component {
         return (
             <ListItem
                 style={styles.root}
-                onTouchTap={this.props.onEdit}
-                data-id={this.props.tournament._id}
+                onTouchTap={() => this.props.onEdit(this.props.tournament._id)}
                 leftAvatar={<Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>}
                 primaryText={
                     <p style={styles.text}>

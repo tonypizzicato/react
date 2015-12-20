@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import date from '../../utils/date';
 import React, { Component, PropTypes} from 'react';
 
@@ -7,9 +6,9 @@ import Spacing from 'material-ui/lib/styles/spacing';
 
 import ListItem from 'material-ui/lib/lists/list-item';
 import Avatar from 'material-ui/lib/avatar';
-import Icon from 'material-ui/lib/font-icon';
 
-import Dragon from '../Dragon.jsx';
+import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
 class NewsItem extends Component {
 
@@ -17,8 +16,7 @@ class NewsItem extends Component {
         index:    PropTypes.number.isRequired,
         article:  PropTypes.object.isRequired,
         onDelete: PropTypes.func.isRequired,
-        onEdit:   PropTypes.func.isRequired,
-        onDrop:   PropTypes.func.isRequired
+        onEdit:   PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -29,29 +27,23 @@ class NewsItem extends Component {
         const styles = this.getStyles();
         const avatar = this.props.article.title;
 
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.article.show
-        });
-
         return (
             <ListItem
                 style={styles.root}
-                onTouchTap={this.props.onEdit}
-                data-id={this.props.article._id}
+                onTouchTap={() => this.props.onEdit(this.props.article._id)}
                 leftAvatar={<Avatar>{avatar[0]}</Avatar>}
                 primaryText={
-                            <p>
-                                <Icon style={styles.visibilityIcon} className={visibilityClass} />
-                                <span style={styles.label.name}>{this.props.article.title}</span>
-                                <span style={{color: Colors.minBlack}}>{date.format(this.props.article.dc)}</span>
-                            </p>
-                        }
+                    <p style={styles.text.primary}>
+                        {React.createElement(this.props.article.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
+                        <span style={styles.label.primary}>{this.props.article.title}</span>
+                        <span style={styles.label.secondary}>{date.format(this.props.article.dc)}</span>
+                    </p>
+                }
                 secondaryText={
-                            <p>
-                                <span style={{color: Colors.lightBlack}}>{this.props.article.author}</span>
-                            </p>
-                        }
+                    <p style={styles.text.secondary}>
+                        <span style={styles.label.next}>{this.props.article.author}</span>
+                    </p>
+                }
                 secondaryTextLines={2}
             />
         );
@@ -62,19 +54,36 @@ class NewsItem extends Component {
             root:           {
                 margin: Spacing.desktopGutter + ' 0'
             },
+            text:           {
+                primary:   {
+                    margin: 0
+                },
+                secondary: {
+                    margin: 0,
+                    height: 'auto'
+                }
+            },
             label:          {
-                name: {
+                primary:   {
+                    color:       Colors.darkBlack,
                     marginRight: Spacing.desktopGutterMini
+                },
+                secondary: {
+                    color: Colors.minBlack
+                },
+                next:      {
+                    color: Colors.lightBlack
                 }
             },
             visibilityIcon: {
+                position:    'relative',
                 marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.article.show ? Colors.blueGrey900 : Colors.lightBlack
+                top:         3,
+                height:      18,
+                fill:        this.props.article.show ? Colors.darkBlack : Colors.lightBlack
             }
         }
     }
 }
 
-module.exports = NewsItem;
+export default NewsItem;

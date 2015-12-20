@@ -49,9 +49,9 @@ class TournamentApp extends React.Component {
         });
     }
 
-    _onEdit(e) {
+    _onEdit(id) {
         this.setState({
-            selectedTournament: _.findWhere(this.props.tournaments.items, { _id: e.currentTarget.dataset.id })
+            selectedTournament: _.findWhere(this.props.tournaments.items, { _id: id })
         });
 
         scrollTop();
@@ -103,7 +103,7 @@ class TournamentApp extends React.Component {
     }
 }
 
-const mapState = (state) => {
+const mapState = state => {
     return {
         leagues:     state.get('leagues').toJS(),
         countries:   state.get('countries').toJS(),

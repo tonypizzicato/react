@@ -11,64 +11,34 @@ import Sortable from '../Sortable.jsx';
 import NewsItem from '../news/NewsItem.jsx';
 import NewsActions from '../../actions/NewsActions';
 
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+
+const SelectableList = SelectableContainerEnhance(List);
+
 class NewsList extends Component {
 
     static propTypes = {
-        news:   PropTypes.array,
+        news:   PropTypes.array.isRequired,
         onEdit: PropTypes.func.isRequired
     };
 
-    static defaultProps = {
-        news: []
-    };
-
-    state = {
-        news: this.props.news
-    };
-
-    componentWillReceiveProps(nextProps) {
-        if (this.state.news.length != nextProps.news.length) {
-            this.setState({news: nextProps.news});
-        }
-    }
-
-    _onDrop(from, to) {
-        let items = this.state.news.slice();
-        items.splice(to, 0, items.splice(from, 1)[0]);
-
-        this.setState({news: items});
-
-        if (this.props.onDrop) {
-            this.props.onDrop(items);
-        }
-
-        items.forEach((item, index) => {
-            NewsActions.save({
-                _id:  item._id,
-                sort: index
-            }, {silent: true});
-        })
-    }
-
     render() {
-        if (!this.props.news.length) {
-            return false;
-        }
-
         return (
-            <List style={this.getStyles().root}>
+            <SelectableList style={this.getStyles().root}>
                 {this.props.news.map((item, i) => {
                     const divider = i != this.props.news.length - 1 ? <Divider inset={true}/> : undefined;
 
                     return (
                         <div key={item._id}>
-                            <NewsItem article={item} onEdit={this.props.onEdit} onDelete={this.props.onDelete} onDrop={this._onDrop}
-                                      index={i} key={item._id}/>
+                            <NewsItem article={item}
+                                      onEdit={this.props.onEdit}
+                                      onDelete={this.props.onDelete}
+                                      index={i}/>
                             {divider}
                         </div>
                     );
                 })}
-            </List>
+            </SelectableList>
         );
     }
 
@@ -83,4 +53,4 @@ class NewsList extends Component {
     }
 }
 
-module.exports = NewsList;
+export default NewsList;

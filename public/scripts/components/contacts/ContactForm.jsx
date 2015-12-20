@@ -15,7 +15,6 @@ import EventsConstants from '../../constants/EventsConstants';
 import ContactsActions from'../../actions/ContactsActions';
 import ContactsStore from'../../stores/ContactsStore';
 import TournamentsActions from'../../actions/TournamentsActions';
-import TournamentsStore from'../../stores/TournamentsStore';
 
 class ContactForm extends Component {
 
@@ -59,14 +58,12 @@ class ContactForm extends Component {
 
     componentWillMount() {
         ContactsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-        TournamentsStore.addChangeListener(this._onTournaments);
 
         TournamentsActions.load();
     }
 
     componentWillUnmount() {
         ContactsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-        TournamentsStore.removeChangeListener(this._onTournaments);
     }
 
     //componentDidUpdate() {
@@ -84,9 +81,9 @@ class ContactForm extends Component {
     //}
 
     _onTournaments() {
-        const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
-            return !!item.country;
-        });
+        const tournaments = [];// TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
+            //return !!item.country;
+        //});
 
         this.setState({
             tournaments: tournaments

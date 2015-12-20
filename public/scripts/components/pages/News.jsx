@@ -1,103 +1,95 @@
-const _                 = require('lodash'),
-      React             = require('react'),
-      mui               = require('material-ui'),
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-      Spacing           = mui.Styles.Spacing,
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-      Tabs              = mui.Tabs,
-      Tab               = mui.Tab,
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-      CategoriesActions = require('../../actions/CategoriesActions'),
-      CountriesActions  = require('../../actions/CountriesActions'),
+import NewsForm from '../news/NewsForm.jsx';
+import NewsList from '../news/NewsList.jsx';
 
-      NewsStore         = require('../../stores/NewsStore'),
-      NewsActions       = require('../../actions/NewsActions'),
-
-      NewsForm          = require('../news/NewsForm.jsx'),
-      NewsList          = require('../news/NewsList.jsx');
-
+import CategoriesActions from '../../actions/CategoriesActions';
+import CountriesActions from '../../actions/CountriesActions';
+import NewsActions from '../../actions/NewsActions';
 
 class NewsApp extends React.Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues:    React.PropTypes.object.isRequired,
+        categories: React.PropTypes.object.isRequired,
+        countries:  React.PropTypes.object.isRequired,
+        news:       React.PropTypes.object.isRequired
     };
 
     state = {
         activeTab:       0,
-        news:            [],
-        categories:      [],
-        countries:       [],
-        selectedArticle: {}
+        selectedArticle: {},
+        addMode:         true
     };
 
     constructor(props) {
         super(props);
 
         this._onCancel    = this._onCancel.bind(this);
-        this._onChange    = this._onChange.bind(this);
         this._onDelete    = this._onDelete.bind(this);
         this._onEdit      = this._onEdit.bind(this);
         this._onTabChange = this._onTabChange.bind(this);
     }
 
     componentDidMount() {
-        //CategoriesStore.addChangeListener(this._onChange);
-        NewsStore.addChangeListener(this._onChange);
-        //CountriesStore.addChangeListener(this._onChange);
-
-        //CategoriesActions.load();
-        NewsActions.load();
-        //CountriesActions.load();
-    }
-
-    componentWillUnmount() {
-        //CategoriesStore.removeChangeListener(this._onChange);
-        NewsStore.removeChangeListener(this._onChange);
-        //CountriesStore.removeChangeListener(this._onChange);
+        this.props.dispatch(CategoriesActions.fetch());
+        this.props.dispatch(CountriesActions.fetch());
+        this.props.dispatch(NewsActions.fetch());
     }
 
     _onTabChange(tab) {
         this.setState({
             activeTab:       tab.props.tabIndex,
-            selectedArticle: {}
-        });
-    }
-
-    _onChange() {
-        this.setState({
-            news:            NewsStore.getAll(),
-            countries:       [], //CountriesStore.getAll(),
-            categories:      [], //CategoriesStore.getAll(),
-            selectedArticle: {}
+            selectedArticle: {},
+            addMode:         true
         });
     }
 
     _onDelete(e) {
-        NewsActions.delete(e.currentTarget.dataset.id);
+        const id = e.currentTarget.dataset.id;
+
+        this.props.dispatch(NewsActions.remove(id))
+            .then(() => this.props.dispatch(NewsActions.fetch()));
     }
 
-    _onEdit(e) {
+    _onEdit(id) {
         this.setState({
-            selectedArticle: this.state.news.filter(function (article) {
-                return article._id == e.currentTarget.dataset.id;
-            }).pop()
+            selectedArticle: this.props.news.items.filter(function (article) {
+                return article._id == id;
+            }).pop(),
+            addMode:         false
         });
+
+        scrollTop();
+    }
+
+    _onSubmit(article) {
+        const actionName = this.state.addMode ? 'add' : 'save';
+
+        this.props.dispatch(NewsActions[actionName](article))
+            .then(() => this.props.dispatch(NewsActions.fetch()))
+            .then(this._onCancel);
     }
 
     _onCancel() {
         this.setState({
-            selectedArticle: {}
+            selectedArticle: {},
+            addMode:         true
         });
     }
 
     render() {
-        const styles = this.getStyles();
-
         return (
             <Tabs>
-                {this.props.leagues.map((league, index) => {
-                    if (!this.state.countries.length) {
+                {this.props.leagues.items.map((league, index) => {
+                    if (!this.props.countries.items.length) {
                         return (
                             <Tab label={league.name} key={league._id}>
                                 <div className="loading text_align_c s_mt_12">Loading data</div>
@@ -105,8 +97,8 @@ class NewsApp extends React.Component {
                         );
                     }
 
-                    const newsItems = this.state.news.filter(article => article.leagueId == league._id);
-                    const countries = this.state.countries.filter(country => country.leagueId == league._id);
+                    const newsItems = this.props.news.items.filter(article => article.leagueId == league._id);
+                    const countries = this.props.countries.items.filter(country => country.leagueId == league._id);
 
                     const key = league._id + '_' + (this.state.selectedArticle._id ? this.state.selectedArticle._id : 'article-new').toString();
 
@@ -115,15 +107,18 @@ class NewsApp extends React.Component {
                         tabContent = (
                             <div>
                                 <NewsForm
-                                    style={styles.form}
                                     article={this.state.selectedArticle}
                                     leagueId={league._id}
-                                    categories={this.state.categories}
+                                    categories={this.props.categories.items}
                                     countries={countries}
                                     onCancel={this._onCancel}
                                     key={key}/>
 
-                                <NewsList news={newsItems} onDelete={this._onDelete} onEdit={this._onEdit}/>
+                                <NewsList
+                                    news={newsItems}
+                                    onEdit={this._onEdit}
+                                    onSubmit={this._onSubmit}
+                                    onDelete={this._onDelete}/>
                             </div>
                         )
                     }
@@ -136,14 +131,15 @@ class NewsApp extends React.Component {
             </Tabs>
         );
     }
-
-    getStyles() {
-        return {
-            form: {
-                marginBottom: Spacing.desktopGutter
-            }
-        }
-    }
 }
 
-module.exports = NewsApp;
+const mapProps = state => {
+    return {
+        leagues:    state.get('leagues').toJS(),
+        categories: state.get('categories').toJS(),
+        countries:  state.get('countries').toJS(),
+        news:       state.get('news').toJS()
+    }
+};
+
+export default connect(mapProps)(NewsApp);

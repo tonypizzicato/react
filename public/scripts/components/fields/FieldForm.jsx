@@ -18,7 +18,7 @@ import EventsConstants from '../../constants/EventsConstants';
 import FieldsActions from'../../actions/FieldsActions';
 import FieldsStore from'../../stores/FieldsStore';
 import TournamentsActions from'../../actions/TournamentsActions';
-import TournamentsStore from'../../stores/TournamentsStore';
+//import TournamentsStore from'../../stores/TournamentsStore';
 
 class FieldForm extends Component {
 
@@ -49,14 +49,12 @@ class FieldForm extends Component {
 
     componentWillMount() {
         FieldsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-        TournamentsStore.addChangeListener(this._onTournaments);
 
         TournamentsActions.load();
     }
 
     componentWillUnmount() {
         FieldsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-        TournamentsStore.removeChangeListener(this._onTournaments);
     }
 
     componentDidUpdate() {
@@ -74,7 +72,7 @@ class FieldForm extends Component {
     }
 
     _onTournaments() {
-        const tournaments = TournamentsStore.getByLeague(this.props.leagueId).filter(item => !!item.country);
+        const tournaments = []; //TournamentsStore.getByLeague(this.props.leagueId).filter(item => !!item.country);
 
         this.setState({
             tournaments: tournaments

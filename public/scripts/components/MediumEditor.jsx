@@ -58,7 +58,7 @@ class Editor extends React.Component {
 
     setValue(value) {
         this.setState({value: value});
-        this.refs.editor.getDOMNode().innerHTML = value ? value : '';
+        this.refs.editor.innerHTML = value ? value : '';
     }
 
     _handleBlur(e) {
@@ -76,7 +76,7 @@ class Editor extends React.Component {
     }
 
     _initEditor() {
-        this._editor = new MediumEditor(this.refs.editor.getDOMNode(), {
+        this._editor = new MediumEditor(this.refs.editor, {
             placeholder:         false,
             buttonLabels:        'fontawesome',
             disableDoubleReturn: true,
@@ -88,16 +88,16 @@ class Editor extends React.Component {
 
         console.log('editor initialization');
 
-        this.refs.editor.getDOMNode().innerHTML = this.props.defaultValue;
+        this.refs.editor.innerHTML = this.props.defaultValue;
         this._editor.subscribe('editableInput', this._handleChange);
-        this._editor.on(this.refs.editor.getDOMNode(), 'focus', this._handleBlur);
-        this._editor.on(this.refs.editor.getDOMNode(), 'blur', this._handleBlur);
+        this._editor.on(this.refs.editor, 'focus', this._handleBlur);
+        this._editor.on(this.refs.editor, 'blur', this._handleBlur);
     }
 
     _deinitEditor() {
-        this._editor.off(this.refs.editor.getDOMNode(), 'input', this._handleChange);
-        this._editor.off(this.refs.editor.getDOMNode(), 'click', this._handleBlur);
-        this._editor.off(this.refs.editor.getDOMNode(), 'blur', this._handleBlur);
+        this._editor.off(this.refs.editor, 'input', this._handleChange);
+        this._editor.off(this.refs.editor, 'click', this._handleBlur);
+        this._editor.off(this.refs.editor, 'blur', this._handleBlur);
     }
 
     componentDidMount() {

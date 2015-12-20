@@ -40,12 +40,8 @@ const routes = {
         }
     },
     news:       {
-        list:   {
+        fetch:  {
             path:   '/news',
-            method: 'GET'
-        },
-        item:   {
-            path:   '/news/%(_id)s',
             method: 'GET'
         },
         add:    {

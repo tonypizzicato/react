@@ -9,7 +9,6 @@ import Avatar from 'material-ui/lib/avatar';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
-import Icon from 'material-ui/lib/font-icon';
 
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
@@ -67,7 +66,7 @@ class CountryItem extends Component {
                 margin: 0
             },
             label:          {
-                primary: {
+                primary:   {
                     color:       Colors.darkBlack,
                     marginRight: Spacing.desktopGutterMini
                 },

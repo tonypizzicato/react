@@ -1,37 +1,73 @@
-"use strict";
+import {createAction} from 'redux-actions';
 
-var AppDispatcher = require('../dispatcher/app-dispatcher'),
-    NewsConstants = require('../constants/NewsConstants');
+import { routes, basePath } from '../utils/api-routes';
+import api from '../utils/api';
+import { API_CALL } from '../middleware/fetchMiddleware';
 
-var NewsActions = {
-    load: function () {
-        AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_LOAD
-        });
-    },
+const API = api.init(routes, basePath);
 
-    add: function (data) {
-        AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_ADD,
-            data: data
-        })
-    },
+export const NEWS_FETCH         = 'NEWS_FETCH';
+export const NEWS_FETCH_SUCCESS = 'NEWS_FETCH_SUCCESS';
+export const NEWS_FETCH_FAILURE = 'NEWS_FETCH_FAILURE';
 
-    save: function (data) {
-        AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_SAVE,
-            data: data
-        })
-    },
-
-    delete: function (id) {
-        AppDispatcher.dispatch({
-            type: NewsConstants.NEWS_DELETE,
-            data: {
-                _id: id
-            }
-        });
+function fetch() {
+    return {
+        [API_CALL]: {
+            types:    [NEWS_FETCH, NEWS_FETCH_SUCCESS, NEWS_FETCH_FAILURE],
+            endpoint: API.getRoute('news:fetch').path,
+            method:   API.getRoute('news:fetch').method
+        }
     }
-};
+}
 
-module.exports = NewsActions;
+export const NEWS_ADD         = 'NEWS_ADD';
+export const NEWS_ADD_SUCCESS = 'NEWS_ADD_SUCCESS';
+export const NEWS_ADD_FAILURE = 'NEWS_ADD_FAILURE';
+
+function add(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [NEWS_ADD, NEWS_ADD_SUCCESS, NEWS_ADD_FAILURE],
+            endpoint: API.getRoute('news:add').path,
+            method:   API.getRoute('news:add').method
+        }
+    }
+}
+
+export const NEWS_SAVE         = 'NEWS_SAVE';
+export const NEWS_SAVE_SUCCESS = 'NEWS_SAVE_SUCCESS';
+export const NEWS_SAVE_FAILURE = 'NEWS_SAVE_FAILURE';
+
+function save(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [NEWS_SAVE, NEWS_SAVE_SUCCESS, NEWS_SAVE_FAILURE],
+            endpoint: API.getRoute('news:save', data).path,
+            method:   API.getRoute('news:save', data).method
+        }
+    }
+}
+
+export const NEWS_REMOVE         = 'NEWS_REMOVE';
+export const NEWS_REMOVE_SUCCESS = 'NEWS_REMOVE_SUCCESS';
+export const NEWS_REMOVE_FAILURE = 'NEWS_REMOVE_FAILURE';
+
+function remove(id) {
+    return {
+        payload:    id,
+        [API_CALL]: {
+            types:    [NEWS_REMOVE, NEWS_REMOVE_SUCCESS, NEWS_REMOVE_FAILURE],
+            endpoint: API.getRoute('news:remove', {_id: id}).path,
+            method:   API.getRoute('news:remove', {_id: id}).method
+        }
+    }
+}
+
+export default {
+    fetch,
+    add,
+    save,
+    remove
+};

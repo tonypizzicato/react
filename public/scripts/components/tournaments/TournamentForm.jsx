@@ -41,12 +41,19 @@ class TournamentForm extends Component {
         this._onValidationError = this._onValidationError.bind(this);
     }
 
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.tournament != nextProps.tournament) {
+            this.setState({country: nextProps.tournament.country});
+        }
+    }
+
     _onValidationError(validation) {
         this.setState({validation: validation});
     }
 
-    _onCountryChange(e, index) {
-        this.setState({country: this.props.countries[index]});
+    _onCountryChange(id) {
+        this.setState({country: _.findWhere(this.props.countries, {_id: id})});
     }
 
     _onSubmit() {
@@ -62,7 +69,7 @@ class TournamentForm extends Component {
             slug:     this.refs.slug.getValue(),
             vk:       this.refs.vk.getValue(),
             state:    this.refs.state.getSelectedValue(),
-            country:  this.props.countries[this.refs.country.state.selectedIndex]._id,
+            country:  this.getSelectedCountryId(),
             leagueId: this.props.leagueId,
             show:     this.refs.show.isToggled()
         };
@@ -81,18 +88,7 @@ class TournamentForm extends Component {
     render() {
         const styles = this.getStyles();
 
-        let selectedCountryIndex = 0;
-        const countryItems       = this.props.countries.map((country, index) => {
-            if (this.state.country) {
-                if (this.state.country._id == country._id) {
-                    selectedCountryIndex = index;
-                }
-            } else if (this.props.tournament.country && country._id == this.props.tournament.country._id) {
-                selectedCountryIndex = index;
-            }
-
-            return {text: country.name, _id: country._id, name: country.name};
-        });
+        const countryItems = this.props.countries.map(country => ({text: country.name, _id: country._id, name: country.name}));
 
         let countriesDropDown = '';
         if (countryItems.length) {
@@ -102,7 +98,11 @@ class TournamentForm extends Component {
                     labelStyle={styles.dropdown.label}
                     underlineStyle={styles.dropdown.underline}
                     menuItems={countryItems}
-                    selectedIndex={selectedCountryIndex}
+                    valueMember="_id"
+                    valueLink={{
+                        value: this.getSelectedCountryId(),
+                        requestChange: this._onCountryChange
+                    }}
                     autoWidth={false}
                     onChange={this._onCountryChange}
                     ref="country"/>
@@ -179,6 +179,28 @@ class TournamentForm extends Component {
                         onClick={this._onSubmit}/>
             </div>
         );
+    }
+
+
+    /**
+     * Get currently selected country ID
+     *
+     * @returns {String}
+     */
+    getSelectedCountryId() {
+        if (this.state.country) {
+            return this.state.country._id;
+        }
+
+        if (this.props.tournament.country) {
+            return this.props.tournament.country._id;
+        }
+
+        if (this.props.countries.length) {
+            return this.props.countries[0]._id;
+        }
+
+        return null;
     }
 
     getStyles() {
