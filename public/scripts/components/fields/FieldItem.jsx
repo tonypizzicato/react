@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import React, { Component, PropTypes} from 'react';
 
 import Colors from 'material-ui/lib/styles/colors';
@@ -7,30 +6,25 @@ import Spacing from 'material-ui/lib/styles/spacing';
 import ListItem from 'material-ui/lib/lists/list-item';
 import Avatar from 'material-ui/lib/avatar';
 import IconButton from 'material-ui/lib/icon-button';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
-import Icon from 'material-ui/lib/font-icon';
 
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
-import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
 import EditIcon from 'material-ui/lib/svg-icons/content/create';
+import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
 class FieldItem extends Component {
 
     static propTypes = {
         field:    PropTypes.object,
-        onDelete: PropTypes.func,
-        onEdit:   PropTypes.func
+        onEdit:   PropTypes.func.isRequired
     }
 
     render() {
         const styles = this.getStyles();
 
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.field.show
-        });
-
-        const avatar = this.props.field.image && this.props.field.image.thumb ?
+        const avatar = this.props.field.image ?
             <Avatar size={Spacing.desktopGutter * 2} src={this.props.field.image.thumb.src}/> :
             <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title ? this.props.field.title[0] : '-'}</Avatar>;
 
@@ -56,11 +50,11 @@ class FieldItem extends Component {
                 leftAvatar={avatar}
                 disabled={true}
                 primaryText={
-                        <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
-                            <span>{this.props.field.title}</span>
-                        </p>
-                    }
+                    <p style={styles.text}>
+                        {React.createElement(this.props.field.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
+                        <span>{this.props.field.title}</span>
+                    </p>
+                }
                 secondaryText={this.props.field.address}
                 rightIconButton={rightIconMenu}
             />
@@ -69,19 +63,21 @@ class FieldItem extends Component {
 
     getStyles() {
         return {
-            root: {
+            root:           {
                 boxSizing:  'border-box',
                 margin:     Spacing.desktopGutter + ' 0',
                 userSelect: 'none',
                 height:     '100%'
-                //boxShadow:  'rgba(0, 0, 0, 0.2) 0px 1px 2px 0px'
             },
-
+            text:           {
+                margin: 0
+            },
             visibilityIcon: {
+                position:    'relative',
                 marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.field.show ? Colors.blueGrey900 : Colors.lightBlack
+                top:         3,
+                height:      18,
+                fill:        this.props.field.show ? Colors.darkBlack : Colors.lightBlack
             }
         }
     }

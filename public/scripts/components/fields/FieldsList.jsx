@@ -11,22 +11,13 @@ import SortIcon from 'material-ui/lib/svg-icons/content/sort';
 import Sortable from '../Sortable.jsx';
 
 import FieldItem from '../fields/FieldItem.jsx';
-import FieldsActions from '../../actions/FieldsActions';
 
 class FieldsList extends Component {
 
     static propTypes = {
-        fields:   PropTypes.array,
-        onEdit:   PropTypes.func.isRequired,
-        onDelete: PropTypes.func.isRequired
-    };
-
-    static defaultProps = {
-        fields: []
-    };
-
-    state = {
-        fields: this.props.fields
+        fields: PropTypes.array.isRequired,
+        onEdit: PropTypes.func.isRequired,
+        onSort: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -46,23 +37,17 @@ class FieldsList extends Component {
             items[next] = this.state.fields[prev];
 
             if (next != prev) {
-                FieldsActions.save({
+                this.props.onSort({
                     _id:  items[next]._id,
                     sort: next
-                }, {silent: true});
+                });
             }
         });
-
-        this.props.onDrop && this.props.onDrop(items);
 
         this.setState({fields: items});
     }
 
     render() {
-        if (!this.props.fields.length) {
-            return false;
-        }
-
         const styles     = this.getStyles();
         const itemHeight = 76;
 
@@ -70,16 +55,13 @@ class FieldsList extends Component {
             <List style={styles.root}>
                 <Sortable itemHeight={itemHeight} onSort={this._onSort} delay={600}>
                     {this.props.fields.map((item, i) => {
-                        const divider = i != this.props.fields.length - 1 ? <ListDivider inset={true} style={styles.divider}/> : undefined;
+                        const divider = i != this.props.fields.length - 1 ? <Divider inset={true} style={styles.divider}/> : undefined;
 
                         return (
                             <div style={{height: '100%'}} key={item._id}>
                                 <FieldItem
                                     field={item}
-                                    onEdit={this.props.onEdit}
-                                    onDelete={this.props.onDelete}
-                                    onDrop={this._onSort}
-                                    index={i}/>
+                                    onEdit={this.props.onEdit}/>
                                 {divider}
                             </div>
                         );

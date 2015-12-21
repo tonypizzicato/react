@@ -25,6 +25,11 @@ import { NEWS_ADD, NEWS_ADD_SUCCESS, NEWS_ADD_FAILURE } from './actions/NewsActi
 import { NEWS_SAVE, NEWS_SAVE_SUCCESS, NEWS_SAVE_FAILURE } from './actions/NewsActions';
 import { NEWS_REMOVE, NEWS_REMOVE_SUCCESS, NEWS_REMOVE_FAILURE } from './actions/NewsActions';
 
+import { FIELDS_FETCH, FIELDS_FETCH_SUCCESS, FIELDS_FETCH_FAILURE } from './actions/FieldsActions';
+import { FIELDS_ADD, FIELDS_ADD_SUCCESS, FIELDS_ADD_FAILURE } from './actions/FieldsActions';
+import { FIELDS_SAVE, FIELDS_SAVE_SUCCESS, FIELDS_SAVE_FAILURE } from './actions/FieldsActions';
+import { FIELDS_REMOVE, FIELDS_REMOVE_SUCCESS, FIELDS_REMOVE_FAILURE } from './actions/FieldsActions';
+
 import { UI_ERROR_HANDLED } from './actions/UiActions';
 
 /**
@@ -53,6 +58,11 @@ const INITIAL_STATE = Map({
         items:      List()
     }),
     news:            Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    fields:          Map({
         isFetching: false,
         error:      null,
         items:      List()
@@ -98,6 +108,11 @@ export default (state = INITIAL_STATE, action) => {
             [NEWS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
         }, state.get('news'))(state.get('news'), action),
 
+        fields: handleActions({
+            [FIELDS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [FIELDS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('fields'))(state.get('fields'), action),
+
         fetchesCount: handleActions({
             [LEAGUES_FETCH]: state => state + 1,
             [LEAGUES_SAVE]:  state => state + 1,
@@ -120,6 +135,11 @@ export default (state = INITIAL_STATE, action) => {
             [NEWS_ADD]:    state => state + 1,
             [NEWS_SAVE]:   state => state + 1,
             [NEWS_REMOVE]: state => state + 1,
+
+            [FIELDS_FETCH]:  state => state + 1,
+            [FIELDS_ADD]:    state => state + 1,
+            [FIELDS_SAVE]:   state => state + 1,
+            [FIELDS_REMOVE]: state => state + 1,
 
             [LEAGUES_FETCH_SUCCESS]: state => state - 1,
             [LEAGUES_FETCH_FAILURE]: state => state - 1,
@@ -158,7 +178,16 @@ export default (state = INITIAL_STATE, action) => {
             [NEWS_SAVE_SUCCESS]:   state => state - 1,
             [NEWS_SAVE_FAILURE]:   state => state - 1,
             [NEWS_REMOVE_SUCCESS]: state => state - 1,
-            [NEWS_REMOVE_FAILURE]: state => state - 1
+            [NEWS_REMOVE_FAILURE]: state => state - 1,
+
+            [FIELDS_FETCH_SUCCESS]:  state => state - 1,
+            [FIELDS_FETCH_FAILURE]:  state => state - 1,
+            [FIELDS_ADD_SUCCESS]:    state => state - 1,
+            [FIELDS_ADD_FAILURE]:    state => state - 1,
+            [FIELDS_SAVE_SUCCESS]:   state => state - 1,
+            [FIELDS_SAVE_FAILURE]:   state => state - 1,
+            [FIELDS_REMOVE_SUCCESS]: state => state - 1,
+            [FIELDS_REMOVE_FAILURE]: state => state - 1
 
         }, state.get('fetchesCount'))(state.get('fetchesCount'), action),
 
@@ -184,6 +213,11 @@ export default (state = INITIAL_STATE, action) => {
             [NEWS_ADD_FAILURE]:    (state, action) => action.payload,
             [NEWS_SAVE_FAILURE]:   (state, action) => action.payload,
             [NEWS_REMOVE_FAILURE]: (state, action) => action.payload,
+
+            [FIELDS_FETCH_FAILURE]:  (state, action) => action.payload,
+            [FIELDS_ADD_FAILURE]:    (state, action) => action.payload,
+            [FIELDS_SAVE_FAILURE]:   (state, action) => action.payload,
+            [FIELDS_REMOVE_FAILURE]: (state, action) => action.payload,
 
             [UI_ERROR_HANDLED]: (state, action) => null
         }, state.get('lastServerError'))(state.get('lastServerError'), action)

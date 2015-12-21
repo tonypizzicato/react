@@ -128,7 +128,7 @@ class NewsApp extends React.Component {
     }
 }
 
-const mapProps = state => {
+function mapState(state) {
     return {
         leagues:    state.get('leagues').toJS(),
         categories: state.get('categories').toJS(),
@@ -137,4 +137,4 @@ const mapProps = state => {
     }
 };
 
-export default connect(mapProps)(NewsApp);
+export default connect(mapState)(NewsApp);

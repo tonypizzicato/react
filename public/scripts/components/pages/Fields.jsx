@@ -1,89 +1,83 @@
-const React         = require('react'),
-      mui           = require('material-ui'),
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-      Tabs          = mui.Tabs,
-      Tab           = mui.Tab,
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-      FieldsActions = require('../../actions/FieldsActions'),
-      FieldsStore   = require('../../stores/FieldsStore'),
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-      FieldsList    = require('../fields/FieldsList.jsx'),
-      FieldForm     = require('../fields/FieldForm.jsx');
+import FieldForm from '../fields/FieldForm.jsx';
+import FieldsList from '../fields/FieldsList.jsx';
 
-class FieldsApp extends React.Component {
+import FieldsActions from '../../actions/FieldsActions';
+
+class FieldsApp extends Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues: PropTypes.object.isRequired,
+        fields:  PropTypes.object.isRequired
     };
 
     state = {
-        activeTab:     0,
-        fields:        [],
-        selectedField: {}
+        selectedField: {},
+        addMode:       true
     };
 
     constructor(props) {
         super(props);
 
         this._onEdit      = this._onEdit.bind(this);
-        this._onChange    = this._onChange.bind(this);
+        this._onSort      = this._onSort.bind(this);
+        this._onSubmit    = this._onSubmit.bind(this);
         this._onCancel    = this._onCancel.bind(this);
         this._onTabChange = this._onTabChange.bind(this);
     }
 
     componentDidMount() {
-        FieldsStore.addChangeListener(this._onChange);
-
-        if (this.props.leagues.length > 0) {
-            FieldsActions.load();
-        }
-    }
-
-    componentWillUnmount() {
-        FieldsStore.removeChangeListener(this._onChange);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.leagues.length != nextProps.leagues.length) {
-            FieldsActions.load();
-        }
+        this.props.dispatch(FieldsActions.fetch());
     }
 
     _onTabChange(tab) {
         this.setState({
             activeTab:     tab.props.tabIndex,
-            selectedField: {}
+            selectedField: {},
+            addMode:       true
         });
-    }
-
-    _onChange() {
-        this.setState({
-            fields:        FieldsStore.getAll(),
-            selectedField: {}
-        });
-    }
-
-    _onDelete(e) {
-        FieldsActions.delete(e.currentTarget.dataset.id);
     }
 
     _onEdit(e) {
         this.setState({
-            selectedField: this.state.fields.filter(field => field._id == e.currentTarget.dataset.id).pop()
+            selectedField: this.state.fields.filter(field => field._id == e.currentTarget.dataset.id).pop(),
+            addMode:       false
         });
+    }
+
+    _onSort(field) {
+        this.props.dispatch(FieldsActions.save(field))
+            .then(() => this.props.dispatch(FieldsActions.fetch()));
+    }
+
+    _onSubmit(field) {
+        const actionName = this.state.addMode ? 'add' : 'save';
+
+        this.props.dispatch(FieldsActions[actionName](field))
+            .then(() => this.props.dispatch(FieldsActions.fetch()))
+            .then(this._onCancel);
     }
 
     _onCancel() {
         this.setState({
-            selectedField: {}
+            selectedField: {},
+            addMode:       true
         });
     }
 
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map((league, index) => {
-                    const fieldsItems = this.state.fields.filter(item => item.leagueId == league._id);
+                {this.props.leagues.items.map(league => {
+                    const fieldsItems = this.props.fields.items.filter(item => item.leagueId == league._id);
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -93,7 +87,8 @@ class FieldsApp extends React.Component {
                                     field={this.state.selectedField}
                                     leagueId={league._id}
                                     onCancel={this._onCancel}
-                                    key={`field-form-${league._id}-${this.state.selectedField._id}`}/>
+                                    key={`field-form-${league._id}-${this.state.selectedField._id}`}
+                                />
 
                                 <FieldsList
                                     fields={fieldsItems}
@@ -105,7 +100,12 @@ class FieldsApp extends React.Component {
 
                     return (
                         <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
-                            {tabContent}
+                            <FieldsList
+                                fields={fieldsItems}
+                                onSort={this._onSort}
+                                onEdit={this._onEdit}
+                                onDelete={this._onDelete}
+                            />
                         </Tab>
                     );
                 })}
@@ -114,4 +114,11 @@ class FieldsApp extends React.Component {
     }
 }
 
-module.exports = FieldsApp;
+function mapState(state) {
+    return {
+        leagues: state.get('leagues').toJS(),
+        fields:  state.get('fields').toJS()
+    }
+}
+
+export default connect(mapState)(FieldsApp);

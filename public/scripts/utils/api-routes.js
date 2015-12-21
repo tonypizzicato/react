@@ -195,7 +195,7 @@ const routes = {
     },
 
     fields: {
-        list:   {
+        fetch:  {
             path:   '/fields',
             method: 'GET'
         },
