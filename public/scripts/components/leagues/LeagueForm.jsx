@@ -9,8 +9,9 @@ import Button from 'material-ui/lib/raised-button';
 class LeagueForm extends Component {
 
     static propTypes = {
-        league:   PropTypes.object,
-        onSubmit: PropTypes.func.isRequired
+        onSubmit: PropTypes.func.isRequired,
+        onCancel: PropTypes.func.isRequired,
+        league:   PropTypes.object
     };
 
     static defaultProps = {
@@ -30,7 +31,7 @@ class LeagueForm extends Component {
         super(props);
 
         this._onCancel          = this._onCancel.bind(this);
-        this._onSubmit            = this._onSubmit.bind(this);
+        this._onSubmit          = this._onSubmit.bind(this);
         this._onValidationError = this._onValidationError.bind(this);
     }
 
@@ -40,10 +41,6 @@ class LeagueForm extends Component {
 
     _onSubmit() {
         this.setState({validation: {}});
-
-        if (!this.props.onSubmit) {
-            return;
-        }
 
         const league = {
             _id:  this.props.league._id,
@@ -62,9 +59,7 @@ class LeagueForm extends Component {
     _onCancel() {
         this.setState({validation: {}});
 
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
+        this.props.onCancel();
     }
 
     render() {

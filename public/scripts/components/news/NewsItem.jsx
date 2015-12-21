@@ -6,7 +6,12 @@ import Spacing from 'material-ui/lib/styles/spacing';
 
 import ListItem from 'material-ui/lib/lists/list-item';
 import Avatar from 'material-ui/lib/avatar';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import IconButton from 'material-ui/lib/icon-button';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
 
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
 import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
 import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
@@ -19,13 +24,25 @@ class NewsItem extends Component {
         onEdit:   PropTypes.func.isRequired
     };
 
-    static defaultProps = {
-        article: {}
-    };
-
     render() {
         const styles = this.getStyles();
         const avatar = this.props.article.title;
+
+        const iconButtonMenu = (
+            <IconButton touch={true}>
+                <MoreVertIcon color={Colors.grey600}/>
+            </IconButton>
+        );
+
+        const rightIconMenu = (
+            <IconMenu iconButtonElement={iconButtonMenu}>
+                <MenuItem
+                    primaryText="Удалить"
+                    onClick={this.props.onDelete}
+                    data-id={this.props.article._id}
+                    leftIcon={<DeleteIcon color={Colors.grey600}/>}/>
+            </IconMenu>
+        );
 
         return (
             <ListItem
@@ -39,12 +56,8 @@ class NewsItem extends Component {
                         <span style={styles.label.secondary}>{date.format(this.props.article.dc)}</span>
                     </p>
                 }
-                secondaryText={
-                    <p style={styles.text.secondary}>
-                        <span style={styles.label.next}>{this.props.article.author}</span>
-                    </p>
-                }
-                secondaryTextLines={2}
+                secondaryText={this.props.article.author}
+                rightIconButton={rightIconMenu}
             />
         );
     }

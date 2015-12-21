@@ -16,6 +16,13 @@ import TournamentsActions from'../../actions/TournamentsActions';
 
 class TournamentForm extends Component {
 
+    static propTypes    = {
+        countries:  PropTypes.array.isRequired,
+        onSubmit:   PropTypes.func.isRequired,
+        onCancel:   PropTypes.func.isRequired,
+        leagueId:   PropTypes.string.isRequired,
+        tournament: PropTypes.object
+    }
     static defaultProps = {
         tournament: {
             name:     '',
@@ -59,10 +66,6 @@ class TournamentForm extends Component {
     _onSubmit() {
         this.setState({validation: {}});
 
-        if (!this.props.onSubmit) {
-            return;
-        }
-
         const tournament = {
             _id:      this.props.tournament._id,
             name:     this.refs.name.getValue(),
@@ -80,9 +83,7 @@ class TournamentForm extends Component {
     _onCancel() {
         this.setState({validation: {}});
 
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
+        this.props.onCancel();
     }
 
     render() {

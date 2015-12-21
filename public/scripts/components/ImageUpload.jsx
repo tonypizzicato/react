@@ -72,7 +72,7 @@ class ImageUpload extends React.Component {
     }
 
     setImagePos(x, y) {
-        this.refs.preview.setImagePos(x, y);
+        this.refs.preview && this.refs.preview.setImagePos(x, y);
     }
 
     isNew() {

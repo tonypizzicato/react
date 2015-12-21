@@ -78,6 +78,9 @@ class TournamentApp extends React.Component {
 
                     let tabContent;
                     if (this.state.activeTab == index) {
+                        const tournament = this.state.selectedTournament;
+                        const key        = `${tournament._id ? tournament._id : _.uniqueId()}-form`;
+
                         tabContent = (
                             <div>
                                 <TournamentForm
@@ -85,7 +88,8 @@ class TournamentApp extends React.Component {
                                     countries={countries}
                                     leagueId={league._id}
                                     onSubmit={this._onSubmit}
-                                    onCancel={this._onCancel}/>
+                                    onCancel={this._onCancel}
+                                    key={key}/>
                                 <TournamentsList
                                     tournaments={tournamentsItems}
                                     onEdit={this._onEdit}/>

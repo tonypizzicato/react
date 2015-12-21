@@ -47,16 +47,20 @@ class LeaguesApp extends Component {
     }
 
     render() {
+        const league = this.state.selectedLeague;
+        const key    = `${league._id ? league._id : _.uniqueId()}-form`;
+
         return (
             <div>
                 <LeagueForm league={this.state.selectedLeague}
                             onCancel={this.handleCancelEdit}
                             onSubmit={this.handleSave}
-                            key={`${this.state.selectedLeague._id}-form`}/>
+                            key={key}
+                />
 
                 <LeaguesList leagues={this.props.leagues.items}
-                             onEdit={this.handleStartEdit}
-                             key={`${this.state.selectedLeague._id}-list`}/>
+                             onEdit={this._onEdit}
+                />
             </div>
         );
     }

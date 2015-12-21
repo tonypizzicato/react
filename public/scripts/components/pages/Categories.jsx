@@ -71,19 +71,21 @@ class CategoriesApp extends React.Component {
     }
 
     render() {
+        const category = this.state.selectedCategory;
+        const key      = `${category._id ? category._id : _.uniqueId()}-form`;
+
         return (
             <div>
                 <CategoryForm
                     category={this.state.selectedCategory}
                     onSubmit={this._onSubmit}
                     onCancel={this._onCancel}
-                    key={`${this.state.selectedCategory._id}-form`}/>
+                    key={key}/>
 
                 <CategoriesList
                     categories={this.props.categories.items}
                     onDelete={this._onDelete}
-                    onEdit={this._onEdit}
-                    key={`${this.state.selectedCategory._id}-list`}/>
+                    onEdit={this._onEdit}/>
             </div>
         )
     }

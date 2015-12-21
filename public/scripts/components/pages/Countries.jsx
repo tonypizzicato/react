@@ -88,20 +88,22 @@ class CountriesApp extends Component {
 
                     let tabContent;
                     if (this.state.activeTab == index) {
+                        const country = this.state.selectedCountry;
+                        const key     = `${country._id ? country._id : _.uniqueId()}-form`;
+
                         tabContent = (
                             <div>
                                 <CountryForm
-                                    country={this.state.selectedCountry}
+                                    country={country}
                                     leagueId={league._id}
                                     onSubmit={this._onSubmit}
                                     onCancel={this._onCancel}
-                                    key={`${this.state.selectedCountry._id}-form`}/>
+                                    key={key}/>
                                 <CountriesList
                                     countries={countriesItems}
                                     leagueId={league._id}
                                     onDelete={this._onDelete}
-                                    onEdit={this._onEdit}
-                                    key={`${this.state.selectedCountry._id}-list`}/>
+                                    onEdit={this._onEdit}/>
                             </div>
                         )
                     }

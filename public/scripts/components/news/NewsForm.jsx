@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
 import Spacing from 'material-ui/lib/styles/spacing';
 
 import TextField from 'material-ui/lib/text-field';
@@ -16,18 +15,22 @@ import ImageUpload from '../ImageUpload.jsx';
 import VideoUpload from '../VideoUpload.jsx';
 import TagsField from '../TagsField.jsx';
 
-import EventsConstants from '../../constants/EventsConstants';
 import AuthStore from'../../stores/AuthStore';
 
 import NewsActions from'../../actions/NewsActions';
-import NewsStore from'../../stores/NewsStore';
 
 class NewsForm extends Component {
 
+    static propTypes    = {
+        categories: PropTypes.array.isRequired,
+        countries:  PropTypes.array.isRequired,
+        leagueId:   PropTypes.string.isRequired,
+        onSubmit:   PropTypes.func.isRequired,
+        onCancel:   PropTypes.func.isRequired,
+        article:    PropTypes.object
+    }
     static defaultProps = {
-        categories: [],
-        countries:  [],
-        article:    {
+        article: {
             title:   '',
             body:    '',
             teaser:  '',
@@ -37,8 +40,7 @@ class NewsForm extends Component {
             country: {},
             tags:    [],
             video:   []
-        },
-        leagueId:   null
+        }
     };
 
     state = {
@@ -51,7 +53,7 @@ class NewsForm extends Component {
     constructor(props) {
         super(props);
 
-        this._onSave              = this._onSave.bind(this);
+        this._onSubmit            = this._onSubmit.bind(this);
         this._onCancel            = this._onCancel.bind(this);
         this._onValidationError   = this._onValidationError.bind(this);
         this._changeImagePosition = this._changeImagePosition.bind(this);
@@ -61,21 +63,9 @@ class NewsForm extends Component {
         this.setState({validation: validation});
     }
 
-    componentDidMount() {
-        NewsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
+    _onSubmit() {
+        this.setState({validation: {}});
 
-    componentWillUnmount() {
-        NewsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.article.hasOwnProperty('_id')) {
-            this._clearForm();
-        }
-    }
-
-    _onSave() {
         let article = {
             title:         this.refs.title.getValue(),
             body:          this.refs.body.getValue(),
@@ -102,36 +92,17 @@ class NewsForm extends Component {
 
         article.video = videos;
 
-        this.setState({validation: {}});
-
         if (this.props.article._id) {
-            article._id = this.props.article._id;
-            NewsActions.save(article);
-        } else {
-            NewsActions.add(article);
+            Object.assign(article, {_id: this.props.article._id});
         }
-    }
 
-    _clearForm() {
-        this.refs.title.setValue('');
-        this.refs.teaser.setValue('');
-        this.refs.body.setValue('');
-        this.refs.show.setToggled(false);
-        this.refs.stick.setToggled(false);
-        //this.refs.tags.setTags([]);
-        this.refs.image.setImage(null);
-        this.refs.imagePositionText.setValue('50%');
-
-        this.refs['video-0'].clear();
-        this.setState({videosCount: 1});
+        this.props.onSubmit(article);
     }
 
     _onCancel() {
-        this.setState({article: this.props.article});
-        this._clearForm();
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
+        this.setState({validation: {}});
+
+        this.props.onCancel();
     }
 
     _changeImagePosition(e) {
@@ -243,15 +214,15 @@ class NewsForm extends Component {
                         value="50%"
                         label="Центр"
                         defaultChecked={true}
-                        />
+                    />
                     <RadioButton
                         value="0"
                         label="Верх"
-                        />
+                    />
                     <RadioButton
                         value="100%"
                         label="Низ"
-                        />
+                    />
                 </RadioButtonGroup>
 
                 <TextField
@@ -277,7 +248,7 @@ class NewsForm extends Component {
                     label="Прикрепить"/>
 
                 <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
-                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
+                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSubmit}/>
             </div>
         )
     }

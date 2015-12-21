@@ -32,6 +32,7 @@ class NewsApp extends React.Component {
     constructor(props) {
         super(props);
 
+        this._onSubmit    = this._onSubmit.bind(this);
         this._onCancel    = this._onCancel.bind(this);
         this._onDelete    = this._onDelete.bind(this);
         this._onEdit      = this._onEdit.bind(this);
@@ -89,28 +90,22 @@ class NewsApp extends React.Component {
         return (
             <Tabs>
                 {this.props.leagues.items.map((league, index) => {
-                    if (!this.props.countries.items.length) {
-                        return (
-                            <Tab label={league.name} key={league._id}>
-                                <div className="loading text_align_c s_mt_12">Loading data</div>
-                            </Tab>
-                        );
-                    }
-
                     const newsItems = this.props.news.items.filter(article => article.leagueId == league._id);
                     const countries = this.props.countries.items.filter(country => country.leagueId == league._id);
 
-                    const key = league._id + '_' + (this.state.selectedArticle._id ? this.state.selectedArticle._id : 'article-new').toString();
-
                     let tabContent;
                     if (this.state.activeTab == index) {
+                        const article = this.state.selectedArticle;
+                        const key     = `${article._id ? article._id : _.uniqueId()}-form`;
+
                         tabContent = (
                             <div>
                                 <NewsForm
-                                    article={this.state.selectedArticle}
+                                    article={article}
                                     leagueId={league._id}
                                     categories={this.props.categories.items}
                                     countries={countries}
+                                    onSubmit={this._onSubmit}
                                     onCancel={this._onCancel}
                                     key={key}/>
 
