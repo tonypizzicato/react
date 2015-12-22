@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import TransitionGroup from 'react-addons-css-transition-group';
 
+import Colors from 'material-ui/lib/styles/colors';
 import Spacing from 'material-ui/lib/styles/spacing';
 
 import TextField from 'material-ui/lib/text-field';
@@ -13,48 +14,32 @@ import Checkbox from 'material-ui/lib/checkbox';
 import MediumEditor from '../MediumEditor.jsx';
 import ImageUpload from '../ImageUpload.jsx';
 
-import EventsConstants from '../../constants/EventsConstants';
-
-import FieldsActions from'../../actions/FieldsActions';
-import FieldsStore from'../../stores/FieldsStore';
-import TournamentsActions from'../../actions/TournamentsActions';
-//import TournamentsStore from'../../stores/TournamentsStore';
 
 class FieldForm extends Component {
 
     static propTypes = {
-        field:    PropTypes.object,
-        leagueId: PropTypes.string.isRequired
+        leagueId:    PropTypes.string.isRequired,
+        onCancel:    PropTypes.func.isRequired,
+        onSubmit:    PropTypes.func.isRequired,
+        tournaments: PropTypes.array,
+        field:       PropTypes.object
     };
 
     static defaultProps = {
-        field:    {},
-        leagueId: ''
+        field:       {},
+        tournaments: [],
+        leagueId:    ''
     };
 
     state = {
-        validation:  {},
-        tournaments: []
+        validation: {}
     };
 
     constructor(props) {
         super(props);
 
-        this._onSave            = this._onSave.bind(this);
-        this._onCancel          = this._onCancel.bind(this);
-        this._clearForm         = this._clearForm.bind(this);
-        this._onTournaments     = this._onTournaments.bind(this);
-        this._onValidationError = this._onValidationError.bind(this);
-    }
-
-    componentWillMount() {
-        FieldsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-
-        TournamentsActions.load();
-    }
-
-    componentWillUnmount() {
-        FieldsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
+        this._onSubmit = this._onSubmit.bind(this);
+        this._onCancel = this._onCancel.bind(this);
     }
 
     componentDidUpdate() {
@@ -65,26 +50,11 @@ class FieldForm extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.field.hasOwnProperty('_id') && this.refs.form) {
-            this._clearForm();
-        }
-    }
+    _onSubmit() {
+        this.setState({ validation: {} });
 
-    _onTournaments() {
-        const tournaments = []; //TournamentsStore.getByLeague(this.props.leagueId).filter(item => !!item.country);
-
-        this.setState({
-            tournaments: tournaments
-        });
-    }
-
-    _onValidationError(validation) {
-        this.setState({ validation: validation });
-    }
-
-    _onSave() {
-        const tournaments = this.state.tournaments
+        const tournaments = this.props.tournaments
+            .filter(item => this.refs[`checkbox-${item._id}`])
             .filter(item => this.refs[`checkbox-${item._id}`].isChecked())
             .map(item => item._id);
 
@@ -108,157 +78,153 @@ class FieldForm extends Component {
             field.image = this.refs.image.getImage();
         }
 
-        this.setState({ validation: {} });
         if (this.props.field._id) {
-            field._id = this.props.field._id;
-            FieldsActions.save(field);
-        } else {
-            FieldsActions.add(field);
+            Object.assign(field, { _id: this.props.field._id });
         }
+
+        this.props.onSubmit(field);
     }
 
     _onCancel() {
         this.setState({ validation: {} });
 
-        this._clearForm();
-
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
-    }
-
-    _clearForm() {
-        this.refs.howto.setValue('');
-        this.refs.lat.setValue('');
-        this.refs.long.setValue('');
-        this.refs.metro_name.setValue('');
-        this.refs.metro_color.setValue('');
-        this.refs.show.setToggled(false);
-        this.refs.image.setImage(null);
-
-        this.state.tournaments.forEach(item => this.refs[`checkbox-${item._id}`].setChecked(false));
+        this.props.onCancel();
     }
 
     render() {
         let content;
 
-        const styles = this.getStyles();
+        if (this.props.leagueId && this.props.tournaments.length) {
+            const styles = this.getStyles();
 
-        const tournaments = _.groupBy(this.state.tournaments, item => item.country ? item.country.name : 'Остальные');
+            const tournaments = _.groupBy(this.props.tournaments, item => item.country ? item.country.name : 'Остальные');
 
-        const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
-            const tournamentsEl = tournaments.map(item => {
-                const index = this.props.field.tournaments ? this.props.field.tournaments.indexOf(item._id) : -1;
+            const tournamentsBlock = (
+                <div>{
+                    _.values(_.mapValues(tournaments, (tournaments, country) => {
+                        const tournamentsEl = tournaments.map(item => {
+                            if (!item.show) return;
 
-                return <Checkbox
-                    label={item.name}
-                    className={item.show ? '' : 'text_color_muted'}
-                    defaultChecked={index !== -1}
-                    ref={'checkbox-' + item._id}
-                    key={'checkbox-' + item._id + '-' + item._id}/>
-            });
+                            const checked = !!_.findWhere(this.props.field.tournaments, { _id: item._id });
 
-            return (
-                <div className="s_display_inline-block s_mr_24 s_mb_24">
-                    <h5>{country}</h5>
-                    {tournamentsEl}
-                </div>);
+                            return <Checkbox
+                                label={item.name}
+                                defaultChecked={checked}
+                                ref={`checkbox-${item._id}`}
+                                key={`checkbox-${item._id}`}/>
+                        });
 
-        });
+                        return (
+                            <div className="s_display_inline-block s_mr_24 s_mb_24" key={country}>
+                                <h5>{country}</h5>
+                                {tournamentsEl}
+                            </div>);
 
-        let image = this.props.field.image;
-        if (image && image.thumb) {
-            image = image.thumb.src;
+                    }))}
+                </div>
+            )
+
+            let image = this.props.field.image;
+            if (image && image.thumb) {
+                image = image.thumb.src;
+            }
+
+            content = (
+                <div style={styles.root} key={this.props.leagueId} ref="form">
+                    <TextField
+                        style={styles.input.full}
+                        defaultValue={this.props.field.title}
+                        floatingLabelText="Название"
+                        disabled={true}
+                        ref="title"/>
+
+                    <TextField
+                        style={styles.input.full}
+                        defaultValue={this.props.field.address}
+                        floatingLabelText="Адрес"
+                        disabled={true}
+                        ref="address"/>
+
+                    <TextField
+                        style={styles.input.half.left}
+                        defaultValue={this.props.field.metro ? this.props.field.metro.name : ''}
+                        floatingLabelText="Станция метро"
+                        hintText="Название станции метро"
+                        disabled={!this.props.field._id}
+                        ref="metro_name"/>
+
+                    <TextField
+                        style={styles.input.half.right}
+                        defaultValue={this.props.field.metro ? this.props.field.metro.color : ''}
+                        hintText="red"
+                        floatingLabelText="Цвет ветки(на английском)"
+                        disabled={!this.props.field._id}
+                        ref="metro_color"/>
+
+                    <MediumEditor
+                        hintText="Как добраться"
+                        floatingLabelText="Информация о пути"
+                        defaultValue={this.props.field.howto}
+                        errorText={this.state.validation.howto ? 'Поле не может быть пустым' : null}
+                        ref="howto"/>
+
+                    <TextField
+                        style={styles.input.half.left}
+                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[0] : ''}
+                        floatingLabelText="Lat"
+                        hintText="56,4554"
+                        type="number"
+                        disabled={!this.props.field._id}
+                        errorText={this.state.validation.lat ? 'Поле не может быть пустым' : null}
+                        ref="lat"/>
+
+                    <TextField
+                        style={styles.input.half.right}
+                        defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[1] : ''}
+                        hintText="56,4554"
+                        floatingLabelText="Long"
+                        type="number"
+                        disabled={!this.props.field._id}
+                        errorText={this.state.validation.long ? 'Поле не может быть пустым' : null}
+                        ref="long"/>
+
+                    <div className="s_mt_24">
+                        {tournamentsBlock}
+                    </div>
+
+                    <ImageUpload
+                        label="Выберите изображение поля"
+                        image={image}
+                        width="250px"
+                        height="250px"
+                        pos={{ x: '50%', y: '50%' }}
+                        errorText={this.state.validation.image ? 'Загрузите изображение для контакта' : null}
+                        key={this.props._id + '-image-upload'}
+                        ref="image"/>
+
+                    <Toggle
+                        style={styles.toggle}
+                        name="show"
+                        value="show"
+                        ref="show"
+                        labelPosition="right"
+                        defaultToggled={this.props.field.show}
+                        label="Показывать"/>
+
+                    <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
+                    <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSubmit}/>
+                </div>
         }
 
-        content = (
-            <div style={styles.root} key={this.props.leagueId} ref="form">
-                <TextField
-                    style={styles.input.full}
-                    defaultValue={this.props.field.title}
-                    floatingLabelText="Название"
-                    disabled={true}
-                    ref="title"/>
-
-                <TextField
-                    style={styles.input.full}
-                    defaultValue={this.props.field.address}
-                    floatingLabelText="Адрес"
-                    disabled={true}
-                    ref="address"/>
-
-                <TextField
-                    style={styles.input.half.left}
-                    defaultValue={this.props.field.metro ? this.props.field.metro.name : ''}
-                    floatingLabelText="Станция метро"
-                    hintText="Название станции метро"
-                    disabled={!this.props.field._id}
-                    ref="metro_name"/>
-
-                <TextField
-                    style={styles.input.half.right}
-                    defaultValue={this.props.field.metro ? this.props.field.metro.color : ''}
-                    hintText="red"
-                    floatingLabelText="Цвет ветки(на английском)"
-                    disabled={!this.props.field._id}
-                    ref="metro_color"/>
-
-                <MediumEditor
-                    hintText="Как добраться"
-                    floatingLabelText="Информация о пути"
-                    defaultValue={this.props.field.howto}
-                    errorText={this.state.validation.howto ? 'Поле не может быть пустым' : null}
-                    ref="howto"/>
-
-                <TextField
-                    style={styles.input.half.left}
-                    defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[0] : ''}
-                    floatingLabelText="Lat"
-                    hintText="56,4554"
-                    type="number"
-                    disabled={!this.props.field._id}
-                    errorText={this.state.validation['geo[0]'] ? 'Поле не может быть пустым' : null}
-                    ref="lat"/>
-
-                <TextField
-                    style={styles.input.half.right}
-                    defaultValue={_.isArray(this.props.field.geo) ? this.props.field.geo[1] : ''}
-                    hintText="56,4554"
-                    floatingLabelText="Long"
-                    type="number"
-                    disabled={!this.props.field._id}
-                    errorText={this.state.validation['geo[1]'] ? 'Поле не может быть пустым' : null}
-                    ref="long"/>
-
-                <div className="s_mt_24">
-                    {tournamentsBlock}
-                </div>
-
-                <ImageUpload
-                    label="Выберите изображение поля"
-                    image={image}
-                    width="250px"
-                    height="250px"
-                    pos={{x: '50%', y: '50%'}}
-                    errorText={this.state.validation.image ? 'Загрузите изображение для контакта' : null}
-                    key={this.props._id + '-image-upload'}
-                    ref="image"/>
-
-                <Toggle
-                    style={styles.toggle}
-                    name="show"
-                    value="show"
-                    ref="show"
-                    labelPosition="right"
-                    defaultToggled={this.props.field.show}
-                    label="Показывать"/>
-
-                <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
-                <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSave}/>
-            </div>
-        )
-
-        return <div>{content}</div>;
+        return (
+            <TransitionGroup transitionName="form" component="div"
+                             transitionAppear={true}
+                             transitionEnter={false}
+                             transitionLeave={false}
+                             transitionAppearTimeout={500}>
+                {content}
+            </TransitionGroup>
+        );
     }
 
     getStyles() {

@@ -434,29 +434,18 @@ input:-webkit-autofill {
   font-size:      14px;
 }
 
-.form-appear,
-.form-enter {
-  overflow:   hidden;
-  max-height: 0;
-
-  transition: max-height .4s ease-in;
-}
-
-.form-appear.form-appear-active,
-.form-enter.form-enter-active {
-  max-height: 1000px;
-}
-
-.form-leave {
-  overflow:   hidden;
-  max-height: 1000px;
-
-  transition: max-height .1s ease-in;
-}
-
-.form-leave.form-leave-active {
-  max-height: 0;
-}
+//.form-appear {
+//  overflow:   hidden;
+//  max-height: 0;
+//  opacity:    .1;
+//
+//  transition: max-height 1s, opacity 1s;
+//}
+//
+//.form-appear.form-appear-active {
+//  max-height: 1000px;
+//  opacity:    1;
+//}
 
 @keyframes loader-before {
   0% {
@@ -490,16 +479,20 @@ input:-webkit-autofill {
 }
 
 .progress {
-  display:          none;
   position:         absolute;
-  bottom:           0;
+  top:              0;
   left:             0;
   height:           4px;
   width:            100%;
   background-image: linear-gradient(to right, rgba(255, 255, 255, .7), rgba(255, 255, 255, .7)), linear-gradient(to right, #3F51B5, #3F51B5);
+  transform:        translateY(-4px);
+  transition:       transform .5s;
 
   &.progress_active_yes {
-    display: block;
+    transform:  translateY(0);
+
+    transition: transform .2s;
+
   }
 
   &:after, &:before {

@@ -14,8 +14,9 @@ class CountryForm extends Component {
 
     static propTypes = {
         leagueId: PropTypes.string.isRequired,
-        country:  PropTypes.object,
-        onSubmit: PropTypes.func
+        onCancel: PropTypes.func.isRequired,
+        onSubmit: PropTypes.func.isRequired,
+        country:  PropTypes.object
     };
 
     static defaultProps = {
@@ -47,10 +48,6 @@ class CountryForm extends Component {
     _onSubmit() {
         this.setState({validation: {}});
 
-        if (!this.props.onSubmit) {
-            return;
-        }
-
         let country = {
             name:     this.refs.name.getValue(),
             slug:     this.refs.slug.getValue(),
@@ -70,9 +67,7 @@ class CountryForm extends Component {
     _onCancel() {
         this.setState({validation: {}});
 
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
+        this.props.onCancel();
     }
 
     render() {

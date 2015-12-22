@@ -11,6 +11,7 @@ import FieldForm from '../fields/FieldForm.jsx';
 import FieldsList from '../fields/FieldsList.jsx';
 
 import FieldsActions from '../../actions/FieldsActions';
+import TournamentsActions from '../../actions/TournamentsActions';
 
 class FieldsApp extends Component {
 
@@ -20,6 +21,7 @@ class FieldsApp extends Component {
     };
 
     state = {
+        activeTab:     0,
         selectedField: {},
         addMode:       true
     };
@@ -34,11 +36,20 @@ class FieldsApp extends Component {
         this._onTabChange = this._onTabChange.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.dispatch(FieldsActions.fetch());
+        this.props.dispatch(TournamentsActions.fetch());
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return !nextProps.fetchesCount;
     }
 
     _onTabChange(tab) {
+        if (tab.props.tabIndex == this.state.activeTab) {
+            return;
+        }
+
         this.setState({
             activeTab:     tab.props.tabIndex,
             selectedField: {},
@@ -48,14 +59,13 @@ class FieldsApp extends Component {
 
     _onEdit(e) {
         this.setState({
-            selectedField: this.state.fields.filter(field => field._id == e.currentTarget.dataset.id).pop(),
+            selectedField: this.props.fields.toJS().filter(field => field._id == e.currentTarget.dataset.id).pop(),
             addMode:       false
         });
     }
 
     _onSort(field) {
-        this.props.dispatch(FieldsActions.save(field))
-            .then(() => this.props.dispatch(FieldsActions.fetch()));
+        this.props.dispatch(FieldsActions.save(field));
     }
 
     _onSubmit(field) {
@@ -76,8 +86,32 @@ class FieldsApp extends Component {
     render() {
         return (
             <Tabs>
-                {this.props.leagues.items.map(league => {
-                    const fieldsItems = this.props.fields.items.filter(item => item.leagueId == league._id);
+                {this.props.leagues.toJS().map((league, index) => {
+                    const fieldsItems = this.props.fields.toJS().filter(item => item.leagueId == league._id);
+
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        const field = this.state.selectedField;
+                        const key   = `${field._id ? field._id : _.uniqueId()}-form`;
+
+                        tabContent = (
+                            <div>
+                                <FieldForm
+                                    field={this.state.selectedField}
+                                    leagueId={league._id}
+                                    tournaments={this.props.tournaments.toJS()}
+                                    onSubmit={this._onSubmit}
+                                    onCancel={this._onCancel}
+                                    key={key}/>
+
+                                <FieldsList
+                                    fields={fieldsItems}
+                                    onSort={this._onSort}
+                                    onEdit={this._onEdit}
+                                    onDelete={this._onDelete}/>
+                            </div>
+                        )
+                    }
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -99,13 +133,8 @@ class FieldsApp extends Component {
                     }
 
                     return (
-                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
-                            <FieldsList
-                                fields={fieldsItems}
-                                onSort={this._onSort}
-                                onEdit={this._onEdit}
-                                onDelete={this._onDelete}
-                            />
+                        <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
+                            {tabContent}
                         </Tab>
                     );
                 })}
@@ -116,8 +145,9 @@ class FieldsApp extends Component {
 
 function mapState(state) {
     return {
-        leagues: state.get('leagues').toJS(),
-        fields:  state.get('fields').toJS()
+        leagues:     state.getIn(['leagues', 'items']),
+        tournaments: state.getIn(['tournaments', 'items']),
+        fields:      state.getIn(['fields', 'items'])
     }
 }
 

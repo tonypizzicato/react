@@ -90,7 +90,7 @@ class AppLeftNav extends Component {
                 paddingTop: Spacing.desktopKeylineIncrement + Spacing.desktopGutterLess
             },
             item:    {
-                root: {
+                root:     {
                     fontSize:    13,
                     paddingLeft: Spacing.desktopGutter
                 },
@@ -109,6 +109,6 @@ class AppLeftNav extends Component {
 
 export default connect(state => {
     return {
-        q: state.get('router').location.query.q
+        q: state.get('router').toJS().location.query.q
     }
-}, { pushState })(AppLeftNav)
+}, {pushState})(AppLeftNav)

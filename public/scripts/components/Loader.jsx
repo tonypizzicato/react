@@ -2,9 +2,10 @@ import cx from 'classnames';
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import CSSCore from 'fbjs/lib/CSSCore';
+import { connect } from 'react-redux';
 
-const TICK_ENTER = 14;
-const TICK_LEAVE = 157;
+const TICK_ENTER = 3;
+const TICK_LEAVE = 857;
 
 class Loader extends Component {
     static propTypes = {
@@ -43,4 +44,10 @@ class Loader extends Component {
     }
 }
 
-export default Loader;
+function mapState(state) {
+    return {
+        active: !!state.get('fetchesCount')
+    }
+}
+
+export default connect(mapState)(Loader);

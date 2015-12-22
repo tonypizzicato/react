@@ -48,12 +48,14 @@ class FieldsList extends Component {
     }
 
     render() {
+        if (!this.props.fields.length) return <div/>;
+
         const styles     = this.getStyles();
         const itemHeight = 76;
 
         return (
             <List style={styles.root}>
-                <Sortable itemHeight={itemHeight} onSort={this._onSort} delay={600}>
+                <Sortable itemHeight={itemHeight} onSort={this._onSort} delay={3000}>
                     {this.props.fields.map((item, i) => {
                         const divider = i != this.props.fields.length - 1 ? <Divider inset={true} style={styles.divider}/> : undefined;
 

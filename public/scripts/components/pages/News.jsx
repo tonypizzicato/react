@@ -39,10 +39,14 @@ class NewsApp extends React.Component {
         this._onTabChange = this._onTabChange.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.dispatch(CategoriesActions.fetch());
         this.props.dispatch(CountriesActions.fetch());
         this.props.dispatch(NewsActions.fetch());
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return !nextProps.fetchesCount;
     }
 
     _onTabChange(tab) {
@@ -62,7 +66,7 @@ class NewsApp extends React.Component {
 
     _onEdit(id) {
         this.setState({
-            selectedArticle: this.props.news.items.filter(function (article) {
+            selectedArticle: this.props.news.toJS().filter(function (article) {
                 return article._id == id;
             }).pop(),
             addMode:         false
@@ -89,9 +93,9 @@ class NewsApp extends React.Component {
     render() {
         return (
             <Tabs>
-                {this.props.leagues.items.map((league, index) => {
-                    const newsItems = this.props.news.items.filter(article => article.leagueId == league._id);
-                    const countries = this.props.countries.items.filter(country => country.leagueId == league._id);
+                {this.props.leagues.toJS().map((league, index) => {
+                    const newsItems = this.props.news.toJS().filter(article => article.leagueId == league._id);
+                    const countries = this.props.countries.toJS().filter(country => country.leagueId == league._id);
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -103,7 +107,7 @@ class NewsApp extends React.Component {
                                 <NewsForm
                                     article={article}
                                     leagueId={league._id}
-                                    categories={this.props.categories.items}
+                                    categories={this.props.categories.toJS()}
                                     countries={countries}
                                     onSubmit={this._onSubmit}
                                     onCancel={this._onCancel}
@@ -117,6 +121,7 @@ class NewsApp extends React.Component {
                             </div>
                         )
                     }
+
                     return (
                         <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
                             {tabContent}
@@ -130,10 +135,11 @@ class NewsApp extends React.Component {
 
 function mapState(state) {
     return {
-        leagues:    state.get('leagues').toJS(),
-        categories: state.get('categories').toJS(),
-        countries:  state.get('countries').toJS(),
-        news:       state.get('news').toJS()
+        leagues:      state.getIn(['leagues', 'items']),
+        categories:   state.getIn(['categories', 'items']),
+        countries:    state.getIn(['countries', 'items']),
+        news:         state.getIn(['news', 'items']),
+        fetchesCount: state.get('fetchesCount')
     }
 };
 

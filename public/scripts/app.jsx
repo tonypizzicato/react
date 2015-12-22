@@ -28,11 +28,11 @@ injectTapEventPlugin();
 window.Perf = Perf;
 
 const store = compose(
-    applyMiddleware(thunkMiddleware, fetchMiddleware, createLogger()),
+    applyMiddleware(thunkMiddleware, fetchMiddleware),
     reduxReactRouter({
         routes,
         createHistory,
-        routerStateSelector: state => state.get('router')
+        routerStateSelector: state => state.get('router').toJS()
     })
 )(createStore)(reducer);
 

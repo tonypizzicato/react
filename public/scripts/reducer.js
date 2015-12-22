@@ -80,7 +80,7 @@ const INITIAL_STATE = Map({
  * @returns {Object} nextState
  */
 export default (state = INITIAL_STATE, action) => {
-    return Map({
+    return state.merge({
         router: routerStateReducer(state.get('router'), action),
 
         leagues: handleActions({

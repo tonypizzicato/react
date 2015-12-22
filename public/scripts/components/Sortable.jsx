@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import React from 'react';
-import { Motion } from 'react-motion';
+import React, { Component, PropTypes } from 'react';
+import { Motion, spring } from 'react-motion';
 
 const reinsert = (arr, from, to) => {
     const _arr = arr.slice(0);
@@ -16,17 +16,17 @@ const clamp = (i, min, max) => {
 
 const springConfig = [300, 50];
 
-class Sortable extends React.Component {
+class Sortable extends Component {
 
     static propTypes = {
-        itemHeight: React.PropTypes.number,
-        onSort:     React.PropTypes.func,
-        delay:      React.PropTypes.number
+        itemHeight: PropTypes.number,
+        onSort:     PropTypes.func,
+        delay:      PropTypes.number
     };
 
     static defaultProps = {
         itemHeight: 100,
-        delay:      400
+        delay:      1000
     };
 
     state = {
@@ -42,11 +42,17 @@ class Sortable extends React.Component {
     constructor(props) {
         super(props);
 
+        this._onSort = _.debounce(props.onSort, props.delay);
+
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleTouchMove  = this.handleTouchMove.bind(this);
         this.handleMouseDown  = this.handleMouseDown.bind(this);
         this.handleMouseMove  = this.handleMouseMove.bind(this);
         this.handleMouseUp    = this.handleMouseUp.bind(this);
+    }
+
+    componentWillUnmount() {
+        this._onSort.cancel();
     }
 
     handleTouchStart(key, pressLocation, e) {
@@ -95,56 +101,59 @@ class Sortable extends React.Component {
         this.setState({ isPressed: false, delta: 0 });
 
         if (this.props.onSort) {
-            _.delay(() => this.props.onSort(this.state.order), this.props.delay);
+            this._onSort(this.state.order);
         }
     }
 
     render() {
-        const { mouse, isPressed, lastPressed, order } = this.state;
+        const {mouse, isPressed, lastPressed, order} = this.state;
+
         return (
             <div style={this.getStyles().root}>
                 {this.props.children.map((child, i) => {
                     let style;
                     if (lastPressed === i && isPressed) {
                         style = {
-                            scale:  { val: 1.021, config: springConfig },
-                            shadow: { val: 2, config: springConfig },
-                            bg:     { val: .8, config: springConfig },
-                            y:      { val: mouse, config: [] }
+
+                            scale:  spring(1.021, springConfig),
+                            shadow: spring(2, springConfig),
+                            bg:     spring(.8, springConfig),
+                            y:      mouse
                         };
                     } else {
                         style = {
-                            scale:  { val: 1, config: springConfig },
-                            shadow: { val: 0, config: springConfig },
-                            bg:     { val: 0, config: springConfig },
-                            y:      { val: order.indexOf(i) * this.props.itemHeight, config: springConfig }
+                            scale:  spring(1, springConfig),
+                            shadow: spring(0, springConfig),
+                            bg:     spring(0, springConfig),
+                            y:      spring(order.indexOf(i) * this.props.itemHeight, springConfig)
                         };
                     }
 
                     return (
-                        <Motion style={style}>
-                            {({ scale, shadow, bg, y }) =>
+
+                        <Motion style={style} key={i}>
+                            {({scale, shadow, bg, y}) =>
                                 <div
                                     key={i}
                                     ref={`sort-item-${i}`}
-                                    onMouseDown={this.handleMouseDown.bind(null, i, y.val)}
+                                    onMouseDown={this.handleMouseDown.bind(null, i, y)}
                                     onTouchMove={this.handleTouchMove}
                                     onMouseMove={this.handleMouseMove}
                                     onMouseUp={this.handleMouseUp}
                                     onTouchEnd={this.handleMouseUp}
-                                    onTouchStart={this.handleTouchStart.bind(null, i, y.val)}
+                                    onTouchStart={this.handleTouchStart.bind(null, i, y)}
                                     style={{
-                                        position:        'absolute',
-                                        cursor:          'pointer',
-                                        height:          this.props.itemHeight,
-                                        width:           '100%',
-                                        background:      `rgba(255,255,255,${bg.val})`,
-                                        //WebkitFilter: lastPressed != i ? `blur(${items[lastPressed].shadow.val}px)` : 'none',
-                                        //filter: lastPressed != i ? `blur(${items[lastPressed].shadow.val}px)` : 'none',
-                                        boxShadow:       `rgba(0, 0, 0, 0.2) 0 -${2 * shadow.val}px ${2 * shadow.val}px -${2 * shadow.val}px`,
-                                        transform:       `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
-                                        WebkitTransform: `translate3d(0, ${y.val}px, 0) scale(${scale.val})`,
-                                        zIndex:          i === lastPressed ? 99 : i
+                                        position: 'absolute',
+                                        cursor: 'pointer',
+                                        height: this.props.itemHeight,
+                                        width: '100%',
+                                        background: `rgba(255,255,255,${bg})`,
+                                        //WebkitFilter: lastPressed != i ? `blur(${items[lastPressed].shadow}px)` : 'none',
+                                        //filter: lastPressed != i ? `blur(${items[lastPressed].shadow}px)` : 'none',
+                                        boxShadow: `rgba(0, 0, 0, 0.2) 0 -${2*shadow}px ${2*shadow}px -${2*shadow}px`,
+                                        transform: `translate3d(0, ${y}px, 0) scale(${scale})`,
+                                        WebkitTransform: `translate3d(0, ${y}px, 0) scale(${scale})`,
+                                        zIndex: i === lastPressed ? 99 : i
                                     }}>
                                     {this.props.children[i]}
                                 </div>

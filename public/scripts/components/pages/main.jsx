@@ -132,11 +132,11 @@ class MainApp extends Component {
                         showMenuIconButton={true}
                         style={styles.appBar}
                         ref="appBar">
-                        <div style={styles.login.wrapper}>
+                        <div>
                             <AccountIcon style={styles.login.icon}/>
                             {loginOrOut}
                         </div>
-                        <Loader active={fetchesCount > 0}/>
+                        <Loader/>
                     </AppBar>
 
                     <div style={styles.content} ref="content">
@@ -172,7 +172,7 @@ class MainApp extends Component {
 
     getStyles() {
         return {
-            content:  {
+            content: {
                 maxWidth:      1092,
                 minWidth:      840,
                 margin:        '0 auto',
@@ -180,13 +180,13 @@ class MainApp extends Component {
                 paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
                 paddingBottom: Spacing.desktopKeylineIncrement + Spacing.desktopGutter
             },
-            appBar:   {
+            appBar:  {
                 position:   'fixed',
                 top:        0,
                 zIndex:     1400,
                 background: 'rgba(0, 188, 212, .96)'
             },
-            footer:   {
+            footer:  {
                 backgroundColor: Colors.grey900,
                 textAlign:       'center',
                 position:        'absolute',
@@ -195,13 +195,13 @@ class MainApp extends Component {
                 height:          '5em',
                 width:           '100%'
             },
-            p:        {
+            p:       {
                 margin:   '0 auto',
                 padding:  0,
                 color:    Colors.lightWhite,
                 maxWidth: 335
             },
-            login:    {
+            login:   {
                 wrapper: {
                     lineHeight: `${Spacing.desktopKeylineIncrement}px`
                 },
@@ -215,6 +215,7 @@ class MainApp extends Component {
                 label:   {
                     position:      'relative',
                     textTransform: 'uppercase',
+                    lineHeight:    `${Spacing.desktopKeylineIncrement}px`,
                     fontSize:      Spacing.desktopGutterLess,
                     color:         '#fff'
                 }

@@ -55,7 +55,7 @@ class ImageUpload extends React.Component {
 
     _onImage() {
         this._reader = new FileReader();
-        this._reader.readAsDataURL(this.refs.upload.getDOMNode().files[0]);
+        this._reader.readAsDataURL(this.refs.upload.files[0]);
 
         this._reader.onload = function (e) {
 
