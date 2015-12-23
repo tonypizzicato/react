@@ -47,6 +47,8 @@ class LeaguesApp extends Component {
     }
 
     render() {
+        console.log('rendering Leagues');
+
         const league = this.state.selectedLeague;
         const key    = `${league._id ? league._id : _.uniqueId()}-form`;
 

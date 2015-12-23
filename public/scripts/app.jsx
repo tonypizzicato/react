@@ -1,3 +1,6 @@
+import delay from 'lodash/function/delay';
+import classList from 'dom-shims/shim/Element.classList';
+
 import React from 'react';
 import { render } from 'react-dom';
 import createHistory from 'history/lib/createBrowserHistory';
@@ -18,6 +21,8 @@ import routes from './routes.jsx';
 import LeaguesActions from './actions/LeaguesActions';
 
 import Perf from 'react-addons-perf';
+
+document.getElementById('progress').classList.add('progress_active_yes');
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release
@@ -44,4 +49,9 @@ store.dispatch(LeaguesActions.fetch()).then(() => {
         document.getElementById('app-content'),
         () => document.body.removeChild(document.getElementById('pre-react'))
     );
+
+    delay(() => document.getElementById('progress').classList.remove('progress_active_yes'), 15);
+    delay(() => document.body.removeChild(document.getElementById('progress')), 500);
+
+    console.log('fetched leagues');
 });

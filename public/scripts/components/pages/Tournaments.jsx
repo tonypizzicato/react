@@ -70,6 +70,8 @@ class TournamentApp extends React.Component {
     }
 
     render() {
+        console.log('rendering Tournaments');
+
         return (
             <Tabs>
                 {this.props.leagues.items.map((league, index) => {

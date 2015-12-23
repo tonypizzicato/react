@@ -39,10 +39,12 @@ class NewsApp extends React.Component {
         this._onTabChange = this._onTabChange.bind(this);
     }
 
-    componentWillMount() {
-        this.props.dispatch(CategoriesActions.fetch());
-        this.props.dispatch(CountriesActions.fetch());
-        this.props.dispatch(NewsActions.fetch());
+    componentDidMount() {
+        _.delay(() => {
+            this.props.dispatch(CategoriesActions.fetch());
+            this.props.dispatch(CountriesActions.fetch());
+            this.props.dispatch(NewsActions.fetch());
+        }, 100);
     }
 
     shouldComponentUpdate(nextProps) {

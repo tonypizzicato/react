@@ -81,6 +81,8 @@ class CountriesApp extends Component {
     }
 
     render() {
+        console.log('rendering Countries');
+
         return (
             <Tabs>
                 {this.props.leagues.items.map((league, index) => {

@@ -58,38 +58,43 @@ class MainApp extends Component {
     constructor(props) {
         super(props);
 
-        this._authChange  = this._authChange.bind(this);
-        this._gamesChange = this._gamesChange.bind(this);
+        //this._authChange  = this._authChange.bind(this);
+        //this._gamesChange = this._gamesChange.bind(this);
 
         this._onLeftIconButtonTouchTap = this._onLeftIconButtonTouchTap.bind(this);
         this._onNavStateChanged        = this._onNavStateChanged.bind(this);
     }
 
-    componentDidMount() {
-        AuthStore.addChangeListener(this._authChange);
-        GamesStore.addChangeListener(this._gamesChange);
-    }
-
-    componentWillUnmount() {
-        AuthStore.removeChangeListener(this._authChange);
-        GamesStore.removeChangeListener(this._gamesChange);
-    }
+    //componentDidMount() {
+    //    AuthStore.addChangeListener(this._authChange);
+    //    GamesStore.addChangeListener(this._gamesChange);
+    //}
+    //
+    //componentWillUnmount() {
+    //    AuthStore.removeChangeListener(this._authChange);
+    //    GamesStore.removeChangeListener(this._gamesChange);
+    //}
 
     componentWillReceiveProps(nextProps) {
         if (!this.props.lastServerError && nextProps.lastServerError) {
             this.refs["snack"].show();
 
-            _.defer(() => this.props.dispatch(UiActions.errorHandled()));
+            _.delay(() => this.props.dispatch(UiActions.errorHandled()), 100);
+        }
+
+        /** Delay left nav state change for animation performance */
+        if (this.props.location.pathname != nextProps.location.pathname) {
+            _.delay(() => this.setState({navOpened: false}), 100);
         }
     }
 
-    _authChange() {
-        this.setState({loggedIn: AuthStore.loggedIn()});
-    }
-
-    _gamesChange() {
-        this.setState({games: GamesStore.getAll()});
-    }
+    //_authChange() {
+    //    this.setState({loggedIn: AuthStore.loggedIn()});
+    //}
+    //
+    //_gamesChange() {
+    //    this.setState({games: GamesStore.getAll()});
+    //}
 
     _onLeftIconButtonTouchTap() {
         this.setState({navOpened: !this.state.navOpened});

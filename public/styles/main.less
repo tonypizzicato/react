@@ -30,7 +30,6 @@ body {
   margin:      0 0 100px; /* bottom = footer height */
   font-size:   13px;
   line-height: 20px;
-  overflow-y:  scroll;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -487,12 +486,11 @@ input:-webkit-autofill {
   background-image: linear-gradient(to right, rgba(255, 255, 255, .7), rgba(255, 255, 255, .7)), linear-gradient(to right, #3F51B5, #3F51B5);
   transform:        translateY(-4px);
   transition:       transform .5s;
+  z-index: 1401;
 
   &.progress_active_yes {
     transform:  translateY(0);
-
-    transition: transform .2s;
-
+    transition: transform .5s;
   }
 
   &:after, &:before {

@@ -55,15 +55,15 @@ class AppLeftNav extends Component {
 
     _onItemClick(e, route) {
         this.props.pushState(null, route);
-
-        this._changeState(false);
     }
 
     render() {
         const styles = this.getStyles();
 
         return (
-            <LeftNav open={this.state.opened} docked={false} onRequestChange={this._changeState}>
+            <LeftNav open={this.state.opened}
+                     docked={false}
+                     onRequestChange={this._changeState}>
 
                 <SelectableList style={styles.root}
                                 selectedItemStyle={styles.item.selected}

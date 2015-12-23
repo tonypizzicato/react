@@ -29,6 +29,8 @@ class ProfileApp extends Component {
     }
 
     render() {
+        console.log('rendering Profile');
+
         const styles = this.getStyles();
 
         const user = AuthStore.getUser();
