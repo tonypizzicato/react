@@ -1,23 +1,21 @@
-"use strict";
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-var React           = require('react'),
-    Router          = require('react-router'),
-    mui             = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-    Tabs            = mui.Tabs,
-    Tab             = mui.Tab,
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
 
-    EventsConstants = require('../../constants/EventsConstants'),
+import OrdersList from '../orders/OrdersList.jsx';
 
-    OrdersActions   = require('../../actions/OrdersActions'),
-    OrdersStore     = require('../../stores/OrdersStore'),
+import OrdersActions from '../../actions/OrdersActions';
 
-    OrdersList      = require('../orders/OrdersList.jsx');
-
-class OrdersApp extends React.Component {
+class OrdersApp extends Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired
+        leagues: PropTypes.object.isRequired,
+        orders:  PropTypes.object.isRequired
     };
 
     static defaultProps = {
@@ -26,33 +24,17 @@ class OrdersApp extends React.Component {
 
     state = {
         activeTab:       0,
-        orders:          [],
         selectedContact: {}
     };
 
     constructor(props) {
         super(props);
 
-        this._onChange    = this._onChange.bind(this);
         this._onTabChange = this._onTabChange.bind(this);
     }
 
     componentDidMount() {
-        OrdersStore.addChangeListener(this._onChange);
-
-        if (this.props.leagues.length > 0) {
-            OrdersActions.load();
-        }
-    }
-
-    componentWillUnmount() {
-        OrdersStore.removeChangeListener(this._onChange);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.leagues.length != nextProps.leagues.length) {
-            OrdersActions.load();
-        }
+        this.props.dispatch(OrdersActions.fetch());
     }
 
     _onTabChange(tab) {
@@ -61,21 +43,11 @@ class OrdersApp extends React.Component {
         });
     }
 
-    _onChange() {
-        this.setState({
-            order: OrdersStore.getAll()
-        });
-    }
-
-    shouldComponentUpdate() {
-        return this.props.leagues.length > 0;
-    }
-
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map((league, index) => {
-                    const ordersItems = OrdersStore.getByLeague(league._id).filter(item => item.leagueId == league._id);
+                {this.props.leagues.items.map((league, index) => {
+                    const ordersItems = this.props.orders.items.filter(item => item.leagueId == league._id);
 
                     let tabContent;
                     if (this.state.activeTab == index) {
@@ -85,7 +57,7 @@ class OrdersApp extends React.Component {
                     }
 
                     return (
-                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                        <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
                             {tabContent}
                         </Tab>
                     );
@@ -95,4 +67,11 @@ class OrdersApp extends React.Component {
     }
 }
 
-module.exports = OrdersApp;
+function mapState(state) {
+    return {
+        leagues: state.get('leagues').toJS(),
+        orders:  state.get('orders').toJS()
+    }
+};
+
+export default connect(mapState)(OrdersApp);

@@ -7,7 +7,7 @@ import OrderItem from '../orders/OrderItem.jsx';
 class OrdersList extends Component {
 
     static propTypes = {
-        orders: PropTypes.array
+        orders: PropTypes.array.isRequired
     };
 
     render() {
@@ -35,4 +35,4 @@ class OrdersList extends Component {
     }
 }
 
-module.exports = OrdersList;
+export default OrdersList;

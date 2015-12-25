@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
-import Snackbar from 'material-ui/lib/snackbar';
 
 import UsersList from '../users/UsersList.jsx';
 

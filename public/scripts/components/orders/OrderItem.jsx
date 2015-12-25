@@ -1,6 +1,5 @@
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
 import Spacing from 'material-ui/lib/styles/spacing';
 
 import Card from 'material-ui/lib/card/card';
@@ -11,7 +10,7 @@ import Avatar from 'material-ui/lib/avatar';
 class OrderItem extends Component {
 
     static propTypes = {
-        order: PropTypes.object
+        order: PropTypes.object.isRequired
     };
 
     render() {
@@ -47,4 +46,4 @@ class OrderItem extends Component {
     }
 }
 
-module.exports = OrderItem;
+export default OrderItem;

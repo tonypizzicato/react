@@ -37,6 +37,8 @@ import { CONTACTS_REMOVE, CONTACTS_REMOVE_SUCCESS, CONTACTS_REMOVE_FAILURE } fro
 
 import { USERS_FETCH, USERS_FETCH_SUCCESS, USERS_FETCH_FAILURE } from './actions/UsersActions';
 
+import { ORDERS_FETCH, ORDERS_FETCH_SUCCESS, ORDERS_FETCH_FAILURE } from './actions/OrdersActions';
+
 import { UI_ERROR_HANDLED } from './actions/UiActions';
 
 /**
@@ -80,6 +82,11 @@ const INITIAL_STATE = Map({
         items:      List()
     }),
     users:           Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    orders:          Map({
         isFetching: false,
         error:      null,
         items:      List()
@@ -140,6 +147,11 @@ export default (state = INITIAL_STATE, action) => {
             [USERS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
         }, state.get('users'))(state.get('users'), action),
 
+        orders: handleActions({
+            [ORDERS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [ORDERS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('orders'))(state.get('orders'), action),
+
         fetchesCount: handleActions({
             [LEAGUES_FETCH]: state => state + 1,
             [LEAGUES_SAVE]:  state => state + 1,
@@ -174,6 +186,8 @@ export default (state = INITIAL_STATE, action) => {
             [CONTACTS_REMOVE]: state => state + 1,
 
             [USERS_FETCH]: state => state + 1,
+
+            [ORDERS_FETCH]: state => state + 1,
 
             [LEAGUES_FETCH_SUCCESS]: state => state - 1,
             [LEAGUES_FETCH_FAILURE]: state => state - 1,
@@ -233,7 +247,10 @@ export default (state = INITIAL_STATE, action) => {
             [CONTACTS_REMOVE_FAILURE]: state => state - 1,
 
             [USERS_FETCH_SUCCESS]: state => state - 1,
-            [USERS_FETCH_FAILURE]: state => state - 1
+            [USERS_FETCH_FAILURE]: state => state - 1,
+
+            [ORDERS_FETCH_SUCCESS]: state => state - 1,
+            [ORDERS_FETCH_FAILURE]: state => state - 1
 
         }, state.get('fetchesCount'))(state.get('fetchesCount'), action),
 
@@ -271,6 +288,8 @@ export default (state = INITIAL_STATE, action) => {
             [CONTACTS_REMOVE_FAILURE]: (state, action) => action.payload,
 
             [USERS_FETCH_FAILURE]: (state, action) => action.payload,
+
+            [ORDERS_FETCH_FAILURE]: (state, action) => action.payload,
 
             [UI_ERROR_HANDLED]: (state, action) => null
         }, state.get('lastServerError'))(state.get('lastServerError'), action)
