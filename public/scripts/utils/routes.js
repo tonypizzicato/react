@@ -1,34 +1,35 @@
 "use strict";
 
-var basePath = 'http://localhost:3000';
+const basePath = 'http://localhost:3000';
 
-var routes = {
-    'auth':  {
-        'signup': {
+const routes = {
+    auth:  {
+        signup: {
             path:   '/api/admin/signup',
             method: 'POST'
         },
-        'login':  {
+        login:  {
             path:   '/api/admin/login',
             method: 'POST'
         },
-        'logout': {
+        logout: {
             path:   '/api/admin/logout',
             method: 'GET'
         }
     },
-    'users': {
-        'list': {
+    users: {
+        fetch: {
             path:   '/api/admin/users',
             method: 'GET'
         },
-        'save': {
+        save:  {
             path:   '/api/admin/users/%(_id)s',
             method: 'PUT'
         }
     }
 };
 
-
-module.exports.routes = routes;
-module.exports.basePath = basePath;
+export default {
+    routes,
+    basePath
+}

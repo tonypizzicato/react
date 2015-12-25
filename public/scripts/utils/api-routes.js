@@ -16,7 +16,7 @@ const routes = {
         }
     },
     users:      {
-        save: {
+        save:  {
             path:   '/users/%(_id)s',
             method: 'PUT'
         }
@@ -59,11 +59,11 @@ const routes = {
     },
 
     leagues: {
-        list: {
+        fetch: {
             path:   '/leagues',
             method: 'GET'
         },
-        save: {
+        save:  {
             path:   '/leagues/%(_id)s',
             method: 'PUT'
         }
@@ -176,7 +176,7 @@ const routes = {
     },
 
     contacts: {
-        list:   {
+        fetch:  {
             path:   '/contacts',
             method: 'GET'
         },
@@ -214,7 +214,7 @@ const routes = {
     },
 
     orders: {
-        list: {
+        fetch: {
             path:   '/orders',
             method: 'GET'
         }

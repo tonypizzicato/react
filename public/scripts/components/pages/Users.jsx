@@ -1,42 +1,36 @@
-"use strict";
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-const React        = require('react'),
-      mui          = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-      UsersActions = require('../../actions/UsersActions'),
-      UsersStore   = require('../../stores/UsersStore'),
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
+import Snackbar from 'material-ui/lib/snackbar';
 
-      UsersList    = require('../users/UsersList.jsx');
+import UsersList from '../users/UsersList.jsx';
 
-class UsersApp extends React.Component {
+import UsersActions from '../../actions/UsersActions';
 
-    constructor(props) {
-        super(props);
+class UsersApp extends Component {
 
-        this.state = {
-            users: []
-        };
-
-        this._onChange = this._onChange.bind(this);
+    static propTypes = {
+        users: PropTypes.object.isRequired
     }
 
     componentDidMount() {
-        UsersStore.addChangeListener(this._onChange);
-
-        UsersActions.load();
-    }
-
-    componentWillUnmount() {
-        UsersStore.removeChangeListener(this._onChange);
-    }
-
-    _onChange() {
-        this.setState({users: UsersStore.getAll()});
+        this.props.dispatch(UsersActions.fetch());
     }
 
     render() {
-        return <UsersList users={this.state.users}/>;
+        return <UsersList users={this.props.users.items}/>;
     }
 }
 
-module.exports = UsersApp;
+function mapState(state) {
+    return {
+        users: state.get('users').toJS()
+    }
+};
+
+export default connect(mapState)(UsersApp);

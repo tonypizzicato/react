@@ -91,7 +91,7 @@ class CategoriesApp extends React.Component {
     }
 }
 
-const mapState = state => {
+function mapState(state) {
     return {
         categories: state.get('categories').toJS()
     }

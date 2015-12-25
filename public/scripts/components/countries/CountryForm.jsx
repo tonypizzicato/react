@@ -16,17 +16,7 @@ class CountryForm extends Component {
         leagueId: PropTypes.string.isRequired,
         onCancel: PropTypes.func.isRequired,
         onSubmit: PropTypes.func.isRequired,
-        country:  PropTypes.object
-    };
-
-    static defaultProps = {
-        country: {
-            name:  '',
-            slug:  '',
-            vk:    '',
-            state: 'CREATED',
-            show:  false
-        }
+        country:  PropTypes.object.isRequired
     };
 
     state = {

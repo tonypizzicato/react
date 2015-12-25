@@ -14,8 +14,8 @@ function fetch() {
     return {
         [API_CALL]: {
             types:    [LEAGUES_FETCH, LEAGUES_FETCH_SUCCESS, LEAGUES_FETCH_FAILURE],
-            endpoint: API.getRoute('leagues:list').path,
-            method:   API.getRoute('leagues:list').method
+            endpoint: API.getRoute('leagues:fetch').path,
+            method:   API.getRoute('leagues:fetch').method
         }
     }
 }

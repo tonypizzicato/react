@@ -19,7 +19,8 @@ function checkStatus(response) {
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 function callApi(endpoint, method = 'get', body = {}) {
-    const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint;
+    //const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint;
+    const fullUrl = endpoint;
 
     const params = {method};
     if (['post', 'put'].indexOf(method.toLowerCase()) > -1) {

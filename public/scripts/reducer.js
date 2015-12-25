@@ -30,6 +30,13 @@ import { FIELDS_ADD, FIELDS_ADD_SUCCESS, FIELDS_ADD_FAILURE } from './actions/Fi
 import { FIELDS_SAVE, FIELDS_SAVE_SUCCESS, FIELDS_SAVE_FAILURE } from './actions/FieldsActions';
 import { FIELDS_REMOVE, FIELDS_REMOVE_SUCCESS, FIELDS_REMOVE_FAILURE } from './actions/FieldsActions';
 
+import { CONTACTS_FETCH, CONTACTS_FETCH_SUCCESS, CONTACTS_FETCH_FAILURE } from './actions/ContactsActions';
+import { CONTACTS_ADD, CONTACTS_ADD_SUCCESS, CONTACTS_ADD_FAILURE } from './actions/ContactsActions';
+import { CONTACTS_SAVE, CONTACTS_SAVE_SUCCESS, CONTACTS_SAVE_FAILURE } from './actions/ContactsActions';
+import { CONTACTS_REMOVE, CONTACTS_REMOVE_SUCCESS, CONTACTS_REMOVE_FAILURE } from './actions/ContactsActions';
+
+import { USERS_FETCH, USERS_FETCH_SUCCESS, USERS_FETCH_FAILURE } from './actions/UsersActions';
+
 import { UI_ERROR_HANDLED } from './actions/UiActions';
 
 /**
@@ -63,6 +70,16 @@ const INITIAL_STATE = Map({
         items:      List()
     }),
     fields:          Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    contacts:        Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    users:           Map({
         isFetching: false,
         error:      null,
         items:      List()
@@ -113,6 +130,16 @@ export default (state = INITIAL_STATE, action) => {
             [FIELDS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
         }, state.get('fields'))(state.get('fields'), action),
 
+        contacts: handleActions({
+            [CONTACTS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [CONTACTS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('contacts'))(state.get('contacts'), action),
+
+        users: handleActions({
+            [USERS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [USERS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('users'))(state.get('users'), action),
+
         fetchesCount: handleActions({
             [LEAGUES_FETCH]: state => state + 1,
             [LEAGUES_SAVE]:  state => state + 1,
@@ -140,6 +167,13 @@ export default (state = INITIAL_STATE, action) => {
             [FIELDS_ADD]:    state => state + 1,
             [FIELDS_SAVE]:   state => state + 1,
             [FIELDS_REMOVE]: state => state + 1,
+
+            [CONTACTS_FETCH]:  state => state + 1,
+            [CONTACTS_ADD]:    state => state + 1,
+            [CONTACTS_SAVE]:   state => state + 1,
+            [CONTACTS_REMOVE]: state => state + 1,
+
+            [USERS_FETCH]: state => state + 1,
 
             [LEAGUES_FETCH_SUCCESS]: state => state - 1,
             [LEAGUES_FETCH_FAILURE]: state => state - 1,
@@ -187,7 +221,19 @@ export default (state = INITIAL_STATE, action) => {
             [FIELDS_SAVE_SUCCESS]:   state => state - 1,
             [FIELDS_SAVE_FAILURE]:   state => state - 1,
             [FIELDS_REMOVE_SUCCESS]: state => state - 1,
-            [FIELDS_REMOVE_FAILURE]: state => state - 1
+            [FIELDS_REMOVE_FAILURE]: state => state - 1,
+
+            [CONTACTS_FETCH_SUCCESS]:  state => state - 1,
+            [CONTACTS_FETCH_FAILURE]:  state => state - 1,
+            [CONTACTS_ADD_SUCCESS]:    state => state - 1,
+            [CONTACTS_ADD_FAILURE]:    state => state - 1,
+            [CONTACTS_SAVE_SUCCESS]:   state => state - 1,
+            [CONTACTS_SAVE_FAILURE]:   state => state - 1,
+            [CONTACTS_REMOVE_SUCCESS]: state => state - 1,
+            [CONTACTS_REMOVE_FAILURE]: state => state - 1,
+
+            [USERS_FETCH_SUCCESS]: state => state - 1,
+            [USERS_FETCH_FAILURE]: state => state - 1
 
         }, state.get('fetchesCount'))(state.get('fetchesCount'), action),
 
@@ -218,6 +264,13 @@ export default (state = INITIAL_STATE, action) => {
             [FIELDS_ADD_FAILURE]:    (state, action) => action.payload,
             [FIELDS_SAVE_FAILURE]:   (state, action) => action.payload,
             [FIELDS_REMOVE_FAILURE]: (state, action) => action.payload,
+
+            [CONTACTS_FETCH_FAILURE]:  (state, action) => action.payload,
+            [CONTACTS_ADD_FAILURE]:    (state, action) => action.payload,
+            [CONTACTS_SAVE_FAILURE]:   (state, action) => action.payload,
+            [CONTACTS_REMOVE_FAILURE]: (state, action) => action.payload,
+
+            [USERS_FETCH_FAILURE]: (state, action) => action.payload,
 
             [UI_ERROR_HANDLED]: (state, action) => null
         }, state.get('lastServerError'))(state.get('lastServerError'), action)

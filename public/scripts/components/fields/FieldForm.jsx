@@ -21,14 +21,8 @@ class FieldForm extends Component {
         leagueId:    PropTypes.string.isRequired,
         onCancel:    PropTypes.func.isRequired,
         onSubmit:    PropTypes.func.isRequired,
-        tournaments: PropTypes.array,
-        field:       PropTypes.object
-    };
-
-    static defaultProps = {
-        field:       {},
-        tournaments: [],
-        leagueId:    ''
+        tournaments: PropTypes.array.isRequired,
+        field:       PropTypes.object.isRequired
     };
 
     state = {

@@ -9,29 +9,22 @@ import Avatar from 'material-ui/lib/avatar';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
-import Icon from 'material-ui/lib/font-icon';
 
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import DeleteIcon from 'material-ui/lib/svg-icons/action/delete';
-
-import Dragon from '../Dragon.jsx';
+import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
 
 class ContactItem extends Component {
-    static propTypes() {
-        return {
-            contact:  PropTypes.object,
-            onDelete: PropTypes.func.isRequired,
-            onEdit:   PropTypes.func.isRequired
-        }
-    }
+
+    static propTypes = {
+        contact:  PropTypes.object,
+        onDelete: PropTypes.func.isRequired,
+        onEdit:   PropTypes.func.isRequired
+    };
 
     render() {
         const styles = this.getStyles();
-
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.contact.show
-        });
 
         const iconButtonMenu = (
             <IconButton touch={true}>
@@ -54,35 +47,34 @@ class ContactItem extends Component {
             <Avatar size={Spacing.desktopGutter * 2}>{this.props.contact.name[0]}</Avatar>;
 
         return (
-            <Dragon key={this.props.contact._id} element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    style={styles.root}
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.contact._id}
-                    leftAvatar={avatar}
-                    primaryText={
-                        <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
+            <ListItem
+                onTouchTap={this.props.onEdit}
+                data-id={this.props.contact._id}
+                leftAvatar={avatar}
+                primaryText={
+                        <p style={styles.text}>
+                            {React.createElement(this.props.contact.show ? IconVisibility : IconVisibilityOff, {style: styles.visibilityIcon})}
                             <span>{this.props.contact.name}</span>
                         </p>
                     }
-                    secondaryText={this.props.contact.title}
-                    rightIconButton={rightIconMenu}
-                />
-            </Dragon>
+                secondaryText={React.createElement('span', {dangerouslySetInnerHTML: {__html: this.props.contact.title}})}
+                secondaryTextLines={1}
+                rightIconButton={rightIconMenu}
+            />
         );
     }
 
     getStyles() {
         return {
-            root:           {
-                margin: Spacing.desktopGutter + ' 0'
+            text:           {
+                margin: 0
             },
             visibilityIcon: {
+                position:    'relative',
                 marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.contact.show ? Colors.blueGrey900 : Colors.lightBlack
+                top:         3,
+                height:      18,
+                fill:        this.props.contact.show ? Colors.darkBlack : Colors.lightBlack
             }
         }
     }

@@ -10,40 +10,21 @@ import Checkbox from 'material-ui/lib/checkbox';
 
 import ImageUpload from '../ImageUpload.jsx';
 
-import EventsConstants from '../../constants/EventsConstants';
-
 import ContactsActions from'../../actions/ContactsActions';
-import ContactsStore from'../../stores/ContactsStore';
 import TournamentsActions from'../../actions/TournamentsActions';
 
 class ContactForm extends Component {
 
     static propTypes = {
-        contact:  PropTypes.object,
-        leagueId: PropTypes.string.isRequired
-    };
-
-    static defaultProps = {
-        contact:  {
-            name:        '',
-            title:       '',
-            phone:       '',
-            email:       '',
-            image:       '',
-            toCall:      false,
-            vk:          {
-                name: '',
-                url:  ''
-            },
-            show:        false,
-            tournaments: []
-        },
-        leagueId: ''
+        leagueId:    PropTypes.string.isRequired,
+        onCancel:    PropTypes.func.isRequired,
+        onSubmit:    PropTypes.func.isRequired,
+        tournaments: PropTypes.array.isRequired,
+        contact:     PropTypes.object,
     };
 
     state = {
-        validation:  {},
-        tournaments: []
+        validation: {}
     };
 
     constructor(props) {
@@ -52,42 +33,6 @@ class ContactForm extends Component {
         this._onSave            = this._onSave.bind(this);
         this._onCancel          = this._onCancel.bind(this);
         this._onValidationError = this._onValidationError.bind(this);
-
-        this._onTournaments = this._onTournaments.bind(this);
-    }
-
-    componentWillMount() {
-        ContactsStore.addEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-
-        TournamentsActions.load();
-    }
-
-    componentWillUnmount() {
-        ContactsStore.removeEventListener(EventsConstants.EVENT_VALIDATION, this._onValidationError);
-    }
-
-    //componentDidUpdate() {
-    //    if (!!this.props.contact.tournaments) {
-    //        this.props.contact.tournaments.forEach(item => {
-    //            !!this.refs[`checkbox-${item._id}`] && this.refs[`checkbox-${item._id}`].setChecked(true);
-    //        });
-    //    }
-    //}
-    //
-    //componentWillReceiveProps(nextProps) {
-    //    if (!nextProps.contact.hasOwnProperty('_id') && this.refs.form) {
-    //        this._clearForm();
-    //    }
-    //}
-
-    _onTournaments() {
-        const tournaments = [];// TournamentsStore.getByLeague(this.props.leagueId).filter(function (item) {
-            //return !!item.country;
-        //});
-
-        this.setState({
-            tournaments: tournaments
-        });
     }
 
     _onValidationError(validation) {
@@ -95,13 +40,12 @@ class ContactForm extends Component {
     }
 
     _onSave() {
-        let tournaments = [];
+        this.setState({validation: {}});
 
-        this.state.tournaments.forEach(item => {
-            if (this.refs[`checkbox-${item._id}`].isChecked()) {
-                tournaments.push(item._id);
-            }
-        });
+        const tournaments = this.props.tournaments
+            .filter(item => this.refs[`checkbox-${item._id}`])
+            .filter(item => this.refs[`checkbox-${item._id}`].isChecked())
+            .map(item => item._id);
 
         let contact = {
             name:        this.refs.name.getValue(),
@@ -119,70 +63,48 @@ class ContactForm extends Component {
             leagueId:    this.props.leagueId
         };
 
-        this.setState({validation: {}});
-
         if (this.props.contact._id) {
-            contact._id = this.props.contact._id;
-            ContactsActions.save(contact);
-        } else {
-            ContactsActions.add(contact);
+            Object.assign(contact, {_id: this.props.contact._id});
         }
+
+        this.props.onSubmit(contact);
     }
 
     _onCancel() {
-        this._clearForm();
-
-        if (this.props.onCancel) {
-            this.props.onCancel();
-        }
-    }
-
-    _clearForm() {
         this.setState({validation: {}});
 
-        this.refs.name.setValue('');
-        this.refs.title.setValue('');
-        this.refs.phone.setValue('');
-        this.refs.email.setValue('');
-        this.refs.vk_url.setValue('');
-        this.refs.vk_name.setValue('');
-        this.refs.show.setToggled(false);
-        this.refs.toCall.setToggled(false);
-        this.refs.image.setImage(null);
-
-        this.state.tournaments.forEach(item => {
-            this.refs['checkbox-' + item._id].setChecked(false);
-        });
+        this.props.onCancel();
     }
 
     render() {
         const styles = this.getStyles();
 
-        if (!this.props.leagueId || !this.state.tournaments.length) {
-            return (<h4>Required data is loading or not available</h4>);
-        }
+        const tournaments = _.groupBy(this.props.tournaments, item => item.country ? item.country.name : 'Остальные');
 
-        const tournaments = _.groupBy(this.state.tournaments, item => item.country ? item.country.name : 'Остальные');
+        const tournamentsBlock = (
+            <div>{
+                _.values(_.mapValues(tournaments, (tournaments, country) => {
+                    const tournamentsEl = tournaments.map(item => {
+                        if (!item.show) return;
 
-        const tournamentsBlock = _.mapValues(tournaments, (tournaments, country) => {
-            return (
-                <div className="s_display_inline-block s_mr_24 s_mb_24">
-                    <h5>{country}</h5>
-                    <div>
-                        {tournaments.map(item => {
-                            const index = this.props.contact.tournaments ? this.props.contact.tournaments.indexOf(item._id) : -1;
+                        const checked = _.indexOf(this.props.contact.tournaments, item._id) > -1;
 
-                            return <Checkbox
-                                label={item.name}
-                                className={item.show ? '' : 'text_color_muted'}
-                                defaultChecked={index !== -1}
-                                ref={'checkbox-' + item._id}
-                                key={item._id}/>
-                        })}
-                    </div>
-                </div>);
+                        return <Checkbox
+                            label={item.name}
+                            defaultChecked={checked}
+                            ref={`checkbox-${item._id}`}
+                            key={`checkbox-${item._id}`}/>
+                    });
 
-        });
+                    return (
+                        <div className="s_display_inline-block s_mr_24 s_mb_24" key={country}>
+                            <h5>{country}</h5>
+                            {tournamentsEl}
+                        </div>);
+
+                }))}
+            </div>
+        )
 
         return (
             <div style={styles.root} key={`${this.props.contact._id}-contact-form`} ref="form">

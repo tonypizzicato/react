@@ -10,32 +10,22 @@ import UserItem from '../users/UserItem.jsx';
 class UsersList extends Component {
 
     static propTypes = {
-        users: PropTypes.array
-    };
-
-    static defaultProps = {
-        users: []
+        users: PropTypes.array.isRequired
     };
 
     render() {
-        if (!this.props.users.length) {
-            return false;
-        }
-
-        const items = this.props.users.map((item, index) => {
-            const divider = index != this.props.users.length - 1 ? <Divider inset={true}/> : undefined;
-
-            return (
-                <div key={item._id}>
-                    <UserItem user={item}/>
-                    {divider}
-                </div>
-            )
-        });
-
         return (
             <List style={this.getStyles().root}>
-                {items}
+                {this.props.users.map((item, index) => {
+                    const divider = index != this.props.users.length - 1 ? <Divider inset={true}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <UserItem user={item}/>
+                            {divider}
+                        </div>
+                    )
+                })}
             </List>
         );
     }

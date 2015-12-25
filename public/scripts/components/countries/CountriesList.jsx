@@ -11,11 +11,7 @@ import CountryItem from '../countries/CountryItem.jsx';
 class CountriesList extends Component {
 
     static propTypes = {
-        countries: PropTypes.array
-    };
-
-    static defaultProps = {
-        countries: []
+        countries: PropTypes.array.isRequired
     };
 
     render() {
@@ -29,9 +25,7 @@ class CountriesList extends Component {
                             <CountryItem
                                 country={item}
                                 onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}
-                                onDrop={this._onDrop}
-                                index={i}/>
+                                onDelete={this.props.onDelete}/>
                             {divider}
                         </div>
                     );

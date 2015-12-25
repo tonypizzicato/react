@@ -1,12 +1,24 @@
-"use strict";
+import {createAction} from 'redux-actions';
 
-var AppDispatcher  = require('../dispatcher/app-dispatcher'),
-    UsersConstants = require('../constants/UsersConstants');
+import { routes, basePath } from '../utils/routes';
+import api from '../utils/api';
+import { API_CALL } from '../middleware/fetchMiddleware';
 
-module.exports = {
-    load: function () {
-        AppDispatcher.dispatch({
-            type: UsersConstants.USERS_LOAD
-        });
+const API = api.init(routes, basePath);
+
+export const USERS_FETCH         = 'USERS_FETCH';
+export const USERS_FETCH_SUCCESS = 'USERS_FETCH_SUCCESS';
+export const USERS_FETCH_FAILURE = 'USERS_FETCH_FAILURE';
+
+function fetch() {
+    return {
+        [API_CALL]: {
+            types:    [USERS_FETCH, USERS_FETCH_SUCCESS, USERS_FETCH_FAILURE],
+            endpoint: API.getRoute('users:fetch').path,
+            method:   API.getRoute('users:fetch').method
+        }
     }
+}
+export default {
+    fetch
 };

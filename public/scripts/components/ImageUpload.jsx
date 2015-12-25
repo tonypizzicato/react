@@ -1,32 +1,34 @@
-const _            = require('lodash'),
-      React        = require('react'),
-      cx           = require('classnames'),
-      mui          = require('material-ui'),
+import _ from 'lodash';
+import cx from 'classnames';
+import React, { Component, PropTypes} from 'react';
 
-      Styles       = mui.Utils.Styles,
-      Spacing      = mui.Styles.Spacing,
-      Colors       = mui.Styles.Colors,
+import Styles from 'material-ui/lib/utils/styles';
+import Colors from 'material-ui/lib/styles/colors';
+import Spacing from 'material-ui/lib/styles/spacing';
 
-      Button       = mui.FlatButton,
-      Icon         = mui.FontIcon,
-      ActionButton = mui.FloatingActionButton,
+import Button from 'material-ui/lib/flat-button';
+import ActionButton from 'material-ui/lib/floating-action-button';
+import IconButton from 'material-ui/lib/icon-button';
 
-      Image        = require('./Image.jsx');
+import CloseIcon from 'material-ui/lib/svg-icons/navigation/close';
+import PhotoIcon from 'material-ui/lib/svg-icons/image/photo';
 
-class ImageUpload extends React.Component {
+import Image from './Image.jsx';
+
+class ImageUpload extends Component {
 
     static propTypes = {
-        label:      React.PropTypes.string,
-        image:      React.PropTypes.string,
-        imageStyle: React.PropTypes.object,
-        pos:        React.PropTypes.shape({
-            x: React.PropTypes.string,
-            y: React.PropTypes.string
+        label:      PropTypes.string,
+        image:      PropTypes.string,
+        imageStyle: PropTypes.object,
+        pos:        PropTypes.shape({
+            x: PropTypes.string,
+            y: PropTypes.string
         }),
-        errorText:  React.PropTypes.string,
-        width:      React.PropTypes.string,
-        height:     React.PropTypes.string,
-        deletable:  React.PropTypes.bool
+        errorText:  PropTypes.string,
+        width:      PropTypes.string,
+        height:     PropTypes.string,
+        deletable:  PropTypes.bool
     };
 
     static defaultProps = {
@@ -112,12 +114,8 @@ class ImageUpload extends React.Component {
                 ref="preview"/> : '';
 
         let deleteButton;
-        if (this.props.deletable) {
-            deleteButton = <ActionButton
-                style={styles.buttonClose}
-                backgroundColor={'rgba(255, 64, 129, .5)'}
-                iconClassName="mdfi_navigation_close"
-                onClick={this._onDelete}/>
+        if (this.state.image && this.props.deletable) {
+            deleteButton = <ActionButton style={styles.buttonClose} onClick={this._onDelete}><CloseIcon color={Colors.white}/></ActionButton>
         }
         return (
             <div style={styles.root}>
@@ -125,8 +123,8 @@ class ImageUpload extends React.Component {
                 {deleteButton}
 
                 <div style={styles.button.root}>
-                    <Button secondary={true} label={this.props.label} style={styles.button.button}>
-                        <Icon style={styles.button.icon} className="mdfi_image_photo"/>
+                    <Button secondary={true} label={this.props.label} labelPosition="after" style={styles.button.button}>
+                        <PhotoIcon style={styles.button.icon}/>
                         <input type="file" ref="upload" style={styles.button.input} onChange={this._onImage}/>
                     </Button>
                     {error}
@@ -166,7 +164,9 @@ class ImageUpload extends React.Component {
                     width: '100%'
                 },
                 icon:   {
-                    top: 6
+                    position: 'relative',
+                    top:      6,
+                    fill:     Colors.cyan500
                 },
                 input:  {
                     position: 'absolute',
