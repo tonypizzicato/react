@@ -36,9 +36,11 @@ class ProfileApp extends Component {
         const user = AuthStore.getUser();
 
         return (
-            <Paper style={styles.root}>
-                <ProfileForm leagues={this.props.leagues.items} user={user}/>
-            </Paper>
+            <div>
+                <Paper style={styles.root}>
+                    <ProfileForm leagues={this.props.leagues.items} user={user}/>
+                </Paper>
+            </div>
         );
     }
 

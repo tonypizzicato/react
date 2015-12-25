@@ -62,7 +62,6 @@ class AppLeftNav extends Component {
 
         return (
             <LeftNav open={this.state.opened}
-                     docked={false}
                      onRequestChange={this._changeState}>
 
                 <SelectableList style={styles.root}

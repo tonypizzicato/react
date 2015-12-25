@@ -16,17 +16,15 @@ class Loader extends Component {
         active: false
     };
 
-    shouldComponentUpdate() {
-        return false;
-    }
-
     componentWillReceiveProps(nextProps) {
         if (this.props.active != nextProps.active) {
             var node = ReactDOM.findDOMNode(this);
 
             if (nextProps.active) {
+                console.log('active');
                 setTimeout(() => CSSCore.addClass(node, 'progress_active_yes'), TICK_ENTER);
             } else {
+                console.log('not active');
                 setTimeout(() => CSSCore.removeClass(node, 'progress_active_yes'), TICK_LEAVE);
             }
 

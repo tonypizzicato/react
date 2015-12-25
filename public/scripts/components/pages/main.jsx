@@ -4,6 +4,8 @@ import $ from 'jquery';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import TransitionGroup from 'react-addons-css-transition-group';
+
 import Link from 'react-router/lib/Link';
 
 import Colors from 'material-ui/lib/styles/colors';
@@ -108,7 +110,8 @@ class MainApp extends Component {
         let content;
 
         if (this.state.loggedIn) {
-            content = this.props.children;
+            content = React.createElement('div', {key: this.props.location.pathname, style: this.getStyles().transitioned},
+                this.props.children);
         } else {
             content = <Auth.Auth />
         }
@@ -144,9 +147,16 @@ class MainApp extends Component {
                         <Loader/>
                     </AppBar>
 
-                    <div style={styles.content} ref="content">
+                    <TransitionGroup style={styles.content}
+                                     ref="content"
+                                     component="div"
+                                     transitionName="page-transition"
+                                     transitionAppear={true}
+                                     transitionAppearTimeout={1300}
+                                     transitionEnterTimeout={1300}
+                                     transitionLeaveTimeout={1300}>
                         {this._getContentComponent()}
-                    </div>
+                    </TransitionGroup>
 
                     <LeftNav opened={this.state.navOpened}
                              menuItems={menuItems}
@@ -154,11 +164,6 @@ class MainApp extends Component {
                              location={location}
                              history={history}/>
 
-                    <FullWidth style={styles.footer} ref="footer">
-                        <p style={styles.p}>
-                            Hand crafted with love by tony.pizzicato.
-                        </p>
-                    </FullWidth>
                     <Snackbar message="Ууупс! Ошибка на сервере. Сорян." autoHideDuration={2000} ref="snack"/>
                 </Canvas>
             </div>
@@ -177,21 +182,30 @@ class MainApp extends Component {
 
     getStyles() {
         return {
-            content: {
-                maxWidth:      1092,
-                minWidth:      840,
-                margin:        '0 auto',
-                padding:       Spacing.desktopGutter,
-                paddingTop:    Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
-                paddingBottom: Spacing.desktopKeylineIncrement + Spacing.desktopGutter
+            content:      {
+                position:       'relative',
+                height:         '100%',
+                width:          '100%',
+                maxWidth:       1092,
+                minWidth:       840,
+                marginLeft:     266,
+                perspective:    1200,
+                transformStyle: 'preserve-3d',
+                paddingTop:     Spacing.desktopKeylineIncrement + Spacing.desktopGutter,
+                paddingBottom:  Spacing.desktopKeylineIncrement + Spacing.desktopGutter
             },
-            appBar:  {
+            transitioned: {
+                overflow:           'hidden',
+                backfaceVisibility: 'hidden',
+                transform:          'translate3d(0, 0, 0)'
+            },
+            appBar:       {
                 position:   'fixed',
                 top:        0,
                 zIndex:     1400,
                 background: 'rgba(0, 188, 212, .96)'
             },
-            footer:  {
+            footer:       {
                 backgroundColor: Colors.grey900,
                 textAlign:       'center',
                 position:        'absolute',
@@ -200,13 +214,13 @@ class MainApp extends Component {
                 height:          '5em',
                 width:           '100%'
             },
-            p:       {
+            p:            {
                 margin:   '0 auto',
                 padding:  0,
                 color:    Colors.lightWhite,
                 maxWidth: 335
             },
-            login:   {
+            login:        {
                 wrapper: {
                     lineHeight: `${Spacing.desktopKeylineIncrement}px`
                 },
