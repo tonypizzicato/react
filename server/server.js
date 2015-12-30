@@ -2,6 +2,7 @@
 
 var express           = require('express'),
     session           = require('express-session'),
+    compress          = require('compression'),
     path              = require('path'),
     fs                = require('fs'),
     bodyParser        = require('body-parser'),
@@ -26,6 +27,9 @@ var app = express();
 // connect to Mongo when the app initializes
 mongoose.connect('mongodb://localhost/admin_amateur');
 
+
+app.use(compress());
+
 app.set('port', port);
 app.use(cookieParser());
 
@@ -34,7 +38,6 @@ app.use(bodyParser.urlencoded({extended: false, limit: '10mb'}));
 
 // parse application/json
 app.use(bodyParser.json({limit: '10mb'}));
-
 app.use(session({
     secret:            'test secret',
     name:              'asid',
@@ -61,7 +64,7 @@ var clientDir, viewsDir;
  */
 if (app.get('env') === 'development') {
     clientDir = '/public';
-    viewsDir = '/views';
+    viewsDir  = '/views';
 
     app.use(favicon(__dirname + '/../public/favicon.ico'));
     app.use(express.static(path.join(__dirname, '../.tmp')));
@@ -74,7 +77,7 @@ if (app.get('env') === 'development') {
  */
 if (app.get('env') === 'production') {
     clientDir = '/../dist';
-    viewsDir = '/../dist/views';
+    viewsDir  = '/../dist/views';
     app.use(express.static(path.join(__dirname, '../dist')));
 }
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import fuzzy from 'fuzzy';
 import React, { Component, PropTypes} from 'react';
 
 import Colors from 'material-ui/lib/styles/colors';
@@ -9,6 +10,7 @@ import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 
 import { Typeahead } from 'react-typeahead';
 
+import AutoComplete from '../AutoComplete.jsx';
 import DropDownMenu from '../DropDownMenu.jsx';
 import ImageUpload from '../ImageUpload.jsx';
 import VideoUpload from '../VideoUpload.jsx';
@@ -25,83 +27,51 @@ class GamesToolbar extends Component {
 
     static propTypes = {
         leagueId:     PropTypes.string.isRequired,
-        games:        PropTypes.string.isRequired,
+        countries:    PropTypes.array.isRequired,
+        games:        PropTypes.array.isRequired,
         onGameSelect: PropTypes.func
     };
 
-    static defaultProps = {
-        games: []
-    };
-
     state = {
-        mounted:         false,
-        gamesLoading:    false,
-        hasTournament:   false,
-        countries:       [],
-        tournaments:     [],
-        games:           [],
-        countryIndex:    0,
-        tournamentIndex: 0,
-        game:            {}
+        hasTournament:    false,
+        countries:        [],
+        tournaments:      [],
+        games:            [],
+        countryIndex:     0,
+        tournamentIndex:  0,
+        game:             {},
+        gamesSuggestions: []
     };
 
     constructor(props) {
         super(props);
 
-        this._onCountriesLoad    = this._onCountriesLoad.bind(this);
-        this._onGamesLoad        = this._onGamesLoad.bind(this);
         this._onCountrySelect    = this._onCountrySelect.bind(this);
         this._onGameSelect       = this._onGameSelect.bind(this);
         this._onTournamentSelect = this._onTournamentSelect.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({mounted: true});
-
-        //CountriesStore.addChangeListener(this._onCountriesLoad);
-        GamesStore.addChangeListener(this._onGamesLoad);
-
-        if (!this.state.gamesLoading) {
-            CountriesActions.load();
-            this.setState({gamesLoading: true});
+    componentWillReceiveProps(nextProps) {
+        if (!nextProps.countries.length) {
+            return;
         }
-    }
 
-    componentWillUnmount() {
-        this.setState({mounted: false});
+        const countries = nextProps.countries
+            .map(item => ({text: item.name, _id: item._id, tournaments: item.tournaments}));
 
-        //CountriesStore.removeChangeListener(this._onCountriesLoad);
-        GamesStore.removeChangeListener(this._onGamesLoad);
-    }
-
-    _onCountriesLoad() {
-        //const countries = CountriesStore.getByLeague(this.props.leagueId).map(item => {
-        //    return {text: item.name, _id: item._id, tournaments: item.tournaments};
-        //});
-
-        this.setState({countries: countries, gamesLoading: false});
+        this.setState({countries: countries});
 
         const countryIndex = 0;
 
         if (countries.length && !!countries[countryIndex]) {
-            const state = this._updatedCountryState(countryIndex);
-
-            this.setState(state);
-        }
-    }
-
-    _onGamesLoad() {
-        const countryIndex = 0;
-
-        if (this.state.countries.length && !!this.state.countries[countryIndex]) {
-            const state = this._updatedCountryState(countryIndex);
+            const state = this._updatedCountryState(countries, countryIndex);
 
             this.setState(state);
         }
     }
 
     _onCountrySelect(e, index) {
-        const state = this._updatedCountryState(index);
+        const state = this._updatedCountryState(this.state.countries, index);
 
         this.setState(state);
     }
@@ -110,8 +80,8 @@ class GamesToolbar extends Component {
         this.setState(this._updatedTournamentState(this.state.tournaments[index], index));
     }
 
-    _updatedCountryState(index) {
-        let country     = this.state.countries[index],
+    _updatedCountryState(countries, index) {
+        let country     = countries[index],
             tournaments = country.tournaments;
 
         tournaments = tournaments.filter(t => t.show).map(function (item) {
@@ -135,42 +105,42 @@ class GamesToolbar extends Component {
     }
 
     _updatedTournamentState(tournament, index) {
-        const games = GamesStore.getByTournament(this.props.leagueId, tournament._id)
-            .filter(function (item) {
-                return item.teams.length == 2 && item.teams[0] && item.teams[1];
-            })
-            .map(function (item) {
+        const games = this.props.games
+            .filter(item => item.tournamentId == tournament._id)
+            .filter(item => item.teams.length == 2 && item.teams[0] && item.teams[1])
+            .map(item => {
                 let text = `${item.teams[0].name} - ${item.teams[1].name} (${item.tourText})`;
+                let score;
+
                 if (item.score) {
-                    text += ` ${item.score.ft[0]}:${item.score.ft[1]}`;
+                    score = `${item.score.ft[0]}:${item.score.ft[1]}`;
                 }
-                item.display = text;
-                item.filter  = `${item.teams[0].name} ${item.teams[1].name} (${item.tourText})`;
+                item.text  = text;
+                item.value = (<AutoComplete.Item primaryText={text} secondaryText={score}/>);
 
                 return item;
             });
         return {
-            tournamentIndex: index,
-            hasTournament:   true,
-            games:           games
+            tournamentIndex:  index,
+            hasTournament:    true,
+            gamesSuggestions: games
         };
     }
 
     _onGameSelect(gameString) {
         const tournament = this.state.tournaments[this.state.tournamentIndex];
-        const game       = GamesStore.getByTournament(this.props.leagueId, tournament._id)[this.state.games.indexOf(gameString)];
+        const game       = GamesStore.getByTournament(this.props.leagueId, tournament._id)[this.state.gamesSuggestions.indexOf(gameString)];
 
         if (this.props.onGameSelect) {
             this.props.onGameSelect(game);
         }
     }
 
-    shouldComponentUpdate() {
-        return !this.state.gamesLoading;
-    }
-
     render() {
         const styles = this.getStyles();
+
+        const countriesOptions = this.props.countries
+            .map(item => ({text: item.name, _id: item._id, tournaments: item.tournaments}));
 
         const countriesMenu =
                   <DropDownMenu
@@ -180,7 +150,7 @@ class GamesToolbar extends Component {
                       noItemStyle={styles.dropdownCountries.noItemStyle}
                       singleItemStyle={styles.dropdownCountries.singleItemStyle}
                       iconStyle={styles.dropdownCountries.icon}
-                      menuItems={this.state.countries}
+                      menuItems={countriesOptions}
                       selectedIndex={this.state.countryIndex}
                       noDataText="Нет стран"
                       onChange={this._onCountrySelect}/>;
@@ -198,26 +168,21 @@ class GamesToolbar extends Component {
                       noDataText="Нет турниров"
                       selectedIndex={this.state.tournamentIndex}/>;
 
-        const gamesInput = this.state.hasTournament && this.state.games.length ?
-            <Typeahead
-                options={this.state.games}
-                placeholder="Введите название команд"
-                onOptionSelected={this._onGameSelect}
-                filterOption="filter"
-                displayOption="display"
-                customClasses={{
-                    input:    'typeahead__input',
-                    results:  'typeahead__results'
-                }}
+        const gamesInput = this.state.hasTournament && this.state.gamesSuggestions.length ?
+            <AutoComplete
+                suggestions={this.state.gamesSuggestions}
+                secondaryField={game => `${game.score.ft[0]}:${game.score.ft[1]}`}
+                style={styles.autoComplete.input}
                 key={`${this.props.leagueId}-${this.state.tournaments[this.state.tournamentIndex]._id}`}/> :
-            <span style={styles.typeahead.holder}>Загружается список команд...</span>;
+
+            <span style={styles.autoComplete.holder}>Загружается список команд...</span>;
 
         return (
             <Toolbar style={styles.root} key={`${this.props.leagueId}-toolbar`}>
                 <ToolbarGroup style={styles.toolbarGroup}>
                     {countriesMenu}
                     {tournamentsMenu}
-                    <div style={styles.typeahead.container}>
+                    <div style={styles.autoComplete.container}>
                         {gamesInput}
                     </div>
 
@@ -285,11 +250,14 @@ class GamesToolbar extends Component {
                     color: Colors.lightBlack
                 }
             },
-            typeahead:           {
+            autoComplete:        {
                 container: {
                     width:  '36%',
-                    height: 56,
+                    height: Spacing.desktopToolbarHeight,
                     float:  'left'
+                },
+                input:     {
+                    lineHeight: `${Spacing.desktopToolbarHeight}px`
                 },
                 holder:    {
                     height:     Spacing.desktopToolbarHeight,

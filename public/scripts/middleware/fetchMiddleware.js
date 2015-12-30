@@ -20,7 +20,7 @@ function checkStatus(response) {
 // This makes every API response have the same shape, regardless of how nested it was.
 function callApi(endpoint, method = 'get', body = {}) {
     //const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint;
-    const fullUrl = endpoint;
+    let fullUrl = endpoint;
 
     const params = {method};
     if (['post', 'put'].indexOf(method.toLowerCase()) > -1) {
@@ -28,6 +28,12 @@ function callApi(endpoint, method = 'get', body = {}) {
         params.headers = {
             'Accept':       'application/json',
             'Content-Type': 'application/json'
+        }
+    } else {
+        if (Object.keys(body).length) {
+            const params = Object.keys(body).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(body[key])).join('&');
+
+            fullUrl = `${fullUrl}?${params}`;
         }
     }
 

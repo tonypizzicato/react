@@ -1,23 +1,40 @@
-const React  = require('react'),
-      mui    = require('material-ui'),
+import React, { Component } from 'react';
 
-      Dialog = mui.Dialog;
+import Dialog from 'material-ui/lib/dialog';
+import FlatButton from 'material-ui/lib/flat-button';
 
 class HelpPhoto extends React.Component {
 
-    show() {
-        this.refs.dialog.show();
+    state = {
+        open: false
+    };
+
+    open = () => {
+        this.setState({open: true});
+    }
+
+    close = () => {
+        this.setState({open: false});
     }
 
     render() {
         const styles = this.getStyles();
-        
+
         const actions = [
-            {text: 'Ну, OK'}
+            <FlatButton
+                label="Ну, ок"
+                secondary={true}
+                onTouchTap={this.close}/>,
         ];
 
         return (
-            <Dialog contentStyle={styles.root} title="Оформление анонсов и обзоров" autoDetectWindowHeight={true} autoScrollBodyContent={true} actions={actions} ref="dialog">
+            <Dialog contentStyle={styles.root}
+                    title="Оформление анонсов и обзоров"
+                    actions={actions}
+                    open={this.state.open}
+                    autoDetectWindowHeight={true}
+                    autoScrollBodyContent={true}
+                    onRequestClose={this.close}>
                 <p>
                     Для оформления обзора или анонса необходимо ввести текст в соотвествующее поле, а так же добавить ссылки на видео, если они есть.<br />
                     <strong>Важно.</strong> Для того чтобы обзор/анонс стали доступны на сайте необходимо включить переключатель "Показывать".

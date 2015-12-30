@@ -1,30 +1,49 @@
-const React  = require('react'),
-      mui    = require('material-ui'),
+import React, { Component } from 'react';
 
-      Dialog = mui.Dialog;
+import Dialog from 'material-ui/lib/dialog';
+import FlatButton from 'material-ui/lib/flat-button';
 
-class HelpPhoto extends React.Component {
+class HelpPhoto extends Component {
 
-    show() {
-        this.refs.dialog.show();
+    state = {
+        open: false
+    };
+
+    open = () => {
+        this.setState({open: true});
+    }
+
+    close = () => {
+        this.setState({open: false});
     }
 
     render() {
         const styles = this.getStyles();
 
         const actions = [
-            {text: 'Ну, OK'}
+            <FlatButton
+                label="Ну, ок"
+                secondary={true}
+                onTouchTap={this.close}/>,
         ];
 
         return (
-            <Dialog contentStyle={styles.root} title="Загрузка фотоотчета" actions={actions} autoDetectWindowHeight={true} autoScrollBodyContent={true} ref="dialog">
+            <Dialog contentStyle={styles.root}
+                    title="Загрузка фотоотчета"
+                    actions={actions}
+                    open={this.state.open}
+                    autoDetectWindowHeight={true}
+                    autoScrollBodyContent={true}
+                    onRequestClose={this.close}>
                 <p>
-                    <strong>Внимание!</strong> Процесс загрузки фотографий изменился и стал надежнее. Прошу ознакомиться с данной инструкцией.<br />
+                    <strong>Внимание!</strong> Процесс загрузки фотографий изменился и стал надежнее. Прошу ознакомиться с данной
+                    инструкцией.<br />
                     Все фото, которые были загружены с проблемами будут удалены.
                 </p>
 
                 <p>
-                    Для начала загрузки фото необходимо выбрать фотографии для загрузки. Для этого вы можете нажать на область загрузки и в появившемся окне
+                    Для начала загрузки фото необходимо выбрать фотографии для загрузки. Для этого вы можете нажать на область загрузки и в
+                    появившемся окне
                     выбрать неободимые файлы, либо перетащить выбранные фотографии из файлового структуры системы.
                     <img style={styles.image} className="s_mt_12" src="/images/help/photos/1.png"/>
                 </p>
@@ -37,12 +56,14 @@ class HelpPhoto extends React.Component {
                 <p>
                     Для начала загрузки файлов на сервер необзодимо нажать круглую кнопку. После этого начнется загрузка.<br />
                     Файлы загружаются на сервер по 10(значение может меняться) штук.<br />
-                    <strong>Важно.</strong> После загрузги на сервер, фото загружается на flickr, поэтому процесс загрузки занимает некторое время
+                    <strong>Важно.</strong> После загрузги на сервер, фото загружается на flickr, поэтому процесс загрузки занимает некторое
+                    время
                     и обозначается наличием элемента процесса загрузки.
                     <img style={styles.image} className="s_mt_12" src="/images/help/photos/3.png"/>
                     Результат загрузки отображается в окне загрузки появлением специальных иконок.
                     В случае возникновения ошибки появляется иконка крестика.
-                    В этом случае необходимо попробовать повторить загрузку фото, которые не удалось загрузить либо сообщить о проблеме администратору.
+                    В этом случае необходимо попробовать повторить загрузку фото, которые не удалось загрузить либо сообщить о проблеме
+                    администратору.
                     Успешно загруженные фото отображаются под окном загрузки.
                     <img style={styles.image} className="s_mt_12" src="/images/help/photos/4.png"/>
                     После успешной загрузки фото можно сортировать путем перетаскивания фото в поле загруженных файлов,

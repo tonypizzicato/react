@@ -1,13 +1,25 @@
-"use strict";
+import {createAction} from 'redux-actions';
 
-var AppDispatcher  = require('../dispatcher/app-dispatcher'),
-    GamesConstants = require('../constants/GamesConstants');
+import { routes, basePath } from '../utils/api-routes';
+import api from '../utils/api';
+import { API_CALL } from '../middleware/fetchMiddleware';
 
-module.exports = {
-    load: function (data) {
-        AppDispatcher.dispatch({
-            type: GamesConstants.GAMES_LOAD,
-            data: data
-        });
+const API = api.init(routes, basePath);
+
+export const GAMES_FETCH         = 'GAMES_FETCH';
+export const GAMES_FETCH_SUCCESS = 'GAMES_FETCH_SUCCESS';
+export const GAMES_FETCH_FAILURE = 'GAMES_FETCH_FAILURE';
+
+function fetch(data) {
+    return {
+        payload:    data,
+        [API_CALL]: {
+            types:    [GAMES_FETCH, GAMES_FETCH_SUCCESS, GAMES_FETCH_FAILURE],
+            endpoint: API.getRoute('games:fetch').path,
+            method:   API.getRoute('games:fetch').method
+        }
     }
+}
+export default {
+    fetch
 };

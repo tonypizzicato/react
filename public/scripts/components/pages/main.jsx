@@ -195,7 +195,6 @@ class MainApp extends Component {
                 paddingBottom:  Spacing.desktopKeylineIncrement + Spacing.desktopGutter
             },
             transitioned: {
-                overflow:           'hidden',
                 backfaceVisibility: 'hidden',
                 transform:          'translate3d(0, 0, 0)'
             },

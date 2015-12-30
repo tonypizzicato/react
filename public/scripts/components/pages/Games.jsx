@@ -1,23 +1,28 @@
-const _        = require('lodash'),
-      React    = require('react'),
-      mui      = require('material-ui'),
+import _ from 'lodash';
+import scrollTop from '../../utils/scrollTop';
 
-      Tabs     = mui.Tabs,
-      Tab      = mui.Tab,
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-      GamesTab = require('../games/GamesTab.jsx');
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
+
+import GamesTab from '../games/GamesTab.jsx';
+
+import CountriesActions from'../../actions/CountriesActions';
+import TournamentsActions from'../../actions/TournamentsActions';
+import GamesActions from'../../actions/GamesActions';
+import GameArticlesActions from'../../actions/GameArticlesActions';
 
 
-class GamesApp extends React.Component {
-
-    static defaultProps = {
-        leagues: [],
-        games:   []
-    };
+class GamesApp extends Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.isRequired,
-        games:   React.PropTypes.array.isRequired
+        leagues:     PropTypes.object.isRequired,
+        countries:   PropTypes.object.isRequired,
+        tournaments: PropTypes.object.isRequired,
+        games:       PropTypes.object.isRequired,
+        articles:    PropTypes.object.isRequired
     };
 
     state = {
@@ -34,23 +39,45 @@ class GamesApp extends React.Component {
         this.setState({activeTab: tab.props.tabIndex});
     }
 
+    componentDidMount() {
+        /** load countries, tournaments and articles async and then load games by leagues */
+        Promise.all([
+            this.props.dispatch(CountriesActions.fetch()),
+            this.props.dispatch(TournamentsActions.fetch()),
+            this.props.dispatch(GameArticlesActions.fetch())
+        ]).then(() => {
+            this.props.leagues.items.forEach(item => {
+                this.props.dispatch(GamesActions.fetch({leagueId: item._id}))
+            });
+        });
+    }
+
+    shouldComponentUpdate(nextProps) {
+        console.log(nextProps.loaded);
+
+        return nextProps.loaded;
+    }
+
     render() {
         return (
             <Tabs className="s_mb_24">
-                {this.props.leagues.map((league, index) => {
+                {this.props.leagues.items.map((league, index) => {
 
                     let tabContent;
                     if (this.state.activeTab == index) {
                         tabContent = (
                             <GamesTab
                                 leagueId={league._id}
-                                games={this.props.games}
+                                countries={this.props.countries.items.filter(item => item.leagueId == league._id)}
+                                tournaments={this.props.tournaments.items.filter(item => item.leagueId == league._id)}
+                                games={this.props.games.items}
+                                articles={this.props.articles.items}
                                 key={`${league._id}-tab-content`}/>
                         )
                     }
 
                     return (
-                        <Tab label={league.name} onActive={this._onTabChange} key={league._id + '-tab'}>
+                        <Tab label={league.name} onActive={this._onTabChange} key={league._id}>
                             {tabContent}
                         </Tab>
                     );
@@ -60,4 +87,15 @@ class GamesApp extends React.Component {
     }
 }
 
-module.exports = GamesApp;
+function mapState(state) {
+    return {
+        loaded:      state.get('fetchesCount') == 0,
+        leagues:     state.get('leagues').toJS(),
+        countries:   state.get('countries').toJS(),
+        tournaments: state.get('tournaments').toJS(),
+        games:       state.get('games').toJS(),
+        articles:    state.get('gameArticles').toJS()
+    }
+};
+
+export default connect(mapState)(GamesApp);

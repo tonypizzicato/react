@@ -1,6 +1,8 @@
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
+import Colors from 'material-ui/lib/styles/colors';
+
+import Divider from 'material-ui/lib/divider';
 
 import OrderItem from '../orders/OrderItem.jsx';
 
@@ -15,10 +17,19 @@ class OrdersList extends Component {
             return false;
         }
 
+        const styles = this.getStyles();
+
         return (
-            <div style={this.getStyles().root}>
-                {this.props.orders.map(item => {
-                    return <OrderItem order={item} key={item._id}/>;
+            <div style={styles.root}>
+                {this.props.orders.map((item, i) => {
+                    const divider = i != this.props.orders.length - 1 ? <Divider inset={true} style={styles.divider}/> : undefined;
+
+                    return (
+                        <div key={item._id}>
+                            <OrderItem order={item} key={item._id}/>
+                            {divider}
+                        </div>
+                    )
                 })}
             </div>
         );
@@ -26,10 +37,15 @@ class OrdersList extends Component {
 
     getStyles() {
         return {
-            root: {
-                marginTop:     Spacing.desktopGutter,
+            root:    {
                 paddingTop:    0,
-                paddingBottom: 0
+                paddingBottom: 0,
+                border:        'solid 1px ' + Colors.faintBlack,
+                position:      'relative',
+                overflow:      'hidden'
+            },
+            divider: {
+                marginLeft: 0
             }
         }
     }

@@ -22,7 +22,7 @@ class OrderItem extends Component {
                     avatar={<Avatar>{this.props.order.name[0]}</Avatar>}
                     showExpandableButton={true}>
                 </CardHeader>
-                <CardText expandable={true} initiallyExpanded={false}>
+                <CardText expandable={true} initiallyExpanded={false} key={this.props.order._id}>
                     <span>Дата добавления: {this.props.order.dc}</span><br />
                     <span>Имя: {this.props.order.name}</span><br />
                     <span>Email: {this.props.order.email}</span><br />
@@ -40,7 +40,13 @@ class OrderItem extends Component {
     getStyles() {
         return {
             root: {
-                marginBottom: Spacing.desktopGutterLess
+                boxSizing:    'border-box',
+                margin:       Spacing.desktopGutter + ' 0',
+                userSelect:   'none',
+                height:       '100%',
+                border:       'none',
+                boxShadow:    'none',
+                borderRadius: 0
             }
         }
     }

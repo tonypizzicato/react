@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 import Colors from 'material-ui/lib/styles/colors';
 import Spacing from 'material-ui/lib/styles/spacing';
@@ -21,7 +22,6 @@ import EventsConstants from '../../constants/EventsConstants';
 import AuthStore from'../../stores/AuthStore';
 
 import GameArticlesActions from'../../actions/GameArticlesActions';
-import GameArticlesStore from'../../stores/GameArticlesStore';
 import PhotosActions from'../../actions/PhotosActions';
 import PhotosStore from'../../stores/PhotosStore';
 
@@ -29,21 +29,17 @@ class GamesTab extends Component {
 
     static propTypes = {
         leagueId:    PropTypes.string.isRequired,
-        countries:   PropTypes.array,
-        onTabChange: PropTypes.func
-    };
-
-    static defaultProps = {
-        countries: []
+        countries:   PropTypes.array.isRequired,
+        tournaments: PropTypes.array.isRequired,
+        games:       PropTypes.array.isRequired,
+        articles:    PropTypes.array.isRequired,
+        photos:      PropTypes.object.isRequired
     };
 
     state = {
         activeTab:  0,
-        country:    {},
         tournament: {},
         game:       {},
-        articles:   [],
-        photos:     [],
         article:    {}
     };
 
@@ -51,36 +47,14 @@ class GamesTab extends Component {
         super(props);
 
         this._onArticleCancel = this._onArticleCancel.bind(this);
-        this._articleChange   = this._articleChange.bind(this);
-        this._photosChange    = this._photosChange.bind(this);
         this._onGameSelect    = this._onGameSelect.bind(this);
         this._onTabChange     = this._onTabChange.bind(this);
         this._onPhotosUpload  = this._onPhotosUpload.bind(this);
     }
 
-    componentDidMount() {
-        PhotosStore.addChangeListener(this._photosChange);
-        GameArticlesStore.addChangeListener(this._articleChange);
-
-        GameArticlesActions.load();
-    }
-
-    componentWillUnmount() {
-        PhotosStore.removeChangeListener(this._photosChange);
-        GameArticlesStore.removeChangeListener(this._articleChange);
-    }
-
-    _articleChange() {
-        this.setState({articles: GameArticlesStore.getAll()});
-    }
-
-    _photosChange() {
-        this.setState({photos: PhotosStore.getAll()});
-    }
-
     _onGameSelect(game) {
         this.setState({game: game});
-        PhotosActions.load('games', game._id);
+        this.props.dispatch(PhotosActions.fetch('games', game._id));
     }
 
     _onArticleCancel() {
@@ -99,7 +73,7 @@ class GamesTab extends Component {
     _onPhotosUpload() {
         if (!!this.state.game._id) {
             _.delay(function () {
-                PhotosActions.load('games', this.state.game._id);
+                this.props.dispatch(PhotosActions.fetch('games', this.state.game._id));
             }.bind(this), 300);
         }
     }
@@ -131,7 +105,12 @@ class GamesTab extends Component {
 
         return (
             <div className="s_mt_12">
-                <Toolbar leagueId={this.props.leagueId} games={this.props.games} onGameSelect={this._onGameSelect}/>
+                <Toolbar leagueId={this.props.leagueId}
+                         countries={this.props.countries}
+                         tournaments={this.props.tournaments}
+                         games={this.props.games}
+                         onGameSelect={this._onGameSelect}/>
+
                 {tabsContent}
                 <HelpPhotoDialog ref="dialogPhoto"/>
                 <HelpReviewDialog ref="dialogReview"/>
@@ -144,11 +123,11 @@ class GamesTab extends Component {
             return;
         }
 
-        const preview = GameArticlesStore.get(this.state.game._id, 'preview');
+        const preview = _.findWhere(this.props.articles, {gameId: this.state.game._id, type: 'preview'});
 
         return (
             <div>
-                <HelpButton dialog={this.refs.dialogReview}/>
+                <HelpButton onTouchTap={() => this.refs.dialogReview.open()}/>
                 <GameArticleForm
                     type="preview"
                     leagueId={this.props.leagueId}
@@ -165,11 +144,11 @@ class GamesTab extends Component {
             return;
         }
 
-        const review = GameArticlesStore.get(this.state.game._id, 'review');
+        const review = _.findWhere(this.props.articles, {gameId: this.state.game._id, type: 'review'});
 
         return (
             <div>
-                <HelpButton dialog={this.refs.dialogReview}/>
+                <HelpButton onTouchTap={() => this.refs.dialogReview.open()}/>
                 <GameArticleForm
                     type="review"
                     leagueId={this.props.leagueId}
@@ -191,7 +170,7 @@ class GamesTab extends Component {
 
         return (
             <div>
-                <HelpButton dialog={this.refs.dialogPhoto}/>
+                <HelpButton onTouchTap={() => this.refs.dialogPhoto.open()}/>
                 <Dropzone
                     url={imagesUrl}
                     onChunkUpload={this._onPhotosUpload}
@@ -199,7 +178,7 @@ class GamesTab extends Component {
                 <Photos
                     className="s_display_inline-block s_mt_12 s_mr_6 s_position_relative"
                     size="150"
-                    photos={this.state.photos}
+                    photos={this.props.photos.items}
                     game={this.state.game}
                     key={this.state.game._id + '-photos'}/>
             </div>
@@ -215,4 +194,10 @@ class GamesTab extends Component {
     }
 }
 
-module.exports = GamesTab;
+function mapState(state) {
+    return {
+        photos: state.get('photos').toJS()
+    }
+};
+
+export default connect(mapState)(GamesTab);

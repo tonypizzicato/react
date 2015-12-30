@@ -20,6 +20,17 @@ import { TOURNAMENTS_FETCH, TOURNAMENTS_FETCH_SUCCESS, TOURNAMENTS_FETCH_FAILURE
 import { TOURNAMENTS_ADD, TOURNAMENTS_ADD_SUCCESS, TOURNAMENTS_ADD_FAILURE } from './actions/TournamentsActions';
 import { TOURNAMENTS_SAVE, TOURNAMENTS_SAVE_SUCCESS, TOURNAMENTS_SAVE_FAILURE } from './actions/TournamentsActions';
 
+import { GAMES_FETCH, GAMES_FETCH_SUCCESS, GAMES_FETCH_FAILURE } from './actions/GamesActions';
+
+import { GAME_ARTICLES_FETCH, GAME_ARTICLES_FETCH_SUCCESS, GAME_ARTICLES_FETCH_FAILURE } from './actions/GameArticlesActions';
+import { GAME_ARTICLES_ADD, GAME_ARTICLES_ADD_SUCCESS, GAME_ARTICLES_ADD_FAILURE } from './actions/GameArticlesActions';
+import { GAME_ARTICLES_SAVE, GAME_ARTICLES_SAVE_SUCCESS, GAME_ARTICLES_SAVE_FAILURE } from './actions/GameArticlesActions';
+import { GAME_ARTICLES_REMOVE, GAME_ARTICLES_REMOVE_SUCCESS, GAME_ARTICLES_REMOVE_FAILURE } from './actions/GameArticlesActions';
+
+import { PHOTOS_FETCH, PHOTOS_FETCH_SUCCESS, PHOTOS_FETCH_FAILURE } from './actions/PhotosActions';
+import { PHOTOS_SAVE, PHOTOS_SAVE_SUCCESS, PHOTOS_SAVE_FAILURE } from './actions/PhotosActions';
+import { PHOTOS_REMOVE, PHOTOS_REMOVE_SUCCESS, PHOTOS_REMOVE_FAILURE } from './actions/PhotosActions';
+
 import { NEWS_FETCH, NEWS_FETCH_SUCCESS, NEWS_FETCH_FAILURE } from './actions/NewsActions';
 import { NEWS_ADD, NEWS_ADD_SUCCESS, NEWS_ADD_FAILURE } from './actions/NewsActions';
 import { NEWS_SAVE, NEWS_SAVE_SUCCESS, NEWS_SAVE_FAILURE } from './actions/NewsActions';
@@ -57,6 +68,21 @@ const INITIAL_STATE = Map({
         items:      List()
     }),
     tournaments:     Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    games:           Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    gameArticles:    Map({
+        isFetching: false,
+        error:      null,
+        items:      List()
+    }),
+    photos:          Map({
         isFetching: false,
         error:      null,
         items:      List()
@@ -127,6 +153,21 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
         }, state.get('tournaments'))(state.get('tournaments'), action),
 
+        games: handleActions({
+            [GAMES_FETCH]:         (state, action) => state.set('isFetching', true),
+            [GAMES_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('games'))(state.get('games'), action),
+
+        gameArticles: handleActions({
+            [GAME_ARTICLES_FETCH]:         (state, action) => state.set('isFetching', true),
+            [GAME_ARTICLES_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('gameArticles'))(state.get('gameArticles'), action),
+
+        photos: handleActions({
+            [PHOTOS_FETCH]:         (state, action) => state.set('isFetching', true),
+            [PHOTOS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
+        }, state.get('photos'))(state.get('photos'), action),
+
         news: handleActions({
             [NEWS_FETCH]:         (state, action) => state.set('isFetching', true),
             [NEWS_FETCH_SUCCESS]: (state, action) => state.merge({'isFetching': false, items: action.payload})
@@ -169,6 +210,17 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH]: state => state + 1,
             [TOURNAMENTS_ADD]:   state => state + 1,
             [TOURNAMENTS_SAVE]:  state => state + 1,
+
+            [GAMES_FETCH]: state => state + 1,
+
+            [GAME_ARTICLES_FETCH]:  state => state + 1,
+            [GAME_ARTICLES_ADD]:    state => state + 1,
+            [GAME_ARTICLES_SAVE]:   state => state + 1,
+            [GAME_ARTICLES_REMOVE]: state => state + 1,
+
+            [PHOTOS_FETCH]:  state => state + 1,
+            [PHOTOS_SAVE]:   state => state + 1,
+            [PHOTOS_REMOVE]: state => state + 1,
 
             [NEWS_FETCH]:  state => state + 1,
             [NEWS_ADD]:    state => state + 1,
@@ -218,6 +270,25 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_ADD_FAILURE]:   state => state - 1,
             [TOURNAMENTS_SAVE_SUCCESS]:  state => state - 1,
             [TOURNAMENTS_SAVE_FAILURE]:  state => state - 1,
+
+            [GAMES_FETCH_SUCCESS]: state => state - 1,
+            [GAMES_FETCH_FAILURE]: state => state - 1,
+
+            [GAME_ARTICLES_FETCH_SUCCESS]:  state => state - 1,
+            [GAME_ARTICLES_FETCH_FAILURE]:  state => state - 1,
+            [GAME_ARTICLES_ADD_SUCCESS]:    state => state - 1,
+            [GAME_ARTICLES_ADD_FAILURE]:    state => state - 1,
+            [GAME_ARTICLES_SAVE_SUCCESS]:   state => state - 1,
+            [GAME_ARTICLES_SAVE_FAILURE]:   state => state - 1,
+            [GAME_ARTICLES_REMOVE_SUCCESS]: state => state - 1,
+            [GAME_ARTICLES_REMOVE_FAILURE]: state => state - 1,
+
+            [PHOTOS_FETCH_SUCCESS]:  state => state - 1,
+            [PHOTOS_FETCH_FAILURE]:  state => state - 1,
+            [PHOTOS_SAVE_SUCCESS]:   state => state - 1,
+            [PHOTOS_SAVE_FAILURE]:   state => state - 1,
+            [PHOTOS_REMOVE_SUCCESS]: state => state - 1,
+            [PHOTOS_REMOVE_FAILURE]: state => state - 1,
 
             [NEWS_FETCH_SUCCESS]:  state => state - 1,
             [NEWS_FETCH_FAILURE]:  state => state - 1,
@@ -271,6 +342,17 @@ export default (state = INITIAL_STATE, action) => {
             [TOURNAMENTS_FETCH_FAILURE]: (state, action) => action.payload,
             [TOURNAMENTS_ADD_FAILURE]:   (state, action) => action.payload,
             [TOURNAMENTS_SAVE_FAILURE]:  (state, action) => action.payload,
+
+            [GAMES_FETCH_FAILURE]: (state, action) => action.payload,
+
+            [GAME_ARTICLES_FETCH_FAILURE]:  (state, action) => action.payload,
+            [GAME_ARTICLES_ADD_FAILURE]:    (state, action) => action.payload,
+            [GAME_ARTICLES_SAVE_FAILURE]:   (state, action) => action.payload,
+            [GAME_ARTICLES_REMOVE_FAILURE]: (state, action) => action.payload,
+
+            [PHOTOS_FETCH_FAILURE]:  (state, action) => action.payload,
+            [PHOTOS_SAVE_FAILURE]:   (state, action) => action.payload,
+            [PHOTOS_REMOVE_FAILURE]: (state, action) => action.payload,
 
             [NEWS_FETCH_FAILURE]:  (state, action) => action.payload,
             [NEWS_ADD_FAILURE]:    (state, action) => action.payload,

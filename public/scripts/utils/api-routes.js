@@ -16,7 +16,7 @@ const routes = {
         }
     },
     users:      {
-        save:  {
+        save: {
             path:   '/users/%(_id)s',
             method: 'PUT'
         }
@@ -104,12 +104,8 @@ const routes = {
     },
 
     games: {
-        list: {
+        fetch: {
             path:   '/games',
-            method: 'GET'
-        },
-        item: {
-            path:   '/games/%(_id)s',
             method: 'GET'
         }
     },
@@ -137,8 +133,8 @@ const routes = {
         }
     },
 
-    'game-articles': {
-        list:   {
+    gameArticles: {
+        fetch:   {
             path:   '/game-articles',
             method: 'GET'
         },
@@ -156,8 +152,8 @@ const routes = {
         }
     },
 
-    images: {
-        list:   {
+    photos: {
+        fetch:   {
             path:   '/%(type)s/%(postId)s/images/',
             method: 'GET'
         },
