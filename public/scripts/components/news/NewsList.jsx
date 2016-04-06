@@ -15,7 +15,7 @@ class NewsList extends React.Component {
 
     static propTypes = {
         news:   React.PropTypes.array,
-        onEdit: React.PropTypes.func.required
+        onEdit: React.PropTypes.func.isRequired
     };
 
     static defaultProps = {

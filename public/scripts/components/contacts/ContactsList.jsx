@@ -14,8 +14,8 @@ const React           = require('react'),
 class ContactsList extends React.Component {
     static propTypes = {
         contacts: React.PropTypes.array,
-        onEdit:   React.PropTypes.func.required,
-        onDelete: React.PropTypes.func.required
+        onEdit:   React.PropTypes.func.isRequired,
+        onDelete: React.PropTypes.func.isRequired
     };
 
     static getDefaultProps = {

@@ -20,9 +20,9 @@ class TournamentItem extends React.Component {
             slug:    React.PropTypes.string,
             country: React.PropTypes.object,
             state:   React.PropTypes.string
-        }).required,
-        onEdit:     React.PropTypes.func.required,
-        onDrop:     React.PropTypes.func.required
+        }).isRequired,
+        onEdit:     React.PropTypes.func.isRequired,
+        onDrop:     React.PropTypes.func.isRequired
     };
 
     static defaultProps = {

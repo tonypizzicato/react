@@ -16,7 +16,7 @@ class PhotosList extends React.Component {
     static propTypes = {
         size:      React.PropTypes.number,
         photos:    React.PropTypes.array,
-        type:      React.PropTypes.string.required,
+        type:      React.PropTypes.string.isRequired,
         className: React.PropTypes.string,
         game:      React.PropTypes.object
     };
@@ -100,8 +100,8 @@ class PhotoItem extends React.Component {
 
     static propTypes = {
         size:         React.PropTypes.number,
-        image:        React.PropTypes.object.required,
-        index:        React.PropTypes.number.required,
+        image:        React.PropTypes.object.isRequired,
+        index:        React.PropTypes.number.isRequired,
         onDrop:       React.PropTypes.string,
         className:    React.PropTypes.string,
         onDelete:     React.PropTypes.func,

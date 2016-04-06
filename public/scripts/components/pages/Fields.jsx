@@ -13,7 +13,7 @@ const React         = require('react'),
 class FieldsApp extends React.Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.required
+        leagues: React.PropTypes.array.isRequired
     };
 
     state = {
@@ -91,6 +91,7 @@ class FieldsApp extends React.Component {
                             leagueId={league._id}
                             onCancel={this._onCancel}
                             key={`field-form-${league._id}`}/>
+
                         <FieldsList
                             fields={fieldsItems}
                             onDelete={this._onDelete}

@@ -131,12 +131,14 @@ AppDispatcher.register(function (action) {
             var field = action.data;
 
             if (Store._validate(field)) {
-                api.call('fields:save', field, true).then(function () {
-                    var changed = _.findWhere(_fields, {_id: field._id});
+                _.defer(() => {
+                    api.call('fields:save', field, true).then(function () {
+                        var changed = _.findWhere(_fields, {_id: field._id});
 
-                    assign(changed, field);
-                    Store.emitChange();
-                });
+                        assign(changed, field);
+                        Store.emitChange();
+                    });
+                })
             } else {
                 Store.emitEvent(EventsConstants.EVENT_VALIDATION, Store._getValidationError());
             }

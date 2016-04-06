@@ -9,15 +9,12 @@ let _img;
 class Image extends React.Component {
 
     static propTypes = {
-        src:            React.PropTypes.string.required,
+        src:            React.PropTypes.string.isRequired,
         transition:     React.PropTypes.string,
         aspectRatio:    React.PropTypes.number,
-        width:          React.PropTypes.number.required,
-        height:         React.PropTypes.number.required,
-        pos:            React.PropTypes.shape({
-            x: React.PropTypes.string,
-            y: React.PropTypes.string
-        }),
+        width:          React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+        height:         React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
+        pos:            React.PropTypes.shape({x: React.PropTypes.string, y: React.PropTypes.string}),
         style:          React.PropTypes.object,
         containerStyle: React.PropTypes.object
     };

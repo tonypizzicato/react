@@ -13,7 +13,7 @@ const _           = require('lodash'),
 class ProfileApp extends React.Component {
 
     static propTypes = {
-        leagues: React.PropTypes.array.required
+        leagues: React.PropTypes.array.isRequired
     };
 
     constructor(props) {

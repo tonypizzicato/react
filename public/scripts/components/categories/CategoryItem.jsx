@@ -18,8 +18,8 @@ const React        = require('react'),
 class CategoryItem extends React.Component {
     static propTypes = {
         category: React.PropTypes.object,
-        onDelete: React.PropTypes.func.required,
-        onEdit:   React.PropTypes.func.required
+        onDelete: React.PropTypes.func.isRequired,
+        onEdit:   React.PropTypes.func.isRequired
     };
 
     render() {

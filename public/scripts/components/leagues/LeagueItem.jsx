@@ -17,10 +17,10 @@ class LeagueItem extends React.Component {
         league: React.PropTypes.shape({
             name: React.PropTypes.string,
             slug: React.PropTypes.string
-        }).required,
-        index:  React.PropTypes.number.required,
-        onEdit: React.PropTypes.func.required,
-        onDrop: React.PropTypes.func.required
+        }).isRequired,
+        index:  React.PropTypes.number.isRequired,
+        onEdit: React.PropTypes.func.isRequired,
+        onDrop: React.PropTypes.func.isRequired
     };
 
     static defaultProps = {

@@ -21,8 +21,8 @@ const _                = require('lodash'),
 class GamesToolbar extends React.Component {
 
     static propTypes = {
-        leagueId:     React.PropTypes.string.required,
-        games:        React.PropTypes.string.required,
+        leagueId:     React.PropTypes.string.isRequired,
+        games:        React.PropTypes.string.isRequired,
         onGameSelect: React.PropTypes.func
     };
 

@@ -16,8 +16,8 @@ class GamesApp extends React.Component {
     };
 
     static propTypes = {
-        leagues: React.PropTypes.array.required,
-        games:   React.PropTypes.array.required
+        leagues: React.PropTypes.array.isRequired,
+        games:   React.PropTypes.array.isRequired
     };
 
     state = {

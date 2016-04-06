@@ -113,7 +113,6 @@ input:-webkit-autofill {
     opacity: 0;
 }
 
-
 .block_videos .mui-video-input-container:last-child .mui-text-field-input {
     padding-right: 48px;
 }
@@ -332,7 +331,6 @@ input:-webkit-autofill {
     transform: scale(1, 0);
 }
 
-
 .mui-menu.mui-menu-hideable {
     z-index: 10;
 }
@@ -426,6 +424,37 @@ input:-webkit-autofill {
 
 .mui-dialog .mui-dialog-window-contents img {
     width: 100%;
+}
+
+.loader {
+    margin:         20px 0;
+    text-align:     center;
+    text-transform: uppercase;
+    font-size:      14px;
+}
+
+.form-appear,
+.form-enter {
+    overflow:   hidden;
+    max-height: 0;
+
+    transition: max-height .4s ease-in;
+}
+
+.form-appear.form-appear-active,
+.form-enter.form-enter-active {
+    max-height: 1000px;
+}
+
+.form-leave {
+    overflow:   hidden;
+    max-height: 1000px;
+
+    transition: max-height .1s ease-in;
+}
+
+.form-leave.form-leave-active {
+    max-height: 0;
 }
 
 @import "_s";
