@@ -239,4 +239,4 @@ gulp.task('js:dist', function () {
 
 gulp.task('default', seq('clean', ['copy.styles', 'less', 'js'], 'watch'));
 
-gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'copy.fonts:dist', 'less:dist', 'js:dist']));
+gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'less:dist', 'js:dist']));
