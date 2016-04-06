@@ -85,16 +85,6 @@ gulp.task('copy.styles', function () {
 });
 
 /**
- * Copy fonts to dest task
- */
-gulp.task('copy.fonts', function () {
-    return gulp.src([
-        paths.VENDOR + '/material-design-fonticons/fonts/mdfonticon/**'
-    ])
-        .pipe(gulp.dest(paths.TMP + '/styles/fonts/'));
-});
-
-/**
  * Build js with browserify task with processing react and watching for changes
  */
 gulp.task('js', function () {
@@ -153,7 +143,6 @@ gulp.task('clean:dist', function () {
  */
 gulp.task('less:dist', function () {
     return gulp.src(paths.PUBLIC + '/styles/main.less')
-        .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
@@ -164,12 +153,11 @@ gulp.task('less:dist', function () {
 });
 
 /**
- * Copy vendor styles to dest task
+ * Copy vendor styles to dist dir
  */
 gulp.task('copy.styles:dist', function () {
     return gulp.src([
         paths.VENDOR + '/material-design-fonticons/styles/mdfi.css',
-        paths.VENDOR + '/material-design-fonticons/styles/mdfi_navigation.css',
         paths.VENDOR + '/dropzone/dist/dropzone.css',
         paths.VENDOR + '/dropzone/dist/basic.css',
         paths.VENDOR + '/medium-editor/dist/css/medium-editor.css',
@@ -186,7 +174,7 @@ gulp.task('copy.styles:dist', function () {
 });
 
 /**
- * Copy images to dest task
+ * Copy images to dist dir
  */
 gulp.task('copy.images:dist', function () {
     return gulp.src([
@@ -201,7 +189,7 @@ gulp.task('copy.images:dist', function () {
 });
 
 /**
- * Copy fonts to dest task
+ * Copy favicon to dist dir
  */
 gulp.task('copy.favicon:dist', function () {
     return gulp.src(paths.PUBLIC + '/favicon.ico')
@@ -209,7 +197,7 @@ gulp.task('copy.favicon:dist', function () {
 });
 
 /**
- * Copy fonts to dest task
+ * Copy views to dist dir
  */
 gulp.task('copy.views:dist', function () {
     return gulp.src(paths.SERVER + '/views/*')
@@ -247,6 +235,6 @@ gulp.task('js:dist', function () {
 });
 
 
-gulp.task('default', seq('clean', ['copy.styles', 'copy.fonts', 'less', 'js'], 'watch'));
+gulp.task('default', seq('clean', ['copy.styles', 'less', 'js'], 'watch'));
 
 gulp.task('dist', seq('clean:dist', ['copy.favicon:dist', 'copy.views:dist', 'copy.styles:dist', 'copy.images:dist', 'less:dist', 'js:dist']));
