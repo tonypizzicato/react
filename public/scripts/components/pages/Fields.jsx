@@ -17,6 +17,7 @@ class FieldsApp extends React.Component {
     };
 
     state = {
+        activeTab:     0,
         fields:        [],
         selectedField: {}
     };
@@ -81,24 +82,33 @@ class FieldsApp extends React.Component {
     render() {
         return (
             <Tabs>
-                {this.props.leagues.map(league => {
+                {this.props.leagues.map((league, index) => {
                     const fieldsItems = this.state.fields.filter(item => item.leagueId == league._id);
 
-                    return (
-                    <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
-                        <FieldForm
-                            field={this.state.selectedField}
-                            leagueId={league._id}
-                            onCancel={this._onCancel}
-                            key={`field-form-${league._id}`}/>
+                    let tabContent;
+                    if (this.state.activeTab == index) {
+                        tabContent = (
+                            <div>
+                                <FieldForm
+                                    field={this.state.selectedField}
+                                    leagueId={league._id}
+                                    onCancel={this._onCancel}
+                                    key={`field-form-${league._id}-${this.state.selectedField._id}`}/>
 
-                        <FieldsList
-                            fields={fieldsItems}
-                            onDelete={this._onDelete}
-                            onEdit={this._onEdit}/>
-                    </Tab>
-                        );
-                    })}
+                                <FieldsList
+                                    fields={fieldsItems}
+                                    onDelete={this._onDelete}
+                                    onEdit={this._onEdit}/>
+                            </div>
+                        )
+                    }
+
+                    return (
+                        <Tab onActive={this._onTabChange} label={league.name} key={league._id}>
+                            {tabContent}
+                        </Tab>
+                    );
+                })}
             </Tabs>
         );
     }
