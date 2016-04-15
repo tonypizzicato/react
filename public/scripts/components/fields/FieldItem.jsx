@@ -31,7 +31,7 @@ class FieldItem extends React.Component {
             'mdfi_action_visibility_off': !this.props.field.show
         });
 
-        const avatar = this.props.field.image ?
+        const avatar = this.props.field.image && this.props.field.image.thumb ?
             <Avatar size={Spacing.desktopGutter * 2} src={this.props.field.image.thumb.src}/> :
             <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title[0]}</Avatar>;
 

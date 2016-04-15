@@ -94,10 +94,6 @@ class NewsApp extends React.Component {
         });
     }
 
-    shouldComponentUpdate() {
-        return this.props.leagues.length > 0;
-    }
-
     render() {
         const styles = this.getStyles();
 
