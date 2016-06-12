@@ -1,81 +1,91 @@
-const cx       = require('classnames'),
-      React    = require('react'),
-      mui      = require('material-ui'),
+import cx from 'classnames';
+import React, { Component, PropTypes } from 'react';
+import {
+  Styles,
+  ListItem,
+  Avatar,
+  FontIcon as Icon,
+} from 'material-ui';
 
-      Colors   = mui.Styles.Colors,
-      Spacing  = mui.Styles.Spacing,
+import RightMenu from '../ListItemRightMenu.jsx';
 
-      Dragon   = require('../Dragon.jsx'),
+const { Colors, Spacing } = Styles;
 
+class TournamentItem extends Component {
 
-      ListItem = mui.ListItem,
-      Avatar   = mui.Avatar,
-      Icon     = mui.FontIcon;
+  static propTypes = {
+    tournament: PropTypes.shape({
+      name:    PropTypes.string,
+      slug:    PropTypes.string,
+      country: PropTypes.object,
+      state:   PropTypes.string
+    }).isRequired,
+    onEdit:     PropTypes.func.isRequired,
+    onDrop:     PropTypes.func.isRequired
+  };
 
-class TournamentItem extends React.Component {
+  static defaultProps = {
+    tournament: {}
+  };
 
-    static propTypes = {
-        tournament: React.PropTypes.shape({
-            name:    React.PropTypes.string,
-            slug:    React.PropTypes.string,
-            country: React.PropTypes.object,
-            state:   React.PropTypes.string
-        }).isRequired,
-        onEdit:     React.PropTypes.func.isRequired,
-        onDrop:     React.PropTypes.func.isRequired
-    };
+  get avatar() {
+    const { tournament } = this.props;
 
-    static defaultProps = {
-        tournament: {}
-    };
+    const avatar = tournament.name ? tournament.name : tournament.slug;
 
-    render() {
-        const styles = this.getStyles();
-        const avatar = this.props.tournament.name ? this.props.tournament.name : this.props.tournament.slug;
+    return <Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>;
+  }
 
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.tournament.show
-        });
+  get primaryText() {
+    const { tournament } = this.props;
 
-        return (
-            <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    style={styles.root}
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.tournament._id}
-                    leftAvatar={<Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>}
-                    primaryText={
-                        <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
-                            <span style={styles.label.name}>{this.props.tournament.name}</span>
-                            <span style={{color: Colors.minBlack}}>{this.props.tournament.slug}</span>
-                        </p>
-                    }
-                    secondaryText={this.props.tournament.country ? this.props.tournament.country.name : '—'}
-                    />
-            </Dragon>
-        );
-    }
+    const visibilityClass = cx({
+      'mdfi_action_visibility':     true,
+      'mdfi_action_visibility_off': !tournament.show
+    });
 
-    getStyles() {
-        return {
-            root:           {
-                margin: Spacing.desktopGutter + ' 0'
-            },
-            label:          {
-                name: {
-                    marginRight: Spacing.desktopGutterMini
-                }
-            },
-            visibilityIcon: {
-                marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.tournament.show ? Colors.blueGrey900 : Colors.lightBlack
-            }
+    return (
+      <p>
+        <Icon style={this.styles.visibilityIcon} className={visibilityClass}/>
+        <span style={this.styles.label.name}>{tournament.name}</span>
+        <span style={{color: Colors.minBlack}}>{tournament.slug}</span>
+      </p>
+    )
+  }
+
+  render() {
+    const { tournament, onEdit } = this.props;
+
+    return (
+      <ListItem
+        style={this.styles.root}
+        disabled={true}
+        leftAvatar={this.avatar}
+        primaryText={this.primaryText}
+        secondaryText={tournament.country ? tournament.country.name : '—'}
+        rightIconButton={<RightMenu id={tournament._id} onClick={() => onEdit(tournament._id)} />}
+      />
+    );
+  }
+
+  get styles() {
+    return {
+      root:           {
+        margin: Spacing.desktopGutter + ' 0'
+      },
+      label:          {
+        name: {
+          marginRight: Spacing.desktopGutterMini
         }
+      },
+      visibilityIcon: {
+        marginRight: 6,
+        top:         2,
+        fontSize:    18,
+        color:       this.props.tournament.show ? Colors.blueGrey900 : Colors.lightBlack
+      }
     }
+  }
 }
 
-module.exports = TournamentItem;
+export default TournamentItem;

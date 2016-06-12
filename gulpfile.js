@@ -37,7 +37,7 @@ var paths = {
  * Clean build folder
  */
 gulp.task('clean', function () {
-    return gulp.src(paths.TMP, {read: false})
+    return gulp.src(paths.TMP, { read: false })
         .pipe(clean());
 });
 
@@ -46,7 +46,7 @@ gulp.task('clean', function () {
  */
 gulp.task('less', function () {
     return gulp.src(paths.PUBLIC + '/styles/main.less')
-        //.pipe(watch(paths.PUBLIC + '/styles/main.less'))
+    //.pipe(watch(paths.PUBLIC + '/styles/main.less'))
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(autoprefixer({
@@ -92,7 +92,7 @@ gulp.task('js', function () {
 
     var bundler = browserify({
         entries:      [src],
-        transform:    [[babelify, {optional: ["es7.classProperties"]}]],
+        transform:    [[babelify, { optional: ["es7.classProperties", "es7.decorators"] }]],
         debug:        true,
         cache:        {},
         packageCache: {},
@@ -134,7 +134,7 @@ gulp.task('js', function () {
  * Clean build folder
  */
 gulp.task('clean:dist', function () {
-    return gulp.src(paths.DIST, {read: false})
+    return gulp.src(paths.DIST, { read: false })
         .pipe(clean());
 });
 
@@ -182,7 +182,7 @@ gulp.task('copy.images:dist', function () {
     ])
         .pipe(imagemin({
             progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
+            svgoPlugins: [{ removeViewBox: false }],
             use:         [pngquant()]
         }))
         .pipe(gulp.dest(paths.DIST + '/images/'));
@@ -212,7 +212,7 @@ gulp.task('js:dist', function () {
 
     var bundler = browserify({
         entries:      [src],
-        transform:    [[babelify, {optional: ["es7.classProperties"]}], ['envify', {'global': true, '_': 'purge', NODE_ENV: 'production'}]],
+        transform:    [[babelify, { optional: ["es7.classProperties"] }], ['envify', { 'global': true, '_': 'purge', NODE_ENV: 'production' }]],
         cache:        {},
         packageCache: {},
         fullPaths:    true

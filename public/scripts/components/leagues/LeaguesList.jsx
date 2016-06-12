@@ -1,83 +1,91 @@
-const React          = require('react'),
-      mui            = require('material-ui'),
+import _ from 'lodash';
+import { autobind } from 'core-decorators';
+import React, { Component, PropTypes } from 'react';
+import {
+  Styles,
+  List,
+  ListDivider
+} from 'material-ui';
 
-      Spacing        = mui.Styles.Spacing,
-      Colors         = mui.Styles.Colors,
+import Sortable from '../Sortable.jsx';
 
-      List           = mui.List,
-      ListDivider    = mui.ListDivider,
+import LeagueItem from '../leagues/LeagueItem.jsx';
+import LeaguesActions from '../../actions/LeaguesActions';
 
-      Sortable       = require('../Sortable.jsx'),
-
-      LeagueItem     = require('../leagues/LeagueItem.jsx'),
-
-      LeaguesActions = require('../../actions/LeaguesActions');
 
 class LeaguesList extends React.Component {
 
-    static propTypes = {
-        leagues: React.PropTypes.array
-    };
+  static propTypes = {
+    leagues: React.PropTypes.array,
+    onSort: PropTypes.func,
+  };
 
-    static defaultProps = {
-        leagues: []
-    };
+  static defaultProps = {
+    leagues: [],
+    onSort: _.noop,
+  };
 
-    constructor(props) {
-        super(props);
+  @autobind
+  onSort(orderedItems) {
+    let items = [];
 
-        this._onDrop = this._onDrop.bind(this);
+    orderedItems.forEach((initial, next) => {
+      items[initial] = { ...this.props.leagues[initial] };
+
+      if (items[initial].sort != next) {
+        items[initial].sort = next;
+        LeaguesActions.save({
+          _id:  items[initial]._id,
+          sort: next
+        }, { silent: true });
+      }
+    });
+
+    this.props.onSort && this.props.onSort(items);
+  }
+
+  render() {
+    const { leagues, onEdit } = this.props;
+
+    if (!leagues.length) {
+      return false;
     }
 
-    _onDrop(from, to) {
-        const items = this.props.leagues.slice();
-        items.splice(to, 0, items.splice(from, 1)[0]);
+    const itemHeight = 76;
 
-        if (this.props.onDrop) {
-            this.props.onDrop(items);
-        }
+    return (
+      <List style={this.styles.root}>
+        <Sortable itemHeight={itemHeight} onSort={this.onSort} delay={600}>
+          {leagues.map((item, index) => {
+            const divider = index != leagues.length - 1 ? <ListDivider inset={true} style={this.styles.divider}/> : undefined;
 
-        items.forEach(function (item, index) {
-            LeaguesActions.save({
-                _id:  item._id,
-                sort: index
-            });
-        })
+            return (
+              <div key={item._id}>
+                <LeagueItem league={item} onEdit={onEdit}/>
+                {divider}
+              </div>
+            )
+          })}
+        </Sortable>
+      </List>
+    );
+  }
+
+  get styles() {
+    return {
+      root:    {
+        paddingTop:    0,
+        paddingBottom: 0,
+        border:        'solid 1px ' + Styles.Colors.faintBlack,
+        position:      'relative',
+        overflow:      'hidden',
+        userSelect:    'none',
+      },
+      divider: {
+        marginLeft: 0
+      }
     }
-
-    render() {
-        if (!this.props.leagues.length) {
-            return false;
-        }
-
-        return (
-            <List style={this.getStyles().root}>
-                {this.props.leagues.map((item, index) => {
-                    const divider = index != this.props.leagues.length - 1 ? <ListDivider inset={true}/> : undefined;
-
-                    return (
-                        <div key={item._id}>
-                            <LeagueItem league={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={index} key={item._id}/>
-                            {divider}
-                        </div>
-                    )
-                })}
-            </List>
-        );
-    }
-
-    getStyles() {
-        return {
-            root: {
-                paddingTop:    0,
-                paddingBottom: 0,
-                border:        'solid 1px ' + Colors.faintBlack,
-                //position:      'relative',
-                //height:        '1000px',
-                //overflow:      'hidden'
-            }
-        }
-    }
+  }
 }
 
-module.exports = LeaguesList;
+export default LeaguesList;

@@ -111,7 +111,7 @@ class GamesToolbar extends React.Component {
         let country     = this.state.countries[index],
             tournaments = country.tournaments;
 
-        tournaments = tournaments.map(function (item) {
+        tournaments = tournaments.filter(t => t.show).map(function (item) {
             return {text: item.name, _id: item._id};
         });
 
