@@ -110,9 +110,9 @@ class TournamentApp extends React.Component {
         });
     }
 
-    _onEdit(e) {
+    _onEdit(id) {
         this.setState({
-            selectedTournament: _.findWhere(this.state.tournaments, {_id: e.currentTarget.dataset.id})
+            selectedTournament: _.findWhere(this.state.tournaments, {_id: id})
         });
 
         _.defer(() => {

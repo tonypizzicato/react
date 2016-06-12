@@ -78,7 +78,7 @@ var TagsField = React.createClass({
                 <TextField
                     floatingLabelText={this.props.floatingLabelText}
                     hintText={this.props.hintText}
-                    onChange={this._onChange}
+                    onChange={this.onChange}
                     onKeyDown={this._onEnter}
                     ref="input"
                 />

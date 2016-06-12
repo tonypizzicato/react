@@ -1,73 +1,82 @@
-var cx       = require('classnames'),
-    React    = require('react'),
-    mui      = require('material-ui'),
+import cx from 'classnames';
+import React, { Component, PropTypes } from 'react';
+import {
+  Styles,
+  ListItem,
+  Avatar,
+  FontIcon as Icon,
+} from 'material-ui';
 
-    Colors   = mui.Styles.Colors,
-    Spacing  = mui.Styles.Spacing,
+import RightMenu from '../ListItemRightMenu.jsx';
 
-    ListItem = mui.ListItem,
-    Avatar   = mui.Avatar,
-    Icon     = mui.FontIcon,
+const { Colors, Spacing } = Styles;
 
-    Dragon   = require('../Dragon.jsx');
+class LeagueItem extends Component {
 
-class LeagueItem extends React.Component {
+  static propTypes = {
+    league: PropTypes.shape({
+      name: PropTypes.string,
+      slug: PropTypes.string
+    }).isRequired,
+    onEdit: PropTypes.func.isRequired,
+  };
 
-    static propTypes = {
-        league: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            slug: React.PropTypes.string
-        }).isRequired,
-        index:  React.PropTypes.number.isRequired,
-        onEdit: React.PropTypes.func.isRequired,
-        onDrop: React.PropTypes.func.isRequired
-    };
+  static defaultProps = {
+    league: {}
+  };
 
-    static defaultProps = {
-        league: {}
-    };
+  get avatar() {
+    const { league } = this.props;
+    const avatar = league.slug ? league.slug : league.name;
 
-    render() {
-        const styles = this.getStyles();
-        const avatar = this.props.league.slug ? this.props.league.slug : this.props.league.name;
+    return <Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>;
+  }
 
-        const visibilityClass = cx({
-            'mdfi_action_visibility':     true,
-            'mdfi_action_visibility_off': !this.props.league.show
-        });
+  get primaryText() {
+    const { league } = this.props;
 
-        return (
-            <Dragon element="div" message={this.props.index} onDrop={this.props.onDrop}>
-                <ListItem
-                    style={styles.root}
-                    onTouchTap={this.props.onEdit}
-                    data-id={this.props.league._id}
-                    leftAvatar={<Avatar>{avatar[0]}</Avatar>}
-                    primaryText={
-                        <p>
-                            <Icon style={styles.visibilityIcon} className={visibilityClass} />
-                            <span>{this.props.league.name}</span>
-                        </p>
-                    }
-                    secondaryText={this.props.league.slug}
-                    />
-            </Dragon>
-        );
+    const visibilityClass = cx({
+      'mdfi_action_visibility':     true,
+      'mdfi_action_visibility_off': !league.show
+    });
+
+
+    return (
+      <p>
+        <Icon style={this.styles.visibilityIcon} className={visibilityClass}/>
+        <span>{league.name}</span>
+      </p>
+    )
+  }
+
+  render() {
+    const { league, onEdit } = this.props;
+
+    return (
+      <ListItem
+        style={this.styles.root}
+        disabled={true}
+        leftAvatar={this.avatar}
+        primaryText={this.primaryText}
+        secondaryText={league.slug}
+        rightIconButton={<RightMenu id={league._id} onClick={() => onEdit(league._id)} />}
+      />
+    );
+  }
+
+  get styles() {
+    return {
+      root:           {
+        margin: Spacing.desktopGutter + ' 0'
+      },
+      visibilityIcon: {
+        marginRight: 6,
+        top:         2,
+        fontSize:    18,
+        color:       this.props.league.show ? Colors.blueGrey900 : Colors.lightBlack
+      }
     }
-
-    getStyles() {
-        return {
-            root:           {
-                margin: Spacing.desktopGutter + ' 0'
-            },
-            visibilityIcon: {
-                marginRight: 6,
-                top:         2,
-                fontSize:    18,
-                color:       this.props.league.show ? Colors.blueGrey900 : Colors.lightBlack
-            }
-        }
-    }
+  }
 }
 
-module.exports = LeagueItem;
+export default LeagueItem;

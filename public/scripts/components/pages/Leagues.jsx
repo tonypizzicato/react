@@ -1,70 +1,72 @@
-const _            = require('lodash'),
-      scroll       = require('../../utils/scrollTo'),
-      React        = require('react'),
-      mui          = require('material-ui'),
+import _ from 'lodash';
+import { autobind } from 'core-decorators';
+import React, { Component, PropTypes } from 'react';
 
-      LeaguesStore = require('../../stores/LeaguesStore'),
+import scroll from '../../utils/scrollTo';
 
-      LeagueForm   = require('../leagues/LeagueForm.jsx'),
-      LeaguesList  = require('../leagues/LeaguesList.jsx');
+import LeaguesActions from '../../actions/LeaguesActions';
+import LeaguesStore from '../../stores/LeaguesStore';
 
-class LeaguesApp extends React.Component {
+import LeagueForm from '../leagues/LeagueForm.jsx';
+import LeaguesList from '../leagues/LeaguesList.jsx';
 
-    static propTypes = {
-        leagues: React.PropTypes.array.isRequired
-    };
+class LeaguesApp extends Component {
 
-    state = {
-        selectedLeague: {}
-    };
+  static propTypes = {
+    leagues: PropTypes.array.isRequired
+  };
 
-    constructor(props) {
-        super(props);
+  state = {
+    selectedLeague: {}
+  };
 
-        this._onEdit   = this._onEdit.bind(this);
-        this._onChange = this._onChange.bind(this);
-        this._onCancel = this._onCancel.bind(this);
-    }
+  componentDidMount() {
+    LeaguesStore.addChangeListener(this.onChange);
+  }
 
-    componentDidMount() {
-        LeaguesStore.addChangeListener(this._onChange);
-    }
+  componentWillUnmount() {
+    LeaguesStore.removeChangeListener(this.onChange);
+    LeaguesActions.load();
+  }
 
-    componentWillUnmount() {
-        LeaguesStore.removeChangeListener(this._onChange);
-    }
+  @autobind
+  onChange() {
+    this.setState({
+      selectedLeague: {}
+    });
+  }
 
-    _onChange() {
-        this.setState({
-            selectedLeague: {}
-        });
-    }
+  @autobind
+  onEdit(id) {
+    this.setState({
+      selectedLeague: _.findWhere(this.props.leagues, { _id: id })
+    });
 
-    _onEdit(e) {
-        this.setState({
-            selectedLeague: _.findWhere(this.props.leagues, {_id: e.currentTarget.dataset.id})
-        });
+    _.defer(() => {
+      scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
+    });
+  }
 
-        _.defer(() => {
-            scroll.scrollTo(0, 800, scroll.easing.easeOutQuad);
-        });
-    }
+  @autobind
+  onSort() {
+    // LeaguesActions.load();
+  }
 
-    _onCancel() {
-        this.setState({
-            selectedLeague: {}
-        });
-    }
+  @autobind
+  onCancel() {
+    this.setState({
+      selectedLeague: {}
+    });
+  }
 
-    render() {
-        return (
-            <div>
-                <LeagueForm league={this.state.selectedLeague} onCancel={this._onCancel}
-                            key={this.state.selectedLeague._id + '-league-form'}/>
-                <LeaguesList leagues={this.props.leagues} onEdit={this._onEdit} key="leagues-list"/>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <LeagueForm league={this.state.selectedLeague} onCancel={this.onCancel} key={this.state.selectedLeague._id + '-league-form'}/>
+        <LeaguesList leagues={this.props.leagues} onEdit={this.onEdit} onSort={this.onSort} key="leagues-list"/>
+      </div>
+    );
+  }
 }
 
 module.exports = LeaguesApp;

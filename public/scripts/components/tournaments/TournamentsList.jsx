@@ -1,73 +1,95 @@
-const React              = require('react'),
-      mui                = require('material-ui'),
+import { autobind } from 'core-decorators';
+import React, { Component, PropTypes } from 'react';
+import {
+  Styles,
+  List,
+  ListDivider
+} from 'material-ui';
 
-      Spacing            = mui.Styles.Spacing,
-      Colors             = mui.Styles.Colors,
+import Sortable from '../Sortable.jsx';
 
-      List               = mui.List,
-      ListDivider        = mui.ListDivider,
+import TournamentItem from '../tournaments/TournamentItem.jsx';
+import TournamentsActions from '../../actions/TournamentsActions';
 
-      TournamentItem     = require('../tournaments/TournamentItem.jsx'),
+class TournamentsList extends Component {
 
-      TournamentsActions = require('../../actions/TournamentsActions');
+  static propTypes = {
+    tournaments: PropTypes.array
+  };
 
-class TournamentsList extends React.Component {
+  static defaultProps = {
+    tournaments: []
+  };
 
-    static propTypes = {
-        tournaments: React.PropTypes.array
-    };
+  state = {
+    tournaments: this.props.tournaments,
+  };
 
-    static defaultProps = {
-        tournaments: []
-    };
+  componentWillReceiveProps(nextProps) {
+    this.setState({ tournaments: nextProps.tournaments });
+  }
 
+  @autobind
+  onSort(orderedItems) {
+    const items = [];
 
-    _onDrop(from, to) {
-        let items = this.props.tournaments.slice();
-        items.splice(to, 0, items.splice(from, 1)[0]);
+    orderedItems.forEach((initial, next) => {
+      items[initial] = { ...this.state.tournaments[initial] };
 
-        if (this.props.onDrop) {
-            this.props.onDrop(items);
-        }
+      if (items[initial].sort != next) {
+        items[initial].sort = next;
+        TournamentsActions.save({
+          _id:  items[initial]._id,
+          sort: next
+        }, { silent: true });
+      }
+    });
 
-        items.forEach(function (item, index) {
-            TournamentsActions.save({
-                _id:  item._id,
-                sort: index
-            }, {silent: true})
-        })
+    this.props.onDrop && this.props.onDrop(items);
+
+    this.setState({ tournaments: items });
+  }
+
+  render() {
+    if (!this.props.tournaments.length) {
+      return false;
     }
 
-    render() {
-        if (!this.props.tournaments.length) {
-            return false;
-        }
+    const itemHeight = 76;
 
-        return (
-            <List style={this.getStyles().root}>
-                {this.props.tournaments.map((item, i) => {
-                    const divider = i != this.props.tournaments.length - 1 ? <ListDivider inset={true}/> : undefined;
+    return (
+      <List style={this.styles.root}>
+        <Sortable itemHeight={itemHeight} onSort={this.onSort} delay={600}>
+          {this.props.tournaments.map((item, i) => {
+            const divider = i != this.props.tournaments.length - 1 ? <ListDivider inset={true} style={this.styles.divider}/> : undefined;
 
-                    return (
-                        <div key={item._id}>
-                            <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this._onDrop} index={i} key={item._id}/>
-                            {divider}
-                        </div>
-                    );
-                })}
-            </List>
-        );
+            return (
+              <div style={{height: '100%'}} key={item._id}>
+                <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this.onSort}/>
+                {divider}
+              </div>
+            );
+          })}
+        </Sortable>
+      </List>
+    );
+  }
+
+  get styles() {
+    return {
+      root:    {
+        paddingTop:    0,
+        paddingBottom: 0,
+        border:        'solid 1px ' + Styles.Colors.faintBlack,
+        position:      'relative',
+        overflow:      'hidden',
+        userSelect:    'none',
+      },
+      divider: {
+        marginLeft: 0
+      }
     }
-
-    getStyles() {
-        return {
-            root: {
-                paddingTop:    0,
-                paddingBottom: 0,
-                border:        'solid 1px ' + Colors.faintBlack
-            }
-        }
-    }
+  }
 }
 
 module.exports = TournamentsList;

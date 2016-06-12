@@ -117,9 +117,9 @@ AppDispatcher.register(function (action) {
                     var changed = _.findWhere(_leagues, {_id: league._id});
 
                     assign(changed, league);
-                    _leagues.sort(function (a, b) {
-                        return a.sort <= b.sort ? -1 : 1
-                    });
+                    // _leagues.sort(function (a, b) {
+                    //     return a.sort <= b.sort ? -1 : 1
+                    // });
                     if (!options.silent) {
                         Store.emitChange();
                     }
