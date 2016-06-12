@@ -92,7 +92,7 @@ gulp.task('js', function () {
 
     var bundler = browserify({
         entries:      [src],
-        transform:    [[babelify, { optional: ["es7.classProperties", "es7.decorators"] }]],
+        transform:    [[babelify, { stage: 0 }]],
         debug:        true,
         cache:        {},
         packageCache: {},
@@ -214,7 +214,7 @@ gulp.task('js:dist', function () {
 
     var bundler = browserify({
         entries:      [src],
-        transform:    [[babelify, { optional: ["es7.classProperties"] }], ['envify', { 'global': true, '_': 'purge', NODE_ENV: 'production' }]],
+        transform:    [[babelify, { stage: 0 }], ['envify', { 'global': true, '_': 'purge', NODE_ENV: 'production' }]],
         cache:        {},
         packageCache: {}
     });
