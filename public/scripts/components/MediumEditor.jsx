@@ -78,11 +78,10 @@ class Editor extends React.Component {
     _initEditor() {
         this._editor = new MediumEditor(this.refs.editor.getDOMNode(), {
             placeholder:         false,
-            buttonLabels:        'fontawesome',
             disableDoubleReturn: true,
             targetBlank:         true,
             toolbar:             {
-                buttons: ['header1', 'header2', 'bold', 'italic', 'anchor', 'quote', 'unorderedlist', 'orderedlist', 'justifyFull', 'justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'image'],
+                buttons: ['header1', 'header2', 'bold', 'italic', 'anchor', 'quote', 'unorderedlist', 'orderedlist', 'justifyFull', 'justifyLeft', 'justifyCenter', 'justifyRight', 'indent'],
             }
         });
 
