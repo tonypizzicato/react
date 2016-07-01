@@ -78,6 +78,7 @@ class Editor extends React.Component {
     _initEditor() {
         this._editor = new MediumEditor(this.refs.editor.getDOMNode(), {
             placeholder:         false,
+            buttonLabels:        'fontawesome',
             disableDoubleReturn: true,
             targetBlank:         true,
             toolbar:             {
