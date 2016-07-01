@@ -24,6 +24,7 @@ class Image extends React.Component {
         style:       {
             size: 'cover'
         },
+        width: 400,
         pos:         {x: '50%', y: '50%'}
     };
 
@@ -34,7 +35,7 @@ class Image extends React.Component {
         }.bind(this);
 
         _img.onerror = function () {
-            _img.src = 'http://placehold.it/' + this.props.width + '&text=load%20error';
+            _img.src = 'http://placehold.it/' + this.props.width + '?text=load error';
         }.bind(this);
 
         _img.src = this.props.src
