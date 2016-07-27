@@ -1,15 +1,13 @@
-const React        = require('react'),
-      mui          = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
 
-      Spacing      = mui.Styles.Spacing,
-      Colors       = mui.Styles.Colors,
+import RaisedButton from 'material-ui/RaisedButton';
+import FontIcon from 'material-ui/FontIcon';
+import Spacing from 'material-ui/styles/spacing';
+import * as Colors from 'material-ui/styles/colors';
 
-      RaisedButton = mui.RaisedButton,
-      FontIcon     = mui.FontIcon;
-
-class HelpButton extends React.Component {
+class HelpButton extends Component {
     static propTypes = {
-        dialog: React.PropTypes.element.isRequired
+        dialog: PropTypes.element.isRequired
     };
 
     constructor(props) {

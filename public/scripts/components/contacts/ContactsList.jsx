@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 
 import List from 'material-ui/List';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 
 import ContactItem from '../contacts/ContactItem.jsx';
 

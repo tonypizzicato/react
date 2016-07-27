@@ -5,7 +5,7 @@ import Avatar from 'material-ui/Avatar';
 
 import IconVisibility from 'material-ui/svg-icons/action/visibility';
 import IconVisibilityOff from 'material-ui/svg-icons/action/visibility-off';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 class TournamentItem extends Component {
@@ -26,7 +26,7 @@ class TournamentItem extends Component {
     get text() {
         return (
             <p style={this.styles.text}>
-                {React.createElement(this.props.tournament.show ? IconVisibility : IconVisibilityOff, { style: styles.visibilityIcon })}
+                {React.createElement(this.props.tournament.show ? IconVisibility : IconVisibilityOff, { style: this.styles.visibilityIcon })}
                 <span style={this.styles.label.primary}>{this.props.tournament.name}</span>
                 <span style={this.styles.label.secondary}>{this.props.tournament.slug}</span>
             </p>

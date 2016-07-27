@@ -2,7 +2,7 @@ import React, { Component, PropTypes} from 'react';
 
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 class UserItem extends Component {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 import Button from 'material-ui/FlatButton';
@@ -102,7 +102,7 @@ class ImageUpload extends Component {
         const error = this.props.errorText ? (<span style={styles.error}>{this.props.errorText}</span>) : '';
         const image = this.state.image ?
             <Image
-                style={Styles.mergeAndPrefix(styles.preview, this.props.imageStyle)}
+                style={{...styles.preview, ...this.props.imageStyle}}
                 src={this.state.image}
                 width={this.props.width}
                 height={this.props.height}

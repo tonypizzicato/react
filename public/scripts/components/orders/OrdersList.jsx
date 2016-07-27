@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import OrderItem from '../orders/OrderItem.jsx';
 
 class OrdersList extends Component {

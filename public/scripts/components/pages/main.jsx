@@ -7,7 +7,7 @@ import TransitionGroup from 'react-addons-css-transition-group';
 
 import Link from 'react-router/lib/Link';
 
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 import AppBar from 'material-ui/AppBar';
@@ -136,13 +136,17 @@ class MainApp extends Component {
                          location={location}
                          history={history}/>
 
-                <Snackbar message="Ууупс! Ошибка на сервере. Сорян." autoHideDuration={2000} ref="snack"/>
+                <Snackbar message="Ууупс! Ошибка на сервере. Сорян."
+                          autoHideDuration={2000}
+                          open={false}
+                          ref="snack"
+                />
             </div>
         )
     }
 
     getAppBarTitle() {
-        let appBarTitle = _.result(_(menuItems).find(item => item.route && this.props.history.isActive(item.route)), 'text');
+        let appBarTitle = ''; //_.result(_(menuItems).find(item => item.route && this.props.history.isActive(item.route)), 'text');
 
         if (!appBarTitle) {
             appBarTitle = 'amateurs.io';

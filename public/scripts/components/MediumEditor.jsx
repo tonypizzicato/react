@@ -1,38 +1,33 @@
-const $            = require('jquery'),
-      cx           = require('classnames'),
-      React        = require('react'),
-      mui          = require('material-ui'),
+import cx from 'classnames';
+import React, { Component, PropTypes } from 'react';
 
-      Styles       = mui.Utils.Styles,
+import MediumEditor from 'medium-editor';
 
-      Spacing      = mui.Styles.Spacing,
-      Colors       = mui.Styles.Colors,
+import Spacing from 'material-ui/styles/spacing';
+import * as Colors from 'material-ui/styles/colors';
 
-      MediumEditor = require('medium-editor');
-
-
-class Editor extends React.Component {
+class Editor extends Component {
 
     static propTypes = {
-        id:                React.PropTypes.string,
-        defaultValue:      React.PropTypes.string,
-        hintText:          React.PropTypes.string,
-        errorText:         React.PropTypes.string,
-        floatingLabelText: React.PropTypes.string
+        id:                PropTypes.string,
+        defaultValue:      PropTypes.string,
+        hintText:          PropTypes.string,
+        errorText:         PropTypes.string,
+        floatingLabelText: PropTypes.string,
     };
 
     static defaultProps = {
         id:                undefined,
         defaultValue:      '',
         floatingLabelText: 'Текст',
-        hintText:          'Введите текст для редактирования'
+        hintText:          'Введите текст для редактирования',
     };
 
     state = {
         mounted:   false,
         activated: false,
         hasValue:  this.props.defaultValue.length > 0,
-        errorText: this.props.errorText
+        errorText: this.props.errorText,
     };
 
     constructor(props) {
@@ -57,7 +52,7 @@ class Editor extends React.Component {
     }
 
     setValue(value) {
-        this.setState({value: value});
+        this.setState({ value: value });
         this.refs.editor.innerHTML = value ? value : '';
     }
 
@@ -65,14 +60,14 @@ class Editor extends React.Component {
         var focus = e.type == 'focus';
 
         if (!focus && (!e.relatedTarget || e.relatedTarget.className.indexOf('medium-editor-action') === -1)) {
-            this.setState({activated: false});
+            this.setState({ activated: false });
         } else {
-            this.setState({activated: true});
+            this.setState({ activated: true });
         }
     }
 
     _handleChange() {
-        this.setState({hasValue: !!this._editor.serialize()});
+        this.setState({ hasValue: !!this._editor.serialize() });
     }
 
     _initEditor() {
@@ -101,12 +96,12 @@ class Editor extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({mounted: true});
+        this.setState({ mounted: true });
         this._initEditor();
     }
 
     componentWillUnmount() {
-        this.setState({mounted: false});
+        this.setState({ mounted: false });
         this._deinitEditor();
     }
 
@@ -126,30 +121,28 @@ class Editor extends React.Component {
             'mui-has-floating-labels': !!this.props.floatingLabelText
         });
 
-        const styleFloatingLabel = Styles.mergeAndPrefix(
-            styles.floatingLabel.root,
-            !!this.props.floatingLabelText ? styles.floatingLabel.hasFloatingLabel : {},
-            this.state.hasValue ? styles.floatingLabel.hasValue : {},
-            this.state.activated ? styles.floatingLabel.isFocused : {}
-        );
+        const styleFloatingLabel = {
+            ...styles.floatingLabel.root,
+            ...(!!this.props.floatingLabelText ? styles.floatingLabel.hasFloatingLabel : {}),
+            ...(this.state.hasValue ? styles.floatingLabel.hasValue : {}),
+            ...(this.state.activated ? styles.floatingLabel.isFocused : {}),
+        };
 
-        const styleHint = Styles.mergeAndPrefix(
-            styles.hint.root,
-            !!this.props.floatingLabelText ? styles.hint.hasFloatingLabel : {},
-            this.state.activated ? styles.hint.isFocused : {},
-            this.state.hasValue && this.state.activated ? styles.hint.isFocusedAndHasValue : {}
-        );
+        const styleHint = {
+            ...styles.hint.root,
+            ...(!!this.props.floatingLabelText ? styles.hint.hasFloatingLabel : {}),
+            ...(this.state.activated ? styles.hint.isFocused : {}),
+            ...(this.state.hasValue && this.state.activated ? styles.hint.isFocusedAndHasValue : {}),
+        };
 
-        const styleHr = Styles.mergeAndPrefix(
-            styles.hr.root
-        );
+        const styleHr = styles.hr.root;
 
-        const styleHrFocused = Styles.mergeAndPrefix(
-            styles.hr.root,
-            styles.hr.onFocused,
-            this.state.activated ? styles.hr.isFocused : {},
-            !!this.props.errorText ? styles.hr.hasError : {}
-        );
+        const styleHrFocused = {
+            ...styles.hr.root,
+            ...styles.hr.onFocused,
+            ...(this.state.activated ? styles.hr.isFocused : {}),
+            ...(!!this.props.errorText ? styles.hr.hasError : {}),
+        };
 
         const inputId = this.props.id;
 
@@ -280,4 +273,5 @@ class Editor extends React.Component {
     }
 }
 
-module.exports = Editor;
+module
+    .exports = Editor;

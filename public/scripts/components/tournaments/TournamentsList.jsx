@@ -2,8 +2,9 @@ import { autobind } from 'core-decorators';
 import React, { Component, PropTypes } from 'react';
 
 import List  from 'material-ui/List';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 
+import Sortable from '../Sortable.jsx';
 
 import TournamentItem from '../tournaments/TournamentItem.jsx';
 

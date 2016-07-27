@@ -5,7 +5,7 @@ import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import IconMenu from 'material-ui/IconMenu';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';

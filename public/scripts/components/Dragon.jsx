@@ -121,4 +121,4 @@ var Dragon = React.createClass({
 
 });
 
-module.exports = Dragon;
+export default Dragon;

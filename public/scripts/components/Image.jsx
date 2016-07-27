@@ -1,21 +1,18 @@
-const React  = require('react'),
-      mui    = require('material-ui'),
-
-      Styles = mui.Utils.Styles;
+import React, { Component, PropTypes } from 'react';
 
 let _img;
 
-class Image extends React.Component {
+class Image extends Component {
 
     static propTypes = {
-        src:            React.PropTypes.string.isRequired,
-        transition:     React.PropTypes.string,
-        aspectRatio:    React.PropTypes.number,
-        width:          React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
-        height:         React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.number]).isRequired,
-        pos:            React.PropTypes.shape({x: React.PropTypes.string, y: React.PropTypes.string}),
-        style:          React.PropTypes.object,
-        containerStyle: React.PropTypes.object
+        src:            PropTypes.string.isRequired,
+        transition:     PropTypes.string,
+        aspectRatio:    PropTypes.number,
+        width:          PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        height:         PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        pos:            PropTypes.shape({ x: PropTypes.string, y: PropTypes.string }),
+        style:          PropTypes.object,
+        containerStyle: PropTypes.object
     };
 
     static defaultProps = {
@@ -23,8 +20,8 @@ class Image extends React.Component {
         style:       {
             size: 'cover'
         },
-        width: 400,
-        pos:         {x: '50%', y: '50%'}
+        width:       400,
+        pos:         { x: '50%', y: '50%' }
     };
 
     componentDidMount() {
@@ -55,24 +52,30 @@ class Image extends React.Component {
     }
 
     render() {
-        const divStyles = Styles.mergeAndPrefix({
-            position: 'relative',
-            width:    this.props.width,
-            height:   this.props.height,
-            margin:   '0 auto 24px'
-        }, this.props.containerStyle);
+        const divStyles = {
+            ...{
+                position: 'relative',
+                width:    this.props.width,
+                height:   this.props.height,
+                margin:   '0 auto 24px'
+            },
+            ...this.props.containerStyle
+        };
 
-        const imageStyles = Styles.mergeAndPrefix({
-            position:           'absolute',
-            top:                0,
-            right:              0,
-            bottom:             0,
-            left:               0,
-            borderRadius:       '6px',
-            backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
-            backgroundImage:    'url(' + this.props.src + ')',
-            transition:         this.props.transition || 'opacity 0.6s ease'
-        }, this.props.style);
+        const imageStyles = {
+            ...{
+                position:           'absolute',
+                top:                0,
+                right:              0,
+                bottom:             0,
+                left:               0,
+                borderRadius:       '6px',
+                backgroundPosition: this.props.pos.x + ' ' + this.props.pos.y,
+                backgroundImage:    'url(' + this.props.src + ')',
+                transition:         this.props.transition || 'opacity 0.6s ease'
+            },
+            ...this.props.style
+        };
 
         return (
             <div style={divStyles}>
@@ -82,5 +85,4 @@ class Image extends React.Component {
     }
 }
 
-
-module.exports = Image;
+export default Image;

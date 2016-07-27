@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  Styles,
-  IconMenu,
-  IconButton
-} from 'material-ui';
 
+import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import * as Colors from 'material-ui/styles/colors';
 
 import EditIcon    from 'material-ui/svg-icons/content/create';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -24,7 +22,7 @@ class ListItemRightMenu extends Component {
   get iconButtonMenu() {
     return (
       <IconButton touch={true}>
-        <MoreVertIcon color={Styles.Colors.grey600}/>
+        <MoreVertIcon color={Colors.grey600}/>
       </IconButton>
     );
   }
@@ -37,7 +35,7 @@ class ListItemRightMenu extends Component {
         <MenuItem
           primaryText="Редактировать"
           onClick={() => onClick(id)}
-          leftIcon={<EditIcon color={Styles.Colors.grey600}/>}/>
+          leftIcon={<EditIcon color={Colors.grey600}/>}/>
       </IconMenu>
     );
   }

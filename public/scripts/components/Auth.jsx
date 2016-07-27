@@ -1,21 +1,17 @@
-const React       = require('react'),
-      Router      = require('react-router'),
-      mui         = require('material-ui'),
+import React, { Component } from 'react';
 
-      Spacing     = mui.Styles.Spacing,
+import Spacing from 'material-ui/styles/spacing';
 
-      Paper       = mui.Paper,
-      Tabs        = mui.Tabs,
-      Tab         = mui.Tab,
-      Snackbar    = mui.Snackbar,
+import Paper from 'material-ui/Paper';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
+import Button from 'material-ui/FlatButton';
 
-      TextField   = mui.TextField,
-      Button      = mui.FlatButton,
+import AuthActions from '../actions/AuthActions';
+import AuthStore  from '../stores/AuthStore';
 
-      AuthActions = require('../actions/AuthActions'),
-      AuthStore   = require('../stores/AuthStore');
-
-class Auth extends React.Component {
+class Auth extends Component {
     render() {
         return (
             <Paper style={this.getStyles().root}>
@@ -83,7 +79,7 @@ class SignUp extends React.Component {
         validation.email = !validateEmail(user.email);
         isValid          = isValid && !validation.email;
 
-        this.setState({validation: validation});
+        this.setState({ validation: validation });
         if (isValid) {
             AuthActions.signup(user);
         }
@@ -148,8 +144,6 @@ class SignUp extends React.Component {
 }
 
 var Login = React.createClass({
-    mixins: [Router.Navigation, Router.State],
-
     getInitialState() {
         return {
             validation: {}
@@ -200,18 +194,12 @@ var Login = React.createClass({
 
     _onLogin() {
         if (!AuthStore.loggedIn()) {
-            this.replaceWith('/');
+            window.location = '/';
         }
 
         this.refs.form.getDOMNode().submit();
 
-        const nextPath = this.getQuery().nextPath;
-
-        if (nextPath) {
-            this.transitionTo(nextPath);
-        } else {
-            this.replaceWith('/');
-        }
+        window.location = '/';
     },
 
     _onSubmit(e) {
@@ -268,8 +256,6 @@ var Login = React.createClass({
 
 var Logout = React.createClass({
 
-    mixins: [Router.Navigation, Router.State],
-
     componentDidMount() {
         AuthStore.addChangeListener(this._onLogout);
         AuthActions.logout();
@@ -281,7 +267,7 @@ var Logout = React.createClass({
 
     _onLogout() {
         if (!AuthStore.loggedIn()) {
-            this.replaceWith('/');
+            window.location = '/';
         }
     },
 
@@ -290,23 +276,12 @@ var Logout = React.createClass({
     }
 });
 
+export default Auth;
 
-var Authentication = {
-    statics: {
-        willTransitionTo(transition) {
-            var nextPath = transition.path;
-            if (!AuthStore.loggedIn()) {
-                transition.redirect('/login', {},
-                    {'nextPath': nextPath});
-            }
-        }
-    }
-};
+export {
+    Auth as default,
+    Login,
+    Logout,
+    SignUp,
+}
 
-module.exports = {
-    Auth:           Auth,
-    SignUp:         Auth,
-    Login:          Auth,
-    Logout:         Logout,
-    Authentication: Authentication
-};

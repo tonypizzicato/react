@@ -1,6 +1,6 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import List from 'material-ui/List';
 
 import UserItem from '../users/UserItem.jsx';
@@ -14,13 +14,9 @@ class UsersList extends Component {
     render() {
         return (
             <List style={this.getStyles().root}>
-                {this.props.users.map((item, index) => {
-                    return (
-                        <div key={item._id}>
-                            <UserItem user={item}/>
-                        </div>
-                    )
-                })}
+                {this.props.users.map(item => <UserItem user={item}
+                                                        key={item._id}/>
+                )}
             </List>
         );
     }

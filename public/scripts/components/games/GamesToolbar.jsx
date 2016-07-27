@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
 import Toolbar, { ToolbarGroup } from 'material-ui/Toolbar';
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 import Spacing from 'material-ui/styles/spacing';
 
 import AutoComplete from '../AutoComplete.jsx';

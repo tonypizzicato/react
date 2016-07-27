@@ -6,7 +6,7 @@ import { pushState } from 'redux-router/lib/actionCreators';
 import Drawer from 'material-ui/Drawer';
 import List, { ListItem, MakeSelectable } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import {Colors, Spacing, Typography } from 'material-ui/';
+import Spacing from 'material-ui/styles/spacing';
 
 const SelectableList = MakeSelectable(List);
 
@@ -35,20 +35,20 @@ class AppLeftNav extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.opened !== null && nextProps.opened != this.state.opened) {
-            this.setState({opened: nextProps.opened});
+            this.setState({ opened: nextProps.opened });
         }
     }
 
     @autobind
     handleStateChange(state) {
-        this.setState({opened: state});
+        this.setState({ opened: state });
 
         this.props.onStateChange && this.props.onStateChange(state);
     }
 
     @autobind
     handleItemClick(e, route) {
-        this.props.pushState(null, route);
+        this.props.history.push(route);
     }
 
     render() {
@@ -60,11 +60,9 @@ class AppLeftNav extends Component {
                     onRequestChange={this.handleStateChange}>
 
                 <SelectableList style={styles.root}
-                                selectedItemStyle={styles.item.selected}
-                                valueLink={{
-                                    value: this.getSelectIndex(),
-                                    requestChange: this.handleItemClick
-                                }}>
+                                value={this.getSelectIndex()}
+                                onChange={this.handleItemClick}
+                >
                     {this.props.menuItems.map((item, i) => {
                         if (item.route) {
                             return <ListItem innerDivStyle={styles.item.root} value={item.route} primaryText={item.text} key={item.route}/>
@@ -105,4 +103,4 @@ export default connect(state => {
     return {
         q: state.get('router').toJS().location.query.q
     }
-}, {pushState})(AppLeftNav)
+}, { pushState })(AppLeftNav)

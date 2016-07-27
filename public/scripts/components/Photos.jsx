@@ -1,15 +1,13 @@
-const _             = require('lodash'),
-      React         = require('react'),
-      mui           = require('material-ui'),
-      Colors        = mui.Styles.Colors,
+import React, { Component, PropTypes } from 'react';
 
-      Button        = mui.IconButton,
+import Button from 'material-ui/FloatingActionButton';
+import * as Colors from 'material-ui/styles/colors';
 
-      Image         = require('./Image.jsx'),
-      Dragon        = require('./Dragon.jsx'),
+import Image from './Image.jsx';
+import Dragon from './Dragon.jsx';
 
-      PhotosActions = require('../actions/PhotosActions'),
-      PhotosStore   = require('../stores/PhotosStore');
+import PhotosActions from '../actions/PhotosActions';
+import PhotosStore from '../stores/PhotosStore';
 
 class PhotosList extends React.Component {
 
@@ -48,7 +46,7 @@ class PhotosList extends React.Component {
     }
 
     _onChange() {
-        this.setState({photos: PhotosStore.getAll()});
+        this.setState({ photos: PhotosStore.getAll() });
     }
 
     _onDrop(from, to) {
@@ -57,11 +55,11 @@ class PhotosList extends React.Component {
 
         items.forEach((item, index) => {
             if (item.sort !== index) {
-                PhotosActions.save(item.type, item.postId, item._id, {sort: index, tournament: this.props.game.tournamentId}, {silent: true})
+                PhotosActions.save(item.type, item.postId, item._id, { sort: index, tournament: this.props.game.tournamentId }, { silent: true })
             }
         });
 
-        this.setState({photos: items});
+        this.setState({ photos: items });
 
         if (this.props.onDrop) {
             this.props.onDrop(items);
@@ -75,7 +73,7 @@ class PhotosList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.state.photos.length != nextProps.photos.length) {
-            this.setState({photos: nextProps.photos});
+            this.setState({ photos: nextProps.photos });
         }
     }
 

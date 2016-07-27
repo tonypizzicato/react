@@ -1,20 +1,17 @@
-const _            = require('lodash'),
-      React        = require('react'),
-      mui          = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
 
-      Spacing      = mui.Styles.Spacing,
+import Dropzone from 'dropzone';
 
-      Dropzone     = require('dropzone'),
+import Spacing from 'material-ui/styles/spacing';
+import ActionButton from 'material-ui/FloatingActionButton';
 
-      ActionButton = mui.FloatingActionButton;
-
-class DropzoneComponent extends React.Component {
+class DropzoneComponent extends Component {
 
     static propTypes = {
-        url:            React.PropTypes.string.isRequired,
-        uploadMultiple: React.PropTypes.bool,
-        onUpload:       React.PropTypes.func,
-        onChunkUpload:  React.PropTypes.func
+        url:            PropTypes.string.isRequired,
+        uploadMultiple: PropTypes.bool,
+        onUpload:       PropTypes.func,
+        onChunkUpload:  PropTypes.func
     };
 
     static defaultProps = {

@@ -1,22 +1,17 @@
-const _            = require('lodash'),
-      React        = require('react'),
-      mui          = require('material-ui'),
+import React, { Component, PropTypes } from 'react';
 
-      Spacing      = mui.Styles.Spacing,
+import DropDownMenu from 'material-ui/DropDownMenu';
+import TextField from 'material-ui/TextField';
+import Spacing from 'material-ui/styles/spacing';
 
-      DropDownMenu = mui.DropDownMenu,
-      TextField    = mui.TextField,
-
-      Image        = require('./Image.jsx');
-
-class VideoUpload extends React.Component {
+class VideoUpload extends Component {
 
     static propTypes = {
-        types:     React.PropTypes.array,
-        type:      React.PropTypes.string,
-        label:     React.PropTypes.string,
-        url:       React.PropTypes.string,
-        errorText: React.PropTypes.string
+        types:     PropTypes.array,
+        type:      PropTypes.string,
+        label:     PropTypes.string,
+        url:       PropTypes.string,
+        errorText: PropTypes.string
     };
 
     static defaultProps = {

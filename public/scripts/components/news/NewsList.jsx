@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/styles/colors';
+import * as Colors from 'material-ui/styles/colors';
 
 import List from 'material-ui/List';
 
