@@ -1,12 +1,7 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import List from 'material-ui/lib/lists/list';
-import Divider from 'material-ui/lib/divider';
-
-import SortIcon from 'material-ui/lib/svg-icons/content/sort';
+import List from 'material-ui/List';
+import Colors from 'material-ui/styles/colors';
 
 import Sortable from '../Sortable.jsx';
 
@@ -27,7 +22,7 @@ class FieldsList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({fields: nextProps.fields});
+        this.setState({ fields: nextProps.fields });
     }
 
     _onSort(orderedItems) {
@@ -44,7 +39,7 @@ class FieldsList extends Component {
             }
         });
 
-        this.setState({fields: items});
+        this.setState({ fields: items });
     }
 
     render() {
@@ -57,14 +52,11 @@ class FieldsList extends Component {
             <List style={styles.root}>
                 <Sortable itemHeight={itemHeight} onSort={this._onSort} delay={3000}>
                     {this.props.fields.map((item, i) => {
-                        const divider = i != this.props.fields.length - 1 ? <Divider inset={true} style={styles.divider}/> : undefined;
-
                         return (
-                            <div style={{height: '100%'}} key={item._id}>
+                            <div style={{ height: '100%' }} key={item._id}>
                                 <FieldItem
                                     field={item}
                                     onEdit={this.props.onEdit}/>
-                                {divider}
                             </div>
                         );
                     })}

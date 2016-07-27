@@ -1,18 +1,13 @@
 import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
+import Spacing from 'material-ui/styles/spacing';
 
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import DropDownMenu from 'material-ui/lib/drop-down-menu';
-import Button from 'material-ui/lib/raised-button';
-import RadioButtonGroup from 'material-ui/lib/radio-button-group';
-import RadioButton from 'material-ui/lib/radio-button';
-
-import EventsConstants from '../../constants/EventsConstants';
-
-import TournamentsActions from'../../actions/TournamentsActions';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import Button from 'material-ui/RaisedButton';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
 class TournamentForm extends Component {
 
@@ -22,7 +17,8 @@ class TournamentForm extends Component {
         onCancel:   PropTypes.func.isRequired,
         leagueId:   PropTypes.string.isRequired,
         tournament: PropTypes.object
-    }
+    };
+
     static defaultProps = {
         tournament: {
             name:     '',

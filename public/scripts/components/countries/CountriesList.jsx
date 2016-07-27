@@ -1,10 +1,7 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import List from 'material-ui/lib/lists/list';
-import Divider from 'material-ui/lib/divider';
+import List from 'material-ui/List';
+import Colors from 'material-ui/styles/colors';
 
 import CountryItem from '../countries/CountryItem.jsx';
 
@@ -16,25 +13,17 @@ class CountriesList extends Component {
 
     render() {
         return (
-            <List style={this.getStyles().root}>
-                {this.props.countries.map((item, i) => {
-                    const divider = i != this.props.countries.length - 1 ? <Divider inset={true}/> : undefined;
-
-                    return (
-                        <div key={item._id}>
-                            <CountryItem
-                                country={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}/>
-                            {divider}
-                        </div>
-                    );
-                })}
+            <List style={this.styles.root}>
+                {this.props.countries.map((item, i) => <CountryItem country={item}
+                                                                    onEdit={this.props.onEdit}
+                                                                    onDelete={this.props.onDelete}
+                                                                    key={item._id}/>
+                )}
             </List>
         );
     }
 
-    getStyles() {
+    get styles() {
         return {
             root: {
                 paddingTop:    0,

@@ -1,10 +1,9 @@
 import { autobind } from 'core-decorators';
 import React, { Component, PropTypes } from 'react';
-import {
-    Styles,
-    List,
-    ListDivider
-} from 'material-ui';
+
+import List  from 'material-ui/List';
+import Colors from 'material-ui/styles/colors';
+
 
 import TournamentItem from '../tournaments/TournamentItem.jsx';
 
@@ -46,12 +45,9 @@ class TournamentsList extends Component {
             <List style={this.styles.root}>
                 <Sortable itemHeight={itemHeight} onSort={this.onSort} delay={600}>
                     {this.props.tournaments.map((item, i) => {
-                        const divider = i != this.props.tournaments.length - 1 ? <ListDivider inset={true} style={this.styles.divider}/> : undefined;
-
                         return (
                             <div style={{ height: '100%' }} key={item._id}>
                                 <TournamentItem tournament={item} onEdit={this.props.onEdit} onDrop={this.onSort}/>
-                                {divider}
                             </div>
                         );
                     })}
@@ -65,7 +61,7 @@ class TournamentsList extends Component {
             root:    {
                 paddingTop:    0,
                 paddingBottom: 0,
-                border:        'solid 1px ' + Styles.Colors.faintBlack,
+                border:        'solid 1px ' + Colors.faintBlack,
                 position:      'relative',
                 overflow:      'hidden',
                 userSelect:    'none',

@@ -1,11 +1,8 @@
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import TextField from 'material-ui/lib/text-field';
-import Button from 'material-ui/lib/raised-button';
-
-import CategoriesActions from'../../actions/CategoriesActions';
+import TextField from 'material-ui/TextField';
+import Button from 'material-ui/RaisedButton';
+import Spacing from 'material-ui/styles/spacing';
 
 class CategoryForm extends Component {
 
@@ -98,4 +95,4 @@ class CategoryForm extends Component {
     }
 }
 
-module.exports = CategoryForm;
+export default CategoryForm;

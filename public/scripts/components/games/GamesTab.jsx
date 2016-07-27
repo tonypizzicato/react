@@ -1,12 +1,10 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
 
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Spacing from 'material-ui/styles/spacing';
 
 import HelpButton from '../HelpButton.jsx';
 import Dropzone from '../Dropzone.jsx';
@@ -18,10 +16,8 @@ import HelpReviewDialog from '../help/HelpReviewDialog.jsx';
 import Toolbar from './GamesToolbar.jsx';
 import GameArticleForm from '../game-articles/GameArticleForm.jsx';
 
-import EventsConstants from '../../constants/EventsConstants';
 import AuthStore from'../../stores/AuthStore';
 
-import GameArticlesActions from'../../actions/GameArticlesActions';
 import PhotosActions from'../../actions/PhotosActions';
 import PhotosStore from'../../stores/PhotosStore';
 

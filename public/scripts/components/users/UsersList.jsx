@@ -1,9 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-
-import List from 'material-ui/lib/lists/list';
-import Divider from 'material-ui/lib/divider';
+import Colors from 'material-ui/styles/colors';
+import List from 'material-ui/List';
 
 import UserItem from '../users/UserItem.jsx';
 
@@ -17,12 +15,9 @@ class UsersList extends Component {
         return (
             <List style={this.getStyles().root}>
                 {this.props.users.map((item, index) => {
-                    const divider = index != this.props.users.length - 1 ? <Divider inset={true}/> : undefined;
-
                     return (
                         <div key={item._id}>
                             <UserItem user={item}/>
-                            {divider}
                         </div>
                     )
                 })}

@@ -1,13 +1,10 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
 
-import List from 'material-ui/lib/lists/list';
-import Divider from 'material-ui/lib/divider';
+import List from 'material-ui/List';
+import Colors from 'material-ui/styles/colors';
 
 import ContactItem from '../contacts/ContactItem.jsx';
-import ContactsActions from '../../actions/ContactsActions';
 
 class ContactsList extends Component {
     static propTypes = {
@@ -23,19 +20,11 @@ class ContactsList extends Component {
 
         return (
             <List style={this.getStyles().root}>
-                {this.props.contacts.map((item, index) => {
-                    const divider = index != this.props.contacts.length - 1 ? <Divider inset={true}/> : undefined;
-
-                    return (
-                        <div key={item._id}>
-                            <ContactItem
-                                contact={item}
-                                onEdit={this.props.onEdit}
-                                onDelete={this.props.onDelete}/>
-                            {divider}
-                        </div>
-                    )
-                })}
+                {this.props.contacts.map(item => <ContactItem contact={item}
+                                                              onEdit={this.props.onEdit}
+                                                              onDelete={this.props.onDelete}
+                                                              key={item._id}/>
+                )}
             </List>
         );
     }

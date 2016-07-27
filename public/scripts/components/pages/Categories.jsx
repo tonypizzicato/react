@@ -1,12 +1,7 @@
 import _ from 'lodash';
-import scrollTop from '../../utils/scrollTop';
-
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
-import Snackbar from 'material-ui/lib/snackbar';
+import scrollTop from '../../utils/scrollTop';
+import React, { Component, PropTypes } from 'react';
 
 import CategoryForm from '../categories/CategoryForm.jsx';
 import CategoriesList from '../categories/CategoriesList.jsx';
@@ -48,7 +43,7 @@ class CategoriesApp extends React.Component {
         const id = e.currentTarget.dataset.id;
 
         this.setState({
-            selectedCategory: _.findWhere(this.props.categories.items, {_id: id}),
+            selectedCategory: _.findWhere(this.props.categories.items, { _id: id }),
             addMode:          false
         });
 

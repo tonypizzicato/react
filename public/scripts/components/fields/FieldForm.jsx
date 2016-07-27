@@ -1,19 +1,15 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-
 import TransitionGroup from 'react-addons-css-transition-group';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import Button from 'material-ui/lib/raised-button';
-import Checkbox from 'material-ui/lib/checkbox';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
+import Button from 'material-ui/RaisedButton';
+import Checkbox from 'material-ui/Checkbox';
+import Spacing from 'material-ui/styles/spacing';
 
 import MediumEditor from '../MediumEditor.jsx';
 import ImageUpload from '../ImageUpload.jsx';
-
 
 class FieldForm extends Component {
 
@@ -116,7 +112,7 @@ class FieldForm extends Component {
 
                     }))}
                 </div>
-            )
+            );
 
             let image = this.props.field.image;
             if (image && image.thumb) {
@@ -208,6 +204,7 @@ class FieldForm extends Component {
                     <Button style={styles.button} label="Отменить" secondary={true} onClick={this._onCancel}/>
                     <Button style={styles.button} label="Сохранить" primary={true} onClick={this._onSubmit}/>
                 </div>
+            )
         }
 
         return (

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import Dialog from 'material-ui/lib/dialog';
-import FlatButton from 'material-ui/lib/flat-button';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 class HelpPhoto extends React.Component {
 
@@ -11,11 +11,11 @@ class HelpPhoto extends React.Component {
 
     open = () => {
         this.setState({open: true});
-    }
+    };
 
     close = () => {
         this.setState({open: false});
-    }
+    };
 
     render() {
         const styles = this.getStyles();
@@ -160,4 +160,4 @@ class HelpPhoto extends React.Component {
     }
 }
 
-module.exports = HelpPhoto;
+export default HelpPhoto;

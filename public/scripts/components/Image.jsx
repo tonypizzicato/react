@@ -1,5 +1,4 @@
 const React  = require('react'),
-      cx     = require('classnames'),
       mui    = require('material-ui'),
 
       Styles = mui.Utils.Styles;

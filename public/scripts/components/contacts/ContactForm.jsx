@@ -1,17 +1,13 @@
 import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import Button from 'material-ui/lib/raised-button';
-import Checkbox from 'material-ui/lib/checkbox';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
+import Button from 'material-ui/RaisedButton';
+import Checkbox from 'material-ui/Checkbox';
+import Spacing from 'material-ui/styles/spacing';
 
 import ImageUpload from '../ImageUpload.jsx';
-
-import ContactsActions from'../../actions/ContactsActions';
-import TournamentsActions from'../../actions/TournamentsActions';
 
 class ContactForm extends Component {
 
@@ -216,4 +212,4 @@ class ContactForm extends Component {
     }
 }
 
-module.exports = ContactForm;
+export default ContactForm;

@@ -1,11 +1,8 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import Card from 'material-ui/lib/card/card';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardText from 'material-ui/lib/card/card-text';
-import Avatar from 'material-ui/lib/avatar';
+import Card, { CardHeader, CardText } from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
+import Spacing from 'material-ui/styles/spacing';
 
 class OrderItem extends Component {
 

@@ -1,10 +1,8 @@
-import _ from 'lodash';
-import React, { Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
+import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
+import Spacing from 'material-ui/styles/spacing';
 
 import ProfileForm from '../profile/ProfileForm.jsx';
 

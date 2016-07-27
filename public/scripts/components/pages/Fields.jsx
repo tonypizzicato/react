@@ -1,11 +1,7 @@
-import _ from 'lodash';
-import scrollTop from '../../utils/scrollTop';
-
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import React, { Component, PropTypes } from 'react';
 
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 import FieldForm from '../fields/FieldForm.jsx';
 import FieldsList from '../fields/FieldsList.jsx';
@@ -88,31 +84,6 @@ class FieldsApp extends Component {
             <Tabs>
                 {this.props.leagues.toJS().map((league, index) => {
                     const fieldsItems = this.props.fields.toJS().filter(item => item.leagueId == league._id);
-
-                    let tabContent;
-                    if (this.state.activeTab == index) {
-                        const field = this.state.selectedField;
-                        const key   = `${field._id ? field._id : _.uniqueId()}-form`;
-
-                        tabContent = (
-                            <div>
-                                <FieldForm
-                                    field={this.state.selectedField}
-                                    leagueId={league._id}
-                                    tournaments={this.props.tournaments.toJS()}
-                                    onSubmit={this._onSubmit}
-                                    onCancel={this._onCancel}
-                                    key={key}/>
-
-                                <FieldsList
-                                    fields={fieldsItems}
-                                    onSort={this._onSort}
-                                    onEdit={this._onEdit}
-                                    onDelete={this._onDelete}/>
-                            </div>
-                        )
-                    }
-
                     let tabContent;
                     if (this.state.activeTab == index) {
                         tabContent = (

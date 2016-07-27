@@ -1,17 +1,13 @@
-import _ from 'lodash';
-import cx from 'classnames';
 import React, { Component, PropTypes} from 'react';
 
-import Styles from 'material-ui/lib/utils/styles';
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
-import Button from 'material-ui/lib/flat-button';
-import ActionButton from 'material-ui/lib/floating-action-button';
-import IconButton from 'material-ui/lib/icon-button';
+import Button from 'material-ui/FlatButton';
+import ActionButton from 'material-ui/FloatingActionButton';
 
-import CloseIcon from 'material-ui/lib/svg-icons/navigation/close';
-import PhotoIcon from 'material-ui/lib/svg-icons/image/photo';
+import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import PhotoIcon from 'material-ui/svg-icons/image/photo';
 
 import Image from './Image.jsx';
 
@@ -193,4 +189,4 @@ class ImageUpload extends Component {
     }
 }
 
-module.exports = ImageUpload;
+export default ImageUpload;

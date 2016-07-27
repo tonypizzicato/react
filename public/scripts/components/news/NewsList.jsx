@@ -1,11 +1,8 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
+import Colors from 'material-ui/styles/colors';
 
-import List from 'material-ui/lib/lists/list';
-import Divider from 'material-ui/lib/divider';
-
-import Sortable from '../Sortable.jsx';
+import List from 'material-ui/List';
 
 import NewsItem from '../news/NewsItem.jsx';
 
@@ -20,19 +17,12 @@ class NewsList extends Component {
     render() {
         return (
             <List style={this.getStyles().root}>
-                {this.props.news.map((item, i) => {
-                    const divider = i != this.props.news.length - 1 ? <Divider inset={true}/> : undefined;
-
-                    return (
-                        <div key={item._id}>
-                            <NewsItem article={item}
-                                      onEdit={this.props.onEdit}
-                                      onDelete={this.props.onDelete}
-                                      index={i}/>
-                            {divider}
-                        </div>
-                    );
-                })}
+                {this.props.news.map((item, i) => <NewsItem article={item}
+                                                            onEdit={this.props.onEdit}
+                                                            onDelete={this.props.onDelete}
+                                                            index={i}
+                                                            key={item._id}/>
+                )}
             </List>
         );
     }

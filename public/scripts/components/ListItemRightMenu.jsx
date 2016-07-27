@@ -5,9 +5,10 @@ import {
   IconButton
 } from 'material-ui';
 
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import EditIcon    from 'material-ui/lib/svg-icons/content/create';
-import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import MenuItem from 'material-ui/MenuItem';
+
+import EditIcon    from 'material-ui/svg-icons/content/create';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 class ListItemRightMenu extends Component {
   static propTypes = {

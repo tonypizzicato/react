@@ -11,8 +11,9 @@ import { Provider } from 'react-redux';
 import { ReduxRouter, reduxReactRouter } from 'redux-router';
 
 import thunkMiddleware from 'redux-thunk';
-import createLogger from './utils/createLogger';
 import fetchMiddleware from './middleware/fetchMiddleware';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import reducer from './reducer';
 
@@ -43,9 +44,11 @@ const store = compose(
 
 store.dispatch(LeaguesActions.fetch()).then(() => {
     render(
-        <Provider store={store}>
-            <ReduxRouter routes={routes}/>
-        </Provider>,
+        <MuiThemeProvider>
+            <Provider store={store}>
+                <ReduxRouter routes={routes}/>
+            </Provider>
+        </MuiThemeProvider>,
         document.getElementById('app-content'),
         () => document.body.removeChild(document.getElementById('pre-react'))
     );

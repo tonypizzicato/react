@@ -1,14 +1,10 @@
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import Button from 'material-ui/lib/raised-button';
-import RadioButtonGroup from 'material-ui/lib/radio-button-group';
-import RadioButton from 'material-ui/lib/radio-button';
-
-import CountriesActions from'../../actions/CountriesActions';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
+import Button from 'material-ui/RaisedButton';
+import RadioButton, { RadioButtonGroup} from 'material-ui/RadioButton';
+import Spacing from 'material-ui/styles/spacing';
 
 class CountryForm extends Component {
 
@@ -143,4 +139,4 @@ class CountryForm extends Component {
     }
 }
 
-module.exports = CountryForm;
+export default CountryForm;

@@ -1,11 +1,9 @@
 import _ from 'lodash';
-import scrollTop from '../../utils/scrollTop';
-
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import scrollTop from '../../utils/scrollTop';
+import React, { Component, PropTypes } from 'react';
 
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 import NewsForm from '../news/NewsForm.jsx';
 import NewsList from '../news/NewsList.jsx';

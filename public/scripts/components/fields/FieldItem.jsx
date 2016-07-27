@@ -1,25 +1,24 @@
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
+import { ListItem } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import IconButton from 'material-ui/IconButton';
+import MenuItem from 'material-ui/MenuItem';
+import IconMenu from 'material-ui/IconMenu';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
-import ListItem from 'material-ui/lib/lists/list-item';
-import Avatar from 'material-ui/lib/avatar';
-import IconButton from 'material-ui/lib/icon-button';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import IconMenu from 'material-ui/lib/menus/icon-menu';
-
-import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
-import EditIcon from 'material-ui/lib/svg-icons/content/create';
-import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
-import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import EditIcon from 'material-ui/svg-icons/content/create';
+import IconVisibility from 'material-ui/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/svg-icons/action/visibility-off';
 
 class FieldItem extends Component {
 
     static propTypes = {
         field:    PropTypes.object,
         onEdit:   PropTypes.func.isRequired
-    }
+    };
 
     render() {
         const styles = this.getStyles();
@@ -83,4 +82,4 @@ class FieldItem extends Component {
     }
 }
 
-module.exports = FieldItem;
+export default FieldItem;

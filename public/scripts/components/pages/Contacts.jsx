@@ -1,13 +1,10 @@
 import _ from 'lodash';
-import scrollTop from '../../utils/scrollTop';
-
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import scrollTop from '../../utils/scrollTop';
+import React, { Component, PropTypes } from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Spacing from 'material-ui/styles/spacing';
 
 import ContactForm from '../contacts/ContactForm.jsx';
 import ContactsList from '../contacts/ContactsList.jsx';

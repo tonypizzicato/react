@@ -1,11 +1,5 @@
-import _ from 'lodash';
-import scrollTop from '../../utils/scrollTop';
-
-import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
+import React, { Component, PropTypes } from 'react';
 
 import UsersList from '../users/UsersList.jsx';
 

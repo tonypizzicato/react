@@ -1,11 +1,9 @@
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import ListItem from 'material-ui/lib/lists/list-item';
-import Avatar from 'material-ui/lib/avatar';
-import IconButton from 'material-ui/lib/icon-button';
+import { ListItem } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
 class UserItem extends Component {
     static propTypes = {
@@ -50,4 +48,4 @@ class UserItem extends Component {
     }
 }
 
-module.exports = UserItem;
+export default UserItem;

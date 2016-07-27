@@ -1,15 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 
-import {
-    Styles,
-    ListItem,
-    Avatar,
-} from 'material-ui';
+import { ListItem } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 
-import IconVisibility from 'material-ui/lib/svg-icons/action/visibility';
-import IconVisibilityOff from 'material-ui/lib/svg-icons/action/visibility-off';
-
-const { Colors, Spacing } = Styles;
+import IconVisibility from 'material-ui/svg-icons/action/visibility';
+import IconVisibilityOff from 'material-ui/svg-icons/action/visibility-off';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
 class TournamentItem extends Component {
 
@@ -18,25 +15,37 @@ class TournamentItem extends Component {
         onEdit:     PropTypes.func.isRequired
     };
 
+    get avatar() {
+        const { tournament } = this.props;
+
+        const avatar = tournament.name ? tournament.name : tournament.slug;
+
+        return <Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>;
+    }
+
+    get text() {
+        return (
+            <p style={this.styles.text}>
+                {React.createElement(this.props.tournament.show ? IconVisibility : IconVisibilityOff, { style: styles.visibilityIcon })}
+                <span style={this.styles.label.primary}>{this.props.tournament.name}</span>
+                <span style={this.styles.label.secondary}>{this.props.tournament.slug}</span>
+            </p>
+        );
+    }
+
     render() {
         return (
             <ListItem
-                style={styles.root}
+                style={this.styles.root}
                 onTouchTap={() => this.props.onEdit(this.props.tournament._id)}
-                leftAvatar={<Avatar size={Spacing.desktopGutter * 2}>{avatar[0]}</Avatar>}
-                primaryText={
-                    <p style={styles.text}>
-                        {React.createElement(this.props.tournament.show ? IconVisibility : IconVisibilityOff, { style: styles.visibilityIcon })}
-                        <span style={styles.label.primary}>{this.props.tournament.name}</span>
-                        <span style={styles.label.secondary}>{this.props.tournament.slug}</span>
-                    </p>
-                }
+                leftAvatar={this.avatar}
+                primaryText={this.text}
                 secondaryText={this.props.tournament.country ? this.props.tournament.country.name : '—'}
             />
         );
     }
 
-    getStyles() {
+    get styles() {
         return {
             root:           {
                 margin: Spacing.desktopGutter + ' 0'

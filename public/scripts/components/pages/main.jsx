@@ -1,26 +1,20 @@
 import _ from 'lodash';
-import $ from 'jquery';
-
-import React, { Component, PropTypes } from 'react';
+import { autobind } from 'core-decorators';
 import { connect } from 'react-redux';
+import React, { Component, PropTypes } from 'react';
 
 import TransitionGroup from 'react-addons-css-transition-group';
 
 import Link from 'react-router/lib/Link';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
-import Canvas from 'material-ui/lib/app-canvas';
-import AppBar from 'material-ui/lib/app-bar';
-import Icon from 'material-ui/lib/font-icon';
-import RefreshIndicator from 'material-ui/lib/refresh-indicator';
-import Snackbar from 'material-ui/lib/snackbar';
-import Indicator from 'material-ui/lib/refresh-indicator';
+import AppBar from 'material-ui/AppBar';
+import Snackbar from 'material-ui/Snackbar';
 
-import AccountIcon from 'material-ui/lib/svg-icons/action/account-circle';
+import AccountIcon from 'material-ui/svg-icons/action/account-circle';
 
-import FullWidth from '../FullWidth.jsx';
 import LeftNav from '../LeftNav.jsx';
 import Auth from '../Auth.jsx';
 import Loader from '../Loader.jsx';
@@ -28,24 +22,21 @@ import Loader from '../Loader.jsx';
 import UiActions from '../../actions/UiActions';
 import AuthStore from '../../stores/AuthStore';
 
-import GamesActions from '../../actions/GamesActions';
-import GamesStore from '../../stores/GamesStore';
-
 const menuItems = [
-    {route: 'profile', text: 'Профиль'},
-    {type: 'divider'},
-    {route: 'leagues', text: 'Лиги'},
-    {route: 'countries', text: 'Страны'},
-    {route: 'tournaments', text: 'Туриниры'},
-    {route: 'games', text: 'Игры'},
-    {type: 'divider'},
-    {route: 'categories', text: 'Категории'},
-    {route: 'news', text: 'Новости'},
-    {route: 'fields', text: 'Поля'},
-    {type: 'divider'},
-    {route: 'users', text: 'Пользователи'},
-    {route: 'contacts', text: 'Контакты'},
-    {route: 'orders', text: 'Заявки'}
+    { route: 'profile', text: 'Профиль' },
+    { type: 'divider' },
+    { route: 'leagues', text: 'Лиги' },
+    { route: 'countries', text: 'Страны' },
+    { route: 'tournaments', text: 'Туриниры' },
+    { route: 'games', text: 'Игры' },
+    { type: 'divider' },
+    { route: 'categories', text: 'Категории' },
+    { route: 'news', text: 'Новости' },
+    { route: 'fields', text: 'Поля' },
+    { type: 'divider' },
+    { route: 'users', text: 'Пользователи' },
+    { route: 'contacts', text: 'Контакты' },
+    { route: 'orders', text: 'Заявки' }
 ];
 
 class MainApp extends Component {
@@ -57,26 +48,6 @@ class MainApp extends Component {
         games:     []
     };
 
-    constructor(props) {
-        super(props);
-
-        //this._authChange  = this._authChange.bind(this);
-        //this._gamesChange = this._gamesChange.bind(this);
-
-        this._onLeftIconButtonTouchTap = this._onLeftIconButtonTouchTap.bind(this);
-        this._onNavStateChanged        = this._onNavStateChanged.bind(this);
-    }
-
-    //componentDidMount() {
-    //    AuthStore.addChangeListener(this._authChange);
-    //    GamesStore.addChangeListener(this._gamesChange);
-    //}
-    //
-    //componentWillUnmount() {
-    //    AuthStore.removeChangeListener(this._authChange);
-    //    GamesStore.removeChangeListener(this._gamesChange);
-    //}
-
     componentWillReceiveProps(nextProps) {
         if (!this.props.lastServerError && nextProps.lastServerError) {
             this.refs["snack"].show();
@@ -86,7 +57,7 @@ class MainApp extends Component {
 
         /** Delay left nav state change for animation performance */
         if (this.props.location.pathname != nextProps.location.pathname) {
-            _.delay(() => this.setState({navOpened: false}), 100);
+            _.delay(() => this.setState({ navOpened: false }), 100);
         }
     }
 
@@ -98,19 +69,21 @@ class MainApp extends Component {
     //    this.setState({games: GamesStore.getAll()});
     //}
 
+    @autobind
     _onLeftIconButtonTouchTap() {
-        this.setState({navOpened: !this.state.navOpened});
+        this.setState({ navOpened: !this.state.navOpened });
     }
 
+    @autobind
     _onNavStateChanged(state) {
-        this.setState({navOpened: state});
+        this.setState({ navOpened: state });
     }
 
-    _getContentComponent() {
+    get content() {
         let content;
 
         if (this.state.loggedIn) {
-            content = React.createElement('div', {key: this.props.location.pathname, style: this.getStyles().transitioned},
+            content = React.createElement('div', { key: this.props.location.pathname, style: this.getStyles().transitioned },
                 this.props.children);
         } else {
             content = <Auth.Auth />
@@ -132,40 +105,38 @@ class MainApp extends Component {
 
         return (
             <div>
-                <Canvas>
-                    <AppBar
-                        onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
-                        title={appBarTitle}
-                        zDepth={0}
-                        showMenuIconButton={true}
-                        style={styles.appBar}
-                        ref="appBar">
-                        <div>
-                            <AccountIcon style={styles.login.icon}/>
-                            {loginOrOut}
-                        </div>
-                        <Loader/>
-                    </AppBar>
+                <AppBar
+                    onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap}
+                    title={appBarTitle}
+                    zDepth={0}
+                    showMenuIconButton={true}
+                    style={styles.appBar}
+                    ref="appBar">
+                    <div>
+                        <AccountIcon style={styles.login.icon}/>
+                        {loginOrOut}
+                    </div>
+                    <Loader/>
+                </AppBar>
 
-                    <TransitionGroup style={styles.content}
-                                     ref="content"
-                                     component="div"
-                                     transitionName="page-transition"
-                                     transitionAppear={true}
-                                     transitionAppearTimeout={1300}
-                                     transitionEnterTimeout={1300}
-                                     transitionLeaveTimeout={1300}>
-                        {this._getContentComponent()}
-                    </TransitionGroup>
+                <TransitionGroup style={styles.content}
+                                 ref="content"
+                                 component="div"
+                                 transitionName="page-transition"
+                                 transitionAppear={true}
+                                 transitionAppearTimeout={1300}
+                                 transitionEnterTimeout={1300}
+                                 transitionLeaveTimeout={1300}>
+                    {this.content}
+                </TransitionGroup>
 
-                    <LeftNav opened={this.state.navOpened}
-                             menuItems={menuItems}
-                             onStateChange={this._onNavStateChanged}
-                             location={location}
-                             history={history}/>
+                <LeftNav opened={this.state.navOpened}
+                         menuItems={menuItems}
+                         onStateChange={this._onNavStateChanged}
+                         location={location}
+                         history={history}/>
 
-                    <Snackbar message="Ууупс! Ошибка на сервере. Сорян." autoHideDuration={2000} ref="snack"/>
-                </Canvas>
+                <Snackbar message="Ууупс! Ошибка на сервере. Сорян." autoHideDuration={2000} ref="snack"/>
             </div>
         )
     }

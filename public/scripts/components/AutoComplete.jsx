@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import fuzzy from 'fuzzy';
-
 import React, { Component, PropTypes } from 'react';
-import AutoCompleteComponent from 'material-ui/lib/auto-complete';
+
+import AutoCompleteComponent from 'material-ui/AutoComplete';
 
 class AutoComplete extends Component {
     static propTypes = {
@@ -20,12 +19,12 @@ class AutoComplete extends Component {
         primaryField: 'text',
         suggestions:  [],
         style:        {}
-    }
+    };
 
     state = {
         initialSuggestions: this.props.suggestions,
         suggestions:        this.props.suggestions
-    }
+    };
 
     _onUpdate = (token) => {
         const s = fuzzy.filter(token, this.props.suggestions.map(game => game.text), {pre: '<b>', post: '</b>'});
@@ -52,11 +51,11 @@ class AutoComplete extends Component {
 
         console.log(newSuggestions);
         this.setState({suggestions: newSuggestions});
-    }
+    };
 
     _onSelect = (item, index) => {
         console.log('request:', item, index);
-    }
+    };
 
     render() {
         console.log(this.state.suggestions.length);

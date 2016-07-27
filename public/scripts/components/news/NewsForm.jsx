@@ -1,23 +1,18 @@
-import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
+import Spacing from 'material-ui/styles/spacing';
 
-import TextField from 'material-ui/lib/text-field';
-import Toggle from 'material-ui/lib/toggle';
-import DropDownMenu from 'material-ui/lib/drop-down-menu';
-import Button from 'material-ui/lib/raised-button';
-import RadioButtonGroup from 'material-ui/lib/radio-button-group';
-import RadioButton from 'material-ui/lib/radio-button';
+import TextField from 'material-ui/TextField';
+import Toggle from 'material-ui/Toggle';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import Button from 'material-ui/RaisedButton';
+import RadioButton, { RadioButtonGroup } from 'material-ui/RadioButton';
 
 import MediumEditor from '../MediumEditor.jsx';
 import ImageUpload from '../ImageUpload.jsx';
 import VideoUpload from '../VideoUpload.jsx';
-import TagsField from '../TagsField.jsx';
 
 import AuthStore from'../../stores/AuthStore';
-
-import NewsActions from'../../actions/NewsActions';
 
 class NewsForm extends Component {
 
@@ -28,7 +23,8 @@ class NewsForm extends Component {
         onSubmit:   PropTypes.func.isRequired,
         onCancel:   PropTypes.func.isRequired,
         article:    PropTypes.object
-    }
+    };
+
     static defaultProps = {
         article: {
             title:   '',
@@ -289,4 +285,4 @@ class NewsForm extends Component {
     }
 }
 
-module.exports = NewsForm;
+export default NewsForm;

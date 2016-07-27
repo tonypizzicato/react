@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import React, { Component, PropTypes} from 'react';
 
-import Spacing from 'material-ui/lib/styles/spacing';
 
-import TextField from 'material-ui/lib/text-field';
-import DropDownMenu from 'material-ui/lib/drop-down-menu';
-import Button from 'material-ui/lib/raised-button';
-import Checkbox from 'material-ui/lib/checkbox';
-import Avatar from 'material-ui/lib/avatar';
+import TextField from 'material-ui/TextField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import Button from 'material-ui/RaisedButton';
+import Checkbox from 'material-ui/Checkbox';
+import Spacing from 'material-ui/styles/spacing';
 
 import ImageUpload from '../ImageUpload.jsx';
 
@@ -210,4 +209,4 @@ class ProfileForm extends Component {
     }
 }
 
-module.exports = ProfileForm;
+export default ProfileForm;

@@ -1,26 +1,13 @@
 import _ from 'lodash';
-import fuzzy from 'fuzzy';
 import React, { Component, PropTypes} from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-import Spacing from 'material-ui/lib/styles/spacing';
-
-import Toolbar from 'material-ui/lib/toolbar/toolbar';
-import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-
-import { Typeahead } from 'react-typeahead';
+import Toolbar, { ToolbarGroup } from 'material-ui/Toolbar';
+import Colors from 'material-ui/styles/colors';
+import Spacing from 'material-ui/styles/spacing';
 
 import AutoComplete from '../AutoComplete.jsx';
 import DropDownMenu from '../DropDownMenu.jsx';
-import ImageUpload from '../ImageUpload.jsx';
-import VideoUpload from '../VideoUpload.jsx';
-import TagsField from '../TagsField.jsx';
 
-import EventsConstants from '../../constants/EventsConstants';
-import AuthStore from'../../stores/AuthStore';
-
-import CountriesActions from'../../actions/CountriesActions';
-//import CountriesStore from'../../stores/CountriesStore';
 import GamesStore from'../../stores/GamesStore';
 
 class GamesToolbar extends Component {

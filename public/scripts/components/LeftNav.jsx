@@ -1,15 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import { autobind } from 'core-decorators';
 import connect from 'react-redux/lib/components/connect';
+import React, { Component, PropTypes } from 'react';
 import { pushState } from 'redux-router/lib/actionCreators';
 
-import LeftNav from 'material-ui/lib/left-nav';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import Divider from 'material-ui/lib/divider';
-import {Colors, Spacing, Typography } from 'material-ui/lib/styles/index';
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+import Drawer from 'material-ui/Drawer';
+import List, { ListItem, MakeSelectable } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import {Colors, Spacing, Typography } from 'material-ui/';
 
-const SelectableList = SelectableContainerEnhance(List);
+const SelectableList = MakeSelectable(List);
 
 class AppLeftNav extends Component {
 
@@ -23,21 +22,14 @@ class AppLeftNav extends Component {
 
     static defaultProps = {
         opened: false
-    }
+    };
 
     state = {
         opened: this.props.opened
     };
 
-    constructor(props) {
-        super(props);
-
-        this._getSelectedIndex = this._getSelectedIndex.bind(this);
-        this._onItemClick      = this._onItemClick.bind(this);
-        this._changeState      = this._changeState.bind(this);
-    }
-
-    _getSelectedIndex() {
+    @autobind
+    getSelectIndex() {
         return this.props.location.pathname.split('/').filter(item => item != '')[0];
     }
 
@@ -47,13 +39,15 @@ class AppLeftNav extends Component {
         }
     }
 
-    _changeState(state) {
+    @autobind
+    handleStateChange(state) {
         this.setState({opened: state});
 
         this.props.onStateChange && this.props.onStateChange(state);
     }
 
-    _onItemClick(e, route) {
+    @autobind
+    handleItemClick(e, route) {
         this.props.pushState(null, route);
     }
 
@@ -61,14 +55,15 @@ class AppLeftNav extends Component {
         const styles = this.getStyles();
 
         return (
-            <LeftNav open={this.state.opened}
-                     onRequestChange={this._changeState}>
+            <Drawer docked={false}
+                    open={this.state.opened}
+                    onRequestChange={this.handleStateChange}>
 
                 <SelectableList style={styles.root}
                                 selectedItemStyle={styles.item.selected}
                                 valueLink={{
-                                    value: this._getSelectedIndex(),
-                                    requestChange: this._onItemClick
+                                    value: this.getSelectIndex(),
+                                    requestChange: this.handleItemClick
                                 }}>
                     {this.props.menuItems.map((item, i) => {
                         if (item.route) {
@@ -79,7 +74,7 @@ class AppLeftNav extends Component {
                     })}
                 </SelectableList>
 
-            </LeftNav>
+            </Drawer>
         );
     }
 

@@ -1,9 +1,6 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import Colors from 'material-ui/lib/styles/colors';
-
-import Divider from 'material-ui/lib/divider';
-
+import Colors from 'material-ui/styles/colors';
 import OrderItem from '../orders/OrderItem.jsx';
 
 class OrdersList extends Component {
@@ -22,12 +19,9 @@ class OrdersList extends Component {
         return (
             <div style={styles.root}>
                 {this.props.orders.map((item, i) => {
-                    const divider = i != this.props.orders.length - 1 ? <Divider inset={true} style={styles.divider}/> : undefined;
-
                     return (
                         <div key={item._id}>
                             <OrderItem order={item} key={item._id}/>
-                            {divider}
                         </div>
                     )
                 })}
