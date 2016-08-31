@@ -221,7 +221,7 @@ class FieldForm extends React.Component {
                     hintText="56,4554"
                     type="number"
                     disabled={!this.props.field._id}
-                    errorText={this.state.validation.lat ? 'Поле не может быть пустым' : null}
+                    errorText={this.state.validation['geo[0]'] ? 'Поле не может быть пустым' : null}
                     ref="lat"/>
 
                 <TextField
@@ -231,7 +231,7 @@ class FieldForm extends React.Component {
                     floatingLabelText="Long"
                     type="number"
                     disabled={!this.props.field._id}
-                    errorText={this.state.validation.long ? 'Поле не может быть пустым' : null}
+                    errorText={this.state.validation['geo[1]'] ? 'Поле не может быть пустым' : null}
                     ref="long"/>
 
                 <div className="s_mt_24">

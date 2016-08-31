@@ -33,7 +33,7 @@ class FieldItem extends React.Component {
 
         const avatar = this.props.field.image && this.props.field.image.thumb ?
             <Avatar size={Spacing.desktopGutter * 2} src={this.props.field.image.thumb.src}/> :
-            <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title[0]}</Avatar>;
+            <Avatar size={Spacing.desktopGutter * 2}>{this.props.field.title ? this.props.field.title[0] : '-'}</Avatar>;
 
         const iconButtonMenu = (
             <IconButton touch={true}>

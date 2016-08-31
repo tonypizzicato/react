@@ -33,7 +33,7 @@ var init = function (app) {
     });
 
     app.get('/users', function (req, res) {
-        User.find().exec(function (err, docs) {
+        User.find().select('-avatar').exec(function (err, docs) {
             if (err) {
                 res.status(500).json({error: err});
                 return;
